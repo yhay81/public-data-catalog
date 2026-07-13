@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yhay81/ai-public-data-catalog/main/catalog.schema.json",
+  "$id": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/catalog.schema.json",
   "title": "AI Public Data Catalog",
   "type": "object",
   "required": ["$schema", "catalog_version", "last_updated", "entries"],

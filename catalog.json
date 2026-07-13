@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/yhay81/ai-public-data-catalog/main/catalog.schema.json",
+  "$schema": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/catalog.schema.json",
   "catalog_version": "0.1.0",
   "last_updated": "2026-07-13",
   "entries": [
