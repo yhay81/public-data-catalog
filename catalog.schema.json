@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yhay81/ai-public-data-catalog/main/catalog.schema.json",
+  "title": "AI Public Data Catalog",
+  "type": "object",
+  "required": ["$schema", "catalog_version", "last_updated", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string", "format": "uri-reference"},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "last_updated": {"type": "string", "format": "date"},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/entry"},
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "publisher",
+        "type",
+        "domains",
+        "geography",
+        "languages",
+        "temporal_coverage",
+        "access",
+        "license",
+        "ai_summary",
+        "query_hints",
+        "caveats",
+        "status",
+        "last_verified",
+        "source_urls"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+        "title": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "enum": ["api", "dataset", "portal"]},
+        "domains": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "geography": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "languages": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "temporal_coverage": {
+          "type": "object",
+          "required": ["start", "end", "granularity"],
+          "additionalProperties": false,
+          "properties": {
+            "start": {"type": "string", "minLength": 1},
+            "end": {"type": "string", "minLength": 1},
+            "granularity": {"type": "string", "minLength": 1}
+          }
+        },
+        "access": {
+          "type": "object",
+          "required": ["mode", "auth", "base_url", "docs_url", "formats", "rate_limit_notes"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {"type": "string", "enum": ["public", "registration", "api_key", "download", "mixed"]},
+            "auth": {"type": "string", "minLength": 1},
+            "base_url": {"type": "string", "format": "uri"},
+            "docs_url": {"type": "string", "format": "uri"},
+            "formats": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+            "rate_limit_notes": {"type": "string", "minLength": 1}
+          }
+        },
+        "license": {
+          "type": "object",
+          "required": ["name", "url", "notes"],
+          "additionalProperties": false,
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "url": {"type": "string", "format": "uri"},
+            "notes": {"type": "string", "minLength": 1}
+          }
+        },
+        "ai_summary": {"type": "string", "minLength": 1},
+        "query_hints": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "caveats": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "status": {"type": "string", "enum": ["active", "deprecated", "paused", "unknown"]},
+        "last_verified": {"type": "string", "format": "date"},
+        "source_urls": {
+          "type": "array",
+          "items": {"type": "string", "format": "uri"},
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

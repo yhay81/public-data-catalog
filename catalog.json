@@ -1,0 +1,278 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yhay81/ai-public-data-catalog/main/catalog.schema.json",
+  "catalog_version": "0.1.0",
+  "last_updated": "2026-07-13",
+  "entries": [
+    {
+      "id": "estat-api",
+      "title": "e-Stat API",
+      "publisher": "National Statistics Center, Japan",
+      "type": "api",
+      "domains": ["official-statistics", "economy", "society", "population", "japan"],
+      "geography": ["JP"],
+      "languages": ["ja", "en"],
+      "temporal_coverage": {
+        "start": "varies",
+        "end": "ongoing",
+        "granularity": "varies by statistical table"
+      },
+      "access": {
+        "mode": "registration",
+        "auth": "registration",
+        "base_url": "https://api.e-stat.go.jp/rest/3.0/app/",
+        "docs_url": "https://www.e-stat.go.jp/api/index.php/en",
+        "formats": ["json", "xml", "csv"],
+        "rate_limit_notes": "An e-Stat account and application ID are required. Keep the application ID outside the repository."
+      },
+      "license": {
+        "name": "varies_by_dataset",
+        "url": "https://www.e-stat.go.jp/api/en/terms-of-use",
+        "notes": "Check the terms and source attribution requirements for the specific statistical table."
+      },
+      "ai_summary": "Japanese official statistics in machine-readable form. Find a statsDataId and inspect table metadata and code lists before requesting numeric observations.",
+      "query_hints": [
+        "Search statistical table information before calling getStatsData.",
+        "Use getMetaInfo to resolve dimensions, area codes, category codes, units, and annotations.",
+        "Prefer the JSON endpoint under /rest/3.0/app/json/ for programmatic use."
+      ],
+      "caveats": [
+        "The application ID is required for API requests; never put a real ID in this catalog.",
+        "Statistics can be revised, and table IDs or classifications may change after methodological revisions.",
+        "The meaning of a value depends on the table metadata, unit, reference period, and annotation fields."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://www.e-stat.go.jp/api/index.php/en",
+        "https://www.e-stat.go.jp/api/api-info",
+        "https://www.e-stat.go.jp/api/en/terms-of-use"
+      ]
+    },
+    {
+      "id": "open-meteo",
+      "title": "Open-Meteo Weather API",
+      "publisher": "Open-Meteo",
+      "type": "api",
+      "domains": ["weather", "forecast", "climate", "air-quality", "geospatial"],
+      "geography": ["global"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by model and endpoint",
+        "end": "forecast horizon",
+        "granularity": "hourly and daily"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none",
+        "base_url": "https://api.open-meteo.com/v1/forecast",
+        "docs_url": "https://open-meteo.com/en/docs",
+        "formats": ["json", "csv", "xlsx"],
+        "rate_limit_notes": "The free endpoint is for non-commercial use and is limited to roughly 10,000 calls per day, with additional per-hour and per-minute limits."
+      },
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://open-meteo.com/en/license",
+        "notes": "Attribution is required. Commercial or high-volume use needs the applicable paid endpoint and terms."
+      },
+      "ai_summary": "Coordinate-first weather, forecast, historical, climate, air-quality, and related data APIs. Query variables and units are explicit request parameters and responses are simple JSON by default.",
+      "query_hints": [
+        "Start with latitude, longitude, and the smallest set of current, hourly, or daily variables needed.",
+        "Use the geocoding API separately when a place name must be resolved to coordinates.",
+        "Record the selected weather model and timezone because the default model and local-time interpretation affect results."
+      ],
+      "caveats": [
+        "Forecasts and reanalysis are model products, not necessarily direct observations.",
+        "The free API has no uptime guarantee and is restricted to non-commercial use.",
+        "The underlying national weather data sources can have different attribution and terms."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://open-meteo.com/",
+        "https://open-meteo.com/en/docs",
+        "https://open-meteo.com/en/license",
+        "https://open-meteo.com/en/terms"
+      ]
+    },
+    {
+      "id": "world-bank-indicators",
+      "title": "World Bank Indicators API",
+      "publisher": "World Bank",
+      "type": "api",
+      "domains": ["development", "economy", "population", "health", "education", "environment"],
+      "geography": ["global"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by indicator",
+        "end": "varies by indicator",
+        "granularity": "annual and varies by indicator"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none",
+        "base_url": "https://api.worldbank.org/v2/",
+        "docs_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
+        "formats": ["json", "xml"],
+        "rate_limit_notes": "Check the service documentation and use pagination for broad queries."
+      },
+      "license": {
+        "name": "CC BY 4.0 by default",
+        "url": "https://datacatalog.worldbank.org/public-licenses",
+        "notes": "Some indicators or datasets come from third parties and have different terms; inspect the relevant metadata."
+      },
+      "ai_summary": "Global development indicators such as GDP, population, health, education, and energy. Stable indicator codes and country codes are the main query vocabulary.",
+      "query_hints": [
+        "Use an indicator code such as NY.GDP.MKTP.CD rather than a display name.",
+        "Append format=json and constrain country, date, or page parameters for predictable responses.",
+        "Read the indicator metadata for unit, source note, source organization, and topic before comparing values."
+      ],
+      "caveats": [
+        "Country and year coverage differs by indicator, and values can be revised.",
+        "The API commonly returns a metadata object followed by an array of records.",
+        "An indicator's apparent comparability does not remove differences in methodology or source quality."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
+        "https://api.worldbank.org/v2/indicator",
+        "https://datacatalog.worldbank.org/public-licenses"
+      ]
+    },
+    {
+      "id": "gbif-api",
+      "title": "GBIF API",
+      "publisher": "Global Biodiversity Information Facility",
+      "type": "api",
+      "domains": ["biodiversity", "species", "taxonomy", "occurrence", "conservation"],
+      "geography": ["global"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by occurrence record",
+        "end": "ongoing",
+        "granularity": "record-level and dataset-level"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none_for_most_searches",
+        "base_url": "https://api.gbif.org/v1/",
+        "docs_url": "https://techdocs.gbif.org/en/openapi/",
+        "formats": ["json"],
+        "rate_limit_notes": "Most read queries do not require authentication. Download requests and write operations have separate authentication requirements."
+      },
+      "license": {
+        "name": "varies_by_record",
+        "url": "https://www.gbif.org/terms",
+        "notes": "Occurrence records carry machine-readable CC0, CC BY, or CC BY-NC licensing; preserve publisher attribution and inspect each record or dataset."
+      },
+      "ai_summary": "A global biodiversity network for occurrence records, taxonomic names, datasets, and publishing organizations. It is useful for species and location discovery, but record provenance and uncertainty must remain attached.",
+      "query_hints": [
+        "Use occurrence/search with taxon key, scientific name, country, year, coordinates, and basisOfRecord filters.",
+        "Paginate with limit and offset, and preserve the GBIF key for every returned record.",
+        "Use the species and registry endpoints to resolve taxon and dataset identifiers before broad occurrence queries."
+      ],
+      "caveats": [
+        "A GBIF occurrence is an observation record, not a guaranteed ground-truth statement about current presence.",
+        "Sensitive species locations may be generalized or obscured.",
+        "Download and bulk-use workflows have different authentication, citation, and rate-limit expectations."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://techdocs.gbif.org/en/openapi/",
+        "https://www.gbif.org/terms",
+        "https://www.gbif.org/"
+      ]
+    },
+    {
+      "id": "us-census-api",
+      "title": "U.S. Census Data API",
+      "publisher": "U.S. Census Bureau",
+      "type": "api",
+      "domains": ["population", "demographics", "economy", "housing", "geography", "public-health"],
+      "geography": ["US"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by dataset and vintage",
+        "end": "varies by dataset",
+        "granularity": "dataset-specific vintages and geographies"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "optional_api_key",
+        "base_url": "https://api.census.gov/data",
+        "docs_url": "https://www.census.gov/data/developers/guidance/api-user-guide.html",
+        "formats": ["json"],
+        "rate_limit_notes": "An API key is available for higher request limits. Dataset availability, variables, and geography predicates differ by vintage."
+      },
+      "license": {
+        "name": "government_data_with_api_terms",
+        "url": "https://www.census.gov/data/developers/about/terms-of-service.html",
+        "notes": "Follow the API terms, attribution notice, and confidentiality restrictions; do not attempt to identify individuals or entities."
+      },
+      "ai_summary": "Machine-readable U.S. demographic, socioeconomic, housing, economic, and geographic statistics organized by dataset vintage and FIPS-based geography.",
+      "query_hints": [
+        "Discover a dataset and vintage first, then read its variables.json and geography predicates.",
+        "Use get=NAME and only the variables needed, together with for/in geography selectors.",
+        "Treat FIPS codes, dataset vintage, and geography level as part of the meaning of every value."
+      ],
+      "caveats": [
+        "The API contains aggregate data and must not be used to identify individuals, households, businesses, or establishments.",
+        "A variable name can have different definitions across datasets or vintages.",
+        "The Census Bureau requires a non-endorsement notice for services that use the API."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://www.census.gov/data/developers.html",
+        "https://www.census.gov/data/developers/guidance/api-user-guide.html",
+        "https://www.census.gov/data/developers/about/terms-of-service.html"
+      ]
+    },
+    {
+      "id": "openalex-api",
+      "title": "OpenAlex API",
+      "publisher": "OurResearch / OpenAlex",
+      "type": "api",
+      "domains": ["scholarly-literature", "researchers", "institutions", "publishers", "topics"],
+      "geography": ["global"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by work",
+        "end": "ongoing",
+        "granularity": "work-level and entity-level"
+      },
+      "access": {
+        "mode": "api_key",
+        "auth": "required_api_key",
+        "base_url": "https://api.openalex.org",
+        "docs_url": "https://developers.openalex.org/api-reference/introduction",
+        "formats": ["json"],
+        "rate_limit_notes": "API keys are free. Pricing and daily usage depend on the endpoint and plan; use per_page, filters, select, and cursor pagination deliberately."
+      },
+      "license": {
+        "name": "CC0",
+        "url": "https://developers.openalex.org/",
+        "notes": "OpenAlex data is CC0, while linked full text and external content can have their own rights and licenses."
+      },
+      "ai_summary": "An open graph of scholarly works, authors, sources, institutions, topics, publishers, and funders. Entity IDs and structured filters are more reliable than name-only matching.",
+      "query_hints": [
+        "Resolve an author, institution, or source to an OpenAlex ID before filtering works by that entity.",
+        "Use filter, search, sort, group_by, select, and cursor parameters to keep queries precise and paginable.",
+        "Use the free snapshot for large-scale analysis and the API for lookups, search, and smaller real-time workflows."
+      ],
+      "caveats": [
+        "Names are ambiguous; prefer stable OpenAlex IDs and external identifiers such as DOI, ORCID, or ROR.",
+        "Coverage, abstracts, open-access status, and citation counts are not equally complete for every work.",
+        "API keys belong in environment variables or a secret manager and must not be placed in URLs committed to Git."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://developers.openalex.org/api-reference/introduction",
+        "https://developers.openalex.org/api-reference/authentication",
+        "https://developers.openalex.org/"
+      ]
+    }
+  ]
+}
