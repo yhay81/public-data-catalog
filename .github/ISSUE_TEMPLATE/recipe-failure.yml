@@ -1,0 +1,46 @@
+name: Recipe failure
+description: Report a recipe that no longer runs or returns a misleading result.
+title: "[Failure] "
+labels:
+  - bug
+body:
+  - type: input
+    id: recipe-id
+    attributes:
+      label: Recipe ID
+      placeholder: tokyo-population-2023
+    validations:
+      required: true
+  - type: input
+    id: checked-at
+    attributes:
+      label: Checked at
+      description: Date, time, and timezone.
+      placeholder: 2026-07-24 20:00 JST
+    validations:
+      required: true
+  - type: textarea
+    id: command-output
+    attributes:
+      label: Command and sanitized output
+      description: Remove credentials, tokens, personal data, and sensitive URLs before posting.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: failure-kind
+    attributes:
+      label: Likely failure kind
+      options:
+        - Endpoint or upstream service failure
+        - Response contract changed
+        - Recipe interpretation is misleading
+        - License or usage terms changed
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: official-evidence
+    attributes:
+      label: Official evidence
+      description: Link to an official notice or documentation change, if available.

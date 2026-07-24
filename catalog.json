@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/catalog.schema.json",
-  "catalog_version": "0.1.0",
-  "last_updated": "2026-07-13",
+  "catalog_version": "0.3.0",
+  "last_updated": "2026-07-24",
   "entries": [
     {
       "id": "estat-api",
@@ -46,6 +46,52 @@
         "https://www.e-stat.go.jp/api/index.php/en",
         "https://www.e-stat.go.jp/api/api-info",
         "https://www.e-stat.go.jp/api/en/terms-of-use"
+      ]
+    },
+    {
+      "id": "statistics-dashboard-api",
+      "title": "Statistics Dashboard Web API",
+      "publisher": "Statistics Bureau, Ministry of Internal Affairs and Communications, Japan",
+      "type": "api",
+      "domains": ["official-statistics", "population", "labor", "economy", "society", "japan"],
+      "geography": ["JP", "global"],
+      "languages": ["ja", "en"],
+      "temporal_coverage": {
+        "start": "varies by indicator",
+        "end": "ongoing",
+        "granularity": "monthly, quarterly, annual, fiscal-year, and indicator-specific"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none",
+        "base_url": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData",
+        "docs_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
+        "formats": ["json", "json-stat", "xml", "csv"],
+        "rate_limit_notes": "No registration is required. Keep requests narrowly scoped, avoid large repeated downloads, and retry conservatively because the service can report temporary congestion."
+      },
+      "license": {
+        "name": "Public Data License 1.0 (PDL1.0), unless otherwise noted",
+        "url": "https://dashboard.e-stat.go.jp/static/terms",
+        "notes": "Attribute Statistics Dashboard, identify edits or processing, and include the requested API-service disclaimer when publishing a service that uses the API."
+      },
+      "ai_summary": "A registration-free REST API for about 6,000 statistical indicator series organized by indicator, time, and region. It is useful for bounded national, prefectural, municipal, and international comparisons while preserving units, survey names, provisional status, and annotations.",
+      "query_hints": [
+        "Discover the 19-digit indicator code with getIndicatorInfo before requesting values.",
+        "Specify region, time, cycle, regional rank, and seasonal-adjustment status so that a value is unambiguous.",
+        "Request metadata with MetaGetFlg=Y and retain the unit, survey, annotations, region code, time code, and provisional-status code."
+      ],
+      "caveats": [
+        "The same indicator can have different units, sources, regional ranks, cycles, and seasonal-adjustment variants.",
+        "Values and metadata can be revised; provisional and final values must not be conflated.",
+        "Some international or privately supplied series have source-specific definitions and conditions in addition to the portal policy."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-24",
+      "source_urls": [
+        "https://dashboard.e-stat.go.jp/static/api?language=ja",
+        "https://dashboard.e-stat.go.jp/en/static/api",
+        "https://dashboard.e-stat.go.jp/static/whatIs",
+        "https://dashboard.e-stat.go.jp/static/terms"
       ]
     },
     {
@@ -272,6 +318,280 @@
         "https://developers.openalex.org/api-reference/introduction",
         "https://developers.openalex.org/api-reference/authentication",
         "https://developers.openalex.org/"
+      ]
+    },
+    {
+      "id": "egov-data-portal",
+      "title": "e-Gov Data Portal",
+      "publisher": "Digital Agency, Government of Japan",
+      "type": "portal",
+      "domains": ["open-data-portal", "government", "official-statistics", "public-administration"],
+      "geography": ["JP"],
+      "languages": ["ja", "en"],
+      "temporal_coverage": {
+        "start": "varies by dataset",
+        "end": "ongoing",
+        "granularity": "dataset-specific"
+      },
+      "access": {
+        "mode": "mixed",
+        "auth": "none_for_catalog; dataset-specific for resources",
+        "base_url": "https://data.e-gov.go.jp/",
+        "docs_url": "https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41",
+        "formats": ["json", "csv", "xml", "varies by resource"],
+        "rate_limit_notes": "The catalog API is publicly described, while resource endpoints and download limits depend on the dataset provider and resource documentation."
+      },
+      "license": {
+        "name": "Public Data License 1.0 (PDL1.0), unless otherwise noted",
+        "url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+        "notes": "Cite the source and identify edits or processing. Individual datasets can carry third-party rights, separate rules, or legal restrictions."
+      },
+      "ai_summary": "A central-government catalog for discovering Japanese ministry and agency datasets, resources, organizations, and related metadata. Use it as a discovery layer, then follow the specific resource and provider conditions.",
+      "query_hints": [
+        "Start with dataset categories, provider organizations, and resource metadata before selecting a file or API.",
+        "Use the catalog API described by e-Gov's API catalog when building a machine-readable inventory.",
+        "Keep the dataset identifier, resource URL, provider, update date, and license together when ingesting a resource."
+      ],
+      "caveats": [
+        "The portal is an index and does not make every linked dataset uniform or equally machine-readable.",
+        "A resource may be updated, moved, withdrawn, or governed by a provider-specific rule after catalog metadata is published.",
+        "PDL1.0 does not remove third-party copyright, privacy, confidentiality, or sector-specific legal constraints."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://data.e-gov.go.jp/info/ja",
+        "https://data.e-gov.go.jp/data/ja/api_guide",
+        "https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41",
+        "https://data.e-gov.go.jp/info/ja/terms",
+        "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0"
+      ]
+    },
+    {
+      "id": "usgs-earthquake-api",
+      "title": "USGS Earthquake Catalog API",
+      "publisher": "U.S. Geological Survey",
+      "type": "api",
+      "domains": ["earthquakes", "hazards", "geophysics", "seismology"],
+      "geography": ["global"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by catalog",
+        "end": "ongoing",
+        "granularity": "event-level"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none",
+        "base_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+        "docs_url": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
+        "formats": ["geojson", "csv", "xml", "kml", "quakeml"],
+        "rate_limit_notes": "The query service limits a request to 20,000 events. Use the real-time GeoJSON feeds for display-oriented automation and follow the feed lifecycle policy."
+      },
+      "license": {
+        "name": "public domain or dataset-specific open license",
+        "url": "https://www.usgs.gov/data-management/data-licensing",
+        "notes": "USGS-produced public data are generally public domain or CC0, but contributing networks and third-party products can have different conditions. Credit the USGS and inspect the selected catalog or product metadata."
+      },
+      "ai_summary": "A searchable catalog of earthquake events and related seismic products, with geographic, temporal, depth, magnitude, and event-type filters. GeoJSON is convenient for maps, while QuakeML and XML preserve richer seismological structure.",
+      "query_hints": [
+        "Bound queries with starttime, endtime, geography, magnitude, and limit rather than requesting the full catalog.",
+        "Use format=geojson for map-oriented event summaries and preserve the event id and updated timestamp.",
+        "Treat event locations and magnitudes as reported solutions that can be revised or superseded."
+      ],
+      "caveats": [
+        "An earthquake event can have multiple origins, magnitudes, and products from different contributing networks.",
+        "Real-time records are preliminary and may be revised, deleted, or superseded.",
+        "License and attribution conditions can differ for non-USGS contributor data and linked products."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
+        "https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php",
+        "https://earthquake.usgs.gov/data/comcat/index.php",
+        "https://www.usgs.gov/data-management/data-licensing"
+      ]
+    },
+    {
+      "id": "overpass-api",
+      "title": "OpenStreetMap Overpass API",
+      "publisher": "OpenStreetMap community / Overpass API operators",
+      "type": "api",
+      "domains": ["geospatial", "maps", "transport", "buildings", "points-of-interest"],
+      "geography": ["global"],
+      "languages": ["multilingual"],
+      "temporal_coverage": {
+        "start": "varies by object history",
+        "end": "current map database",
+        "granularity": "node, way, relation, and history"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none_for_public_instances",
+        "base_url": "https://overpass-api.de/api/interpreter",
+        "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+        "formats": ["json", "xml", "csv"],
+        "rate_limit_notes": "The main public instance recommends staying below roughly 10,000 queries and 1 GB of downloads per day, identifying the client with User-Agent or Referer headers."
+      },
+      "license": {
+        "name": "Open Database License (ODbL) 1.0",
+        "url": "https://www.openstreetmap.org/copyright",
+        "notes": "OpenStreetMap attribution is required. ODbL share-alike and produced-work rules may apply; review the current copyright page and the selected provider's usage policy."
+      },
+      "ai_summary": "A read-only query service over OpenStreetMap map data. It can select nearby or tagged features such as roads, buildings, transit stops, amenities, and land use without downloading the entire planet.",
+      "query_hints": [
+        "Use Overpass QL with a small bounding box or area and explicit tag filters before requesting geometry.",
+        "Request only the output fields and geometry needed, and include a timeout appropriate to the query size.",
+        "For large extracts or continuous ingestion, use planet or regional extracts and host a local database instead of rotating public instances."
+      ],
+      "caveats": [
+        "OpenStreetMap is community-maintained and coverage, tagging, positional accuracy, and update timing vary by place.",
+        "Public Overpass endpoints are shared services operated by third parties and can change availability or limits.",
+        "User and changeset metadata can contain personal data; do not collect or expose it unnecessarily."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://wiki.openstreetmap.org/wiki/Overpass_API",
+        "https://operations.osmfoundation.org/policies/api/",
+        "https://www.openstreetmap.org/copyright"
+      ]
+    },
+    {
+      "id": "copernicus-climate-data-store",
+      "title": "Copernicus Climate Data Store",
+      "publisher": "Copernicus Climate Change Service / ECMWF",
+      "type": "portal",
+      "domains": ["climate", "weather", "reanalysis", "environment", "earth-observation"],
+      "geography": ["global", "europe"],
+      "languages": ["en"],
+      "temporal_coverage": {
+        "start": "varies by dataset; ERA5 from 1940",
+        "end": "present or dataset-specific projection horizon",
+        "granularity": "hourly, daily, monthly, and dataset-specific grids"
+      },
+      "access": {
+        "mode": "registration",
+        "auth": "account_and_personal_api_token",
+        "base_url": "https://cds.climate.copernicus.eu/api",
+        "docs_url": "https://cds.climate.copernicus.eu/how-to-api",
+        "formats": ["grib", "netcdf", "csv", "zarr"],
+        "rate_limit_notes": "Registration, dataset license acceptance, job queues, and resource limits apply. Limits and availability vary with workload and dataset; build requests from the dataset form and avoid unnecessary large extracts."
+      },
+      "license": {
+        "name": "varies_by_dataset; Copernicus terms of use apply",
+        "url": "https://cds.climate.copernicus.eu/licences/terms-of-use-cds",
+        "notes": "Many ERA5 products expose a CC BY license, but the applicable license is attached to each dataset and must be accepted before download. Check attribution, non-endorsement, and dataset-specific terms."
+      },
+      "ai_summary": "A catalog and API for climate observations, reanalyses, forecasts, projections, and derived indicators. ERA5 provides long global reanalysis series, while other datasets cover atmosphere, land, ocean, drought, and climate impacts.",
+      "query_hints": [
+        "Choose a dataset and inspect its variables, grid, temporal coverage, version, and license before constructing a request.",
+        "Use the dataset page's generated CDS API request as the starting point and keep the request spatially and temporally bounded.",
+        "For point time series, prefer the time-series or analysis-ready catalog entries over expert-level native-grid retrievals when they meet the need."
+      ],
+      "caveats": [
+        "Reanalysis combines observations with models and is not the same as a direct station observation.",
+        "The catalog contains products with different grids, latency, versions, and quality characteristics; do not compare them without reading metadata.",
+        "An API token is a secret and must remain in a local credential file or secret manager, never in a URL or catalog entry."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://cds.climate.copernicus.eu/how-to-api",
+        "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels",
+        "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-complete",
+        "https://cds.climate.copernicus.eu/licences/terms-of-use-cds"
+      ]
+    },
+    {
+      "id": "europe-pmc-api",
+      "title": "Europe PMC RESTful Web Service",
+      "publisher": "EMBL-EBI / Europe PMC",
+      "type": "api",
+      "domains": ["biomedical-literature", "life-sciences", "research", "text-mining"],
+      "geography": ["global"],
+      "languages": ["en", "varies by publication"],
+      "temporal_coverage": {
+        "start": "varies by source",
+        "end": "ongoing",
+        "granularity": "publication, full-text article, citation, and annotation"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none_for_public_api",
+        "base_url": "https://www.ebi.ac.uk/europepmc/webservices/rest",
+        "docs_url": "https://europepmc.org/RestfulWebService",
+        "formats": ["json", "xml", "dublin-core"],
+        "rate_limit_notes": "Use the REST service with precise queries, pagination, and result types. For large-scale content retrieval, use the documented FTP or OAI routes rather than scraping the website."
+      },
+      "license": {
+        "name": "varies_by_record; API and annotations have separate terms",
+        "url": "https://europepmc.org/developers",
+        "notes": "Metadata and API outputs are accessible through the service, but article full text remains subject to the copyright or license of the author or publisher. Open-access and annotation reuse conditions must be checked per record."
+      },
+      "ai_summary": "A life-sciences literature service covering publications, preprints, citations, database links, open-access full text, and text-mining annotations. It is useful for literature discovery and entity-linked biomedical evidence, not as a blanket license for all article content.",
+      "query_hints": [
+        "Use the search syntax and fields endpoint to build precise queries, then choose lite or core result types deliberately.",
+        "Preserve stable identifiers such as PMID, PMCID, DOI, and the source-specific article id.",
+        "Use datalinks and annotations to connect articles to genes, chemicals, diseases, and external databases."
+      ],
+      "caveats": [
+        "The service aggregates sources with different coverage, identifiers, languages, and rights.",
+        "Free access to an article does not mean that its full text, figures, or supplementary files can be freely redistributed.",
+        "Search indexing, abstracts, annotations, and citation counts can be incomplete or revised."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://europepmc.org/RestfulWebService",
+        "https://europepmc.org/developers",
+        "https://europepmc.org/downloads/openaccess"
+      ]
+    },
+    {
+      "id": "open-food-facts-api",
+      "title": "Open Food Facts API",
+      "publisher": "Open Food Facts",
+      "type": "api",
+      "domains": ["food", "nutrition", "ingredients", "allergens", "consumer-products"],
+      "geography": ["global"],
+      "languages": ["multilingual"],
+      "temporal_coverage": {
+        "start": "varies by product record",
+        "end": "ongoing",
+        "granularity": "product-level and field-level"
+      },
+      "access": {
+        "mode": "public",
+        "auth": "none_for_reads; app_auth_for_writes",
+        "base_url": "https://world.openfoodfacts.org/api/v3",
+        "docs_url": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/",
+        "formats": ["json", "csv", "jsonl"],
+        "rate_limit_notes": "Read product requests are limited to about 15 requests per minute per IP and search requests to about 10 per minute per IP. Use exports or a local instance for more than a few hundred products, and identify the application with a custom User-Agent."
+      },
+      "license": {
+        "name": "Open Database License (ODbL) 1.0",
+        "url": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/",
+        "notes": "The database, individual contents, and product images have different license terms. Review attribution, share-alike, image rights, and the current terms before reuse."
+      },
+      "ai_summary": "A community-contributed product database with barcodes, ingredients, nutrition facts, allergens, labels, and computed indicators. It supports product lookup and structured search, with exports for larger analyses.",
+      "query_hints": [
+        "Prefer the current v3 API for new read integrations and use a barcode or stable product identifier when available.",
+        "Treat tags, languages, nutrients, and computed scores as structured fields rather than relying only on product names.",
+        "For bulk analysis, download the official export or maintain a local Product Opener instance instead of issuing many search requests."
+      ],
+      "caveats": [
+        "Records are contributed voluntarily and may be inaccurate, incomplete, stale, or inconsistently localized.",
+        "Nutrition values, ingredients, allergen flags, and computed scores should not be treated as medical advice or as a substitute for product labeling.",
+        "Product images and database contents do not necessarily share the same license, and write access requires separate authentication."
+      ],
+      "status": "active",
+      "last_verified": "2026-07-13",
+      "source_urls": [
+        "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/",
+        "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/",
+        "https://world.openfoodfacts.org/terms-of-use"
       ]
     }
   ]

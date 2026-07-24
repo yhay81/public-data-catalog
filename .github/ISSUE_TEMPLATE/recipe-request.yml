@@ -1,0 +1,43 @@
+name: Retrieval recipe request
+description: Propose a concrete public-data question that should become reproducible.
+title: "[Recipe] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start with a question, not a source count. Please do not include credentials or personal data.
+  - type: textarea
+    id: question
+    attributes:
+      label: Concrete question
+      description: What exact question should a person or AI agent be able to answer?
+      placeholder: 2023年の東京都の総人口は何人か。
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Why it matters
+      description: Who needs the answer, and what decision or workflow does it support?
+    validations:
+      required: true
+  - type: input
+    id: official-source
+    attributes:
+      label: Candidate official source
+      description: Link to official documentation or an official data portal, if known.
+      placeholder: https://example.go.jp/api/docs
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: Expected result shape
+      description: Describe the values, units, identifiers, and provenance that should be returned.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Known constraints
+      description: Authentication, licensing, rate limits, revisions, privacy, or quality caveats.

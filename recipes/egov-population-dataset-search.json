@@ -1,0 +1,88 @@
+{
+  "$schema": "../recipe.schema.json",
+  "id": "egov-population-dataset-search",
+  "title": {
+    "ja": "e-Govで人口データセットを探す",
+    "en": "Find population datasets in e-Gov"
+  },
+  "question": {
+    "ja": "e-Govデータポータルで人口に関する公開データセットを探せるか。",
+    "en": "Can we find public datasets about population in the e-Gov Data Portal?"
+  },
+  "source_id": "egov-data-portal",
+  "request": {
+    "method": "GET",
+    "url": "https://data.e-gov.go.jp/data/api/action/package_search?q=%E4%BA%BA%E5%8F%A3&rows=2&start=0",
+    "allowed_hosts": ["data.e-gov.go.jp"],
+    "headers": {
+      "Accept": "application/json"
+    }
+  },
+  "expect": {
+    "status": 200,
+    "content_type_contains": "application/json",
+    "max_bytes": 500000,
+    "assertions": [
+      {
+        "pointer": "/success",
+        "equals": true
+      },
+      {
+        "pointer": "/result/count",
+        "minimum": 1
+      },
+      {
+        "pointer": "/result/results",
+        "min_length": 2
+      }
+    ]
+  },
+  "result": {
+    "fields": [
+      {
+        "name": "match-count",
+        "label": {
+          "ja": "検索一致件数",
+          "en": "Matching datasets"
+        },
+        "pointer": "/result/count",
+        "unit": "件"
+      },
+      {
+        "name": "first-title",
+        "label": {
+          "ja": "先頭のデータセット",
+          "en": "First dataset"
+        },
+        "pointer": "/result/results/0/title"
+      },
+      {
+        "name": "first-publisher",
+        "label": {
+          "ja": "先頭データセットの提供者",
+          "en": "First dataset publisher"
+        },
+        "pointer": "/result/results/0/publisher"
+      },
+      {
+        "name": "second-title",
+        "label": {
+          "ja": "2件目のデータセット",
+          "en": "Second dataset"
+        },
+        "pointer": "/result/results/1/title"
+      }
+    ]
+  },
+  "interpretation": [
+    "これはデータカタログの検索結果であり、個別データの値そのものではありません。",
+    "検索結果の各resourceについて、形式、更新日、URL、個別ライセンスを追加確認してください。",
+    "検索順位と一致件数は、ポータルの収録内容や検索索引の更新によって変わります。"
+  ],
+  "attribution": {
+    "source_url": "https://data.e-gov.go.jp/data/ja/api_guide",
+    "license_url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+    "credit": "出典：e-Govデータポータル（https://data.e-gov.go.jp/）"
+  },
+  "last_verified": "2026-07-24"
+}

@@ -1,0 +1,102 @@
+name: External execution test
+description: Record one independent onboarding and recipe-execution session.
+title: "[Test] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit one form per independent session. Follow docs/external-test-protocol.md and remove credentials, personal data, and unrelated output.
+  - type: input
+    id: recipe-id
+    attributes:
+      label: Recipe ID
+      placeholder: tokyo-population-2023
+    validations:
+      required: true
+  - type: dropdown
+    id: session-type
+    attributes:
+      label: Session type
+      options:
+        - Person
+        - AI agent
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system and Python version only.
+      placeholder: macOS 15, Python 3.12
+    validations:
+      required: true
+  - type: input
+    id: elapsed
+    attributes:
+      label: Start-to-result time
+      placeholder: 1 minute 20 seconds
+    validations:
+      required: true
+  - type: dropdown
+    id: first-attempt
+    attributes:
+      label: Did the first attempt produce a valid attributed result?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: dropdown
+    id: extra-help
+    attributes:
+      label: Was web search or unpublished help needed?
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+  - type: dropdown
+    id: failure-kind
+    attributes:
+      label: Failure kind, if any
+      options:
+        - No failure
+        - Onboarding or command confusion
+        - Local environment problem
+        - Endpoint or rate-limit failure
+        - Response contract change
+        - Misleading interpretation or attribution
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: confusing-step
+    attributes:
+      label: First confusing step
+      description: Write "none" if the path was clear.
+    validations:
+      required: true
+  - type: dropdown
+    id: useful
+    attributes:
+      label: Would this result be useful in a real workflow?
+      options:
+        - "Yes"
+        - "Maybe"
+        - "No"
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Small sanitized result or error
+      description: Do not include credentials, personal data, environment variables, or unrelated output.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement

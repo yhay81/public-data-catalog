@@ -1,0 +1,81 @@
+{
+  "$schema": "../recipe.schema.json",
+  "id": "world-bank-japan-population-2023",
+  "title": {
+    "ja": "世界銀行による2023年の日本の総人口",
+    "en": "Japan population in 2023 from the World Bank"
+  },
+  "question": {
+    "ja": "世界銀行指標で2023年の日本の総人口は何人か。",
+    "en": "What was Japan's total population in 2023 according to the World Bank indicator?"
+  },
+  "source_id": "world-bank-indicators",
+  "request": {
+    "method": "GET",
+    "url": "https://api.worldbank.org/v2/country/JPN/indicator/SP.POP.TOTL?format=json&date=2023&per_page=1",
+    "allowed_hosts": ["api.worldbank.org"],
+    "headers": {
+      "Accept": "application/json"
+    }
+  },
+  "expect": {
+    "status": 200,
+    "content_type_contains": "application/json",
+    "max_bytes": 100000,
+    "assertions": [
+      {
+        "pointer": "/1",
+        "min_length": 1
+      },
+      {
+        "pointer": "/1/0/countryiso3code",
+        "equals": "JPN"
+      },
+      {
+        "pointer": "/1/0/date",
+        "equals": "2023"
+      }
+    ]
+  },
+  "result": {
+    "fields": [
+      {
+        "name": "population",
+        "label": {
+          "ja": "総人口",
+          "en": "Total population"
+        },
+        "pointer": "/1/0/value",
+        "unit": "人",
+        "transform": "integer"
+      },
+      {
+        "name": "indicator-code",
+        "label": {
+          "ja": "指標コード",
+          "en": "Indicator code"
+        },
+        "pointer": "/1/0/indicator/id"
+      },
+      {
+        "name": "source-last-updated",
+        "label": {
+          "ja": "世界銀行側の最終更新日",
+          "en": "World Bank source last updated"
+        },
+        "pointer": "/0/lastupdated"
+      }
+    ]
+  },
+  "interpretation": [
+    "指標コードSP.POP.TOTLはPopulation, totalを表します。",
+    "世界銀行値は改訂されることがあり、国内統計と定義、基準日、改訂時期が異なる場合があります。",
+    "国内統計との比較では、値だけでなく指標メタデータと出典機関を確認してください。"
+  ],
+  "attribution": {
+    "source_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
+    "license_url": "https://datacatalog.worldbank.org/public-licenses",
+    "credit": "Source: World Bank, Population total (SP.POP.TOTL), Japan, 2023."
+  },
+  "last_verified": "2026-07-24"
+}

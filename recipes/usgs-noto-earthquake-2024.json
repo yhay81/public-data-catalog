@@ -1,0 +1,97 @@
+{
+  "$schema": "../recipe.schema.json",
+  "id": "usgs-noto-earthquake-2024",
+  "title": {
+    "ja": "USGSカタログの2024年能登半島地震",
+    "en": "2024 Noto Peninsula earthquake in the USGS catalog"
+  },
+  "question": {
+    "ja": "USGS地震カタログで2024年能登半島地震の規模と発生時刻はどう記録されているか。",
+    "en": "How does the USGS catalog record the magnitude and time of the 2024 Noto Peninsula earthquake?"
+  },
+  "source_id": "usgs-earthquake-api",
+  "request": {
+    "method": "GET",
+    "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-01-01T07%3A10%3A00Z&endtime=2024-01-01T07%3A11%3A00Z&minlatitude=37&maxlatitude=38&minlongitude=136&maxlongitude=138&minmagnitude=7&limit=1",
+    "allowed_hosts": ["earthquake.usgs.gov"],
+    "headers": {
+      "Accept": "application/geo+json, application/json"
+    }
+  },
+  "expect": {
+    "status": 200,
+    "content_type_contains": "application/json",
+    "max_bytes": 100000,
+    "assertions": [
+      {
+        "pointer": "/type",
+        "equals": "FeatureCollection"
+      },
+      {
+        "pointer": "/features",
+        "min_length": 1
+      },
+      {
+        "pointer": "/features/0/id",
+        "equals": "us6000m0xl"
+      }
+    ]
+  },
+  "result": {
+    "fields": [
+      {
+        "name": "magnitude",
+        "label": {
+          "ja": "マグニチュード",
+          "en": "Magnitude"
+        },
+        "pointer": "/features/0/properties/mag"
+      },
+      {
+        "name": "magnitude-type",
+        "label": {
+          "ja": "マグニチュード種別",
+          "en": "Magnitude type"
+        },
+        "pointer": "/features/0/properties/magType"
+      },
+      {
+        "name": "occurred-at",
+        "label": {
+          "ja": "発生時刻",
+          "en": "Occurrence time"
+        },
+        "pointer": "/features/0/properties/time",
+        "unit": "UTC",
+        "transform": "unix_milliseconds_to_iso8601"
+      },
+      {
+        "name": "place",
+        "label": {
+          "ja": "USGSの地点表記",
+          "en": "USGS place label"
+        },
+        "pointer": "/features/0/properties/place"
+      },
+      {
+        "name": "event-id",
+        "label": {
+          "ja": "USGSイベントID",
+          "en": "USGS event ID"
+        },
+        "pointer": "/features/0/id"
+      }
+    ]
+  },
+  "interpretation": [
+    "USGSのマグニチュード、震源、イベント名称は再解析により更新される場合があります。",
+    "日本の気象庁が公表する値と、測定網、計算方式、改訂時期が異なる場合があります。",
+    "このレシピは時刻、緯度経度、最小マグニチュードで取得範囲を限定しています。"
+  ],
+  "attribution": {
+    "source_url": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
+    "license_url": "https://www.usgs.gov/data-management/data-licensing",
+    "credit": "Source: U.S. Geological Survey Earthquake Hazards Program."
+  },
+  "last_verified": "2026-07-24"
+}
