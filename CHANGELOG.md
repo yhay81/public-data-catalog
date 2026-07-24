@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.3.1 - 2026-07-24
+
+### Added
+
+- A concise `--format text` view that keeps values, interpretation, provenance, and licensing visible.
+- An English quick start, OSS adoption strategy, and support routing guide.
+
+### Changed
+
+- Expanded the primary quick start into a complete clone-to-result path.
+
 ## 0.3.0 - 2026-07-24
 
 ### Added

@@ -148,8 +148,46 @@ class ResultTests(unittest.TestCase):
         with self.assertRaisesRegex(recipe_tool.RecipeError, "could not apply 'integer'"):
             recipe_tool._transform_value("not-a-number", "integer")
 
+    def test_text_result_keeps_value_provenance_and_license(self) -> None:
+        result = {
+            "question": {"ja": "東京都の人口は何人か。", "en": "What is Tokyo's population?"},
+            "retrieved_at": "2026-07-24T12:00:00Z",
+            "request_url": "https://example.go.jp/data?id=tokyo",
+            "results": {
+                "population": {
+                    "label": {"ja": "総人口", "en": "Total population"},
+                    "value": 14_086_000,
+                    "unit": "人",
+                }
+            },
+            "interpretation": ["確報値です。"],
+            "provenance": {
+                "source_id": "statistics-dashboard-api",
+                "credit": "出典：統計ダッシュボード",
+                "source_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
+                "license_url": "https://dashboard.e-stat.go.jp/static/terms",
+                "recipe_last_verified": "2026-07-24",
+            },
+        }
+        text = recipe_tool._format_text_result(result)
+        self.assertIn("総人口: 14086000 人", text)
+        self.assertIn("情報源: statistics-dashboard-api", text)
+        self.assertIn("出典：統計ダッシュボード", text)
+        self.assertIn("https://dashboard.e-stat.go.jp/static/terms", text)
+        self.assertIn("取得URL: https://example.go.jp/data?id=tokyo", text)
+
 
 class CommandLineTests(unittest.TestCase):
+    def test_version_is_available_without_loading_recipes(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, str(MODULE_PATH), "--version"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn(recipe_tool.VERSION, completed.stdout)
+
     def test_list_json_is_machine_readable(self) -> None:
         completed = subprocess.run(
             [sys.executable, str(MODULE_PATH), "list", "--json"],

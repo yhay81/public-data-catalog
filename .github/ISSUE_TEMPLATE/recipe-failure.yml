@@ -3,6 +3,7 @@ description: Report a recipe that no longer runs or returns a misleading result.
 title: "[Failure] "
 labels:
   - bug
+  - upstream-change
 body:
   - type: input
     id: recipe-id

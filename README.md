@@ -1,8 +1,12 @@
 # Public Data Catalog — Verified Recipes for Japan
 
+[English](./README.en.md)
+
 [![CI](https://github.com/yhay81/public-data-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/ci.yml)
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+![公式データを検証済みの取得結果へ変換する流れ](./docs/assets/social-preview.png)
 
 日本の公共データを中心に、AIや開発者が**具体的な問いから、根拠付きで再現可能な最初の取得まで**進むための、テスト済みレシピ集です。
 
@@ -15,32 +19,24 @@ _Japanese-first, tested retrieval recipes for getting small, attributable result
 依存パッケージは不要です。Python 3.11以上で実行できます。
 
 ```sh
-python3 scripts/recipe_tool.py run tokyo-population-2023
+git clone --depth 1 https://github.com/yhay81/public-data-catalog.git
+cd public-data-catalog
+python3 scripts/recipe_tool.py run tokyo-population-2023 --format text
 ```
 
-2026年7月24日の検証では、統計ダッシュボードから次のような結果を取得します。
+2026年7月24日の検証では、統計ダッシュボードから次のような短い結果を取得します。
 
-```json
-{
-  "recipe_id": "tokyo-population-2023",
-  "results": {
-    "population": {
-      "value": 14086000,
-      "unit": "人"
-    },
-    "region-code": {
-      "value": "13000"
-    },
-    "time-code": {
-      "value": "2023CY00"
-    }
-  },
-  "provenance": {
-    "source_id": "statistics-dashboard-api",
-    "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）",
-    "recipe_last_verified": "2026-07-24"
-  }
-}
+```text
+質問: 2023年の東京都の総人口は何人か。
+結果:
+- 総人口: 14086000 人
+- 地域コード: 13000
+- 時間コード: 2023CY00
+- 速報・確報コード: 0
+...
+情報源: statistics-dashboard-api
+出典表記: 出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）
+ライセンス: https://dashboard.e-stat.go.jp/static/terms
 ```
 
 値は公式ソース側で改訂される可能性があります。実行結果には、取得日時、実際のリクエストURL、解釈上の注意、出典、ライセンスも含まれます。
@@ -57,9 +53,14 @@ python3 scripts/recipe_tool.py list --json
 # 1つのレシピを実行する
 python3 scripts/recipe_tool.py run japan-unemployment-rate-2023
 
+# 人が読みやすい短い形式
+python3 scripts/recipe_tool.py run japan-unemployment-rate-2023 --format text
+
 # 全レシピの応答契約を確認する
 python3 scripts/recipe_tool.py check
 ```
+
+`run` の既定出力は、AIや後続処理で扱える完全なJSONです。`--format text` は値・解釈・出典・ライセンスを人が素早く確認するための表示です。
 
 ## 検証済みレシピ
 
@@ -71,7 +72,7 @@ python3 scripts/recipe_tool.py check
 | `world-bank-japan-population-2023` | 世界銀行による2023年の日本の総人口は何人か | World Bank | 不要 |
 | `usgs-noto-earthquake-2024` | USGSは能登半島地震をどう記録しているか | USGS | 不要 |
 
-レシピの構造と安全上の制約は [docs/recipe-format.md](./docs/recipe-format.md)、現在の検証状況は [docs/status.md](./docs/status.md) にあります。初見での再現性を検証する場合は [外部実行テスト手順](./docs/external-test-protocol.md) を使ってください。
+レシピの構造と安全上の制約は [docs/recipe-format.md](./docs/recipe-format.md)、現在の検証状況は [docs/status.md](./docs/status.md) にあります。初見での再現性を検証する場合は [外部実行テスト手順](./docs/external-test-protocol.md) を使い、[参加用Issue #2](https://github.com/yhay81/public-data-catalog/issues/2) から結果を共有してください。
 
 ## 情報源プロファイル
 
@@ -125,7 +126,7 @@ python3 scripts/recipe_tool.py check
 4. ローカル検証と対象レシピのprobeを実行する
 5. 結果、根拠、注意点をプルリクエストに残す
 
-目的と非目標は [PURPOSE.md](./PURPOSE.md)、判断の背景は [docs/value-redefinition.md](./docs/value-redefinition.md)、今後のゲートは [docs/roadmap.md](./docs/roadmap.md) にあります。
+目的と非目標は [PURPOSE.md](./PURPOSE.md)、競合との役割分担と採用戦略は [docs/strategy.md](./docs/strategy.md)、今後のゲートは [docs/roadmap.md](./docs/roadmap.md) にあります。利用上の質問や問題の報告先は [SUPPORT.md](./SUPPORT.md) を参照してください。
 
 ## ライセンス
 

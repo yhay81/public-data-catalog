@@ -2,7 +2,7 @@ name: Retrieval recipe request
 description: Propose a concrete public-data question that should become reproducible.
 title: "[Recipe] "
 labels:
-  - enhancement
+  - recipe
 body:
   - type: markdown
     attributes:

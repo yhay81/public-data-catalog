@@ -8,6 +8,7 @@ The project grows by validated questions, not source count.
 - [x] Publish five bounded, source-attributed recipes.
 - [x] Add a dependency-free safe runner.
 - [x] Add local validation, unit tests, pull-request CI, and weekly probes.
+- [x] Add a complete clone-to-result quick start, concise human output, and an English guide.
 - [ ] Test all five recipes with at least five people or independent AI-agent sessions using the [external execution protocol](./external-test-protocol.md).
 - [ ] Measure time to first valid result without additional web search.
 - [ ] Record confusing steps and revise the recipe format once.
@@ -17,14 +18,14 @@ The project grows by validated questions, not source count.
 Proceed only after the first external tests.
 
 - Add recipes adjacent to questions that testers actually tried to answer.
-- Provide parameterized inputs only where fixed recipes have demonstrated the need.
+- Choose one strictly bounded parameterization or local agent-adapter experiment only where fixed recipes have demonstrated repeated need.
 - Publish probe history without turning temporary upstream failures into noisy commits.
 - Seek a second contribution from at least one non-maintainer.
 - Add a DCAT 3 export for source profiles if an external consumer needs it.
 
 ## Later: distribution adapters
 
-Build these only if the recipe layer is used repeatedly.
+Build these only after the activation and demand gates in [strategy](./strategy.md).
 
 - A small installable CLI.
 - An AI-agent skill that searches and runs reviewed recipes.

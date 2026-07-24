@@ -21,6 +21,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "catalog.json"
 RECIPES_DIR = ROOT / "recipes"
+VERSION = "0.3.1"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
 SECRET_KEYS = {
     "access_token",
@@ -38,7 +39,10 @@ ALLOWED_TRANSFORMS = {
     "string",
     "unix_milliseconds_to_iso8601",
 }
-USER_AGENT = "public-data-catalog-recipe-runner/0.3 (+https://github.com/yhay81/public-data-catalog)"
+USER_AGENT = (
+    f"public-data-catalog-recipe-runner/{VERSION} "
+    "(+https://github.com/yhay81/public-data-catalog)"
+)
 
 
 class RecipeError(RuntimeError):
@@ -527,6 +531,42 @@ def execute_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _display_text_value(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+    return str(value)
+
+
+def _format_text_result(result: dict[str, Any]) -> str:
+    lines = [
+        f"質問: {result['question']['ja']}",
+        "結果:",
+    ]
+    for item in result["results"].values():
+        value = _display_text_value(item["value"])
+        unit = f" {item['unit']}" if "unit" in item else ""
+        lines.append(f"- {item['label']['ja']}: {value}{unit}")
+
+    lines.append("解釈上の注意:")
+    lines.extend(f"- {note}" for note in result["interpretation"])
+
+    provenance = result["provenance"]
+    lines.extend(
+        [
+            f"情報源: {provenance['source_id']}",
+            f"出典表記: {provenance['credit']}",
+            f"公式情報: {provenance['source_url']}",
+            f"ライセンス: {provenance['license_url']}",
+            f"レシピ確認日: {provenance['recipe_last_verified']}",
+            f"取得URL: {result['request_url']}",
+            f"取得日時: {result['retrieved_at']}",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def _get_recipe(recipes: dict[str, dict[str, Any]], recipe_id: str) -> dict[str, Any]:
     try:
         return recipes[recipe_id]
@@ -537,6 +577,7 @@ def _get_recipe(recipes: dict[str, dict[str, Any]], recipe_id: str) -> dict[str,
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     subparsers = parser.add_subparsers(dest="command", required=True)
     list_parser = subparsers.add_parser("list", help="list available recipes")
     list_parser.add_argument("--json", action="store_true", help="emit JSON")
@@ -544,6 +585,13 @@ def _build_parser() -> argparse.ArgumentParser:
     show_parser.add_argument("recipe_id")
     run_parser = subparsers.add_parser("run", help="run one recipe and print attributed results")
     run_parser.add_argument("recipe_id")
+    run_parser.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        dest="output_format",
+        help="output format (default: json)",
+    )
     check_parser = subparsers.add_parser("check", help="run recipe probes")
     check_parser.add_argument("recipe_id", nargs="?")
     return parser
@@ -575,7 +623,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "run":
             result = execute_recipe(_get_recipe(recipes, args.recipe_id))
-            print(json.dumps(result, ensure_ascii=False, indent=2))
+            if args.output_format == "text":
+                print(_format_text_result(result))
+            else:
+                print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
         if args.command == "check":
             selected = (

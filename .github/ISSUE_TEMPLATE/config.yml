@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Usage support
+    url: https://github.com/yhay81/public-data-catalog/blob/main/SUPPORT.md
+    about: Choose the right issue form and include a sanitized reproduction.
   - name: Security report
     url: https://github.com/yhay81/public-data-catalog/security
     about: Do not publish exploit details in a regular issue. See SECURITY.md first.

@@ -2,7 +2,7 @@ name: External execution test
 description: Record one independent onboarding and recipe-execution session.
 title: "[Test] "
 labels:
-  - enhancement
+  - external-test
 body:
   - type: markdown
     attributes:
