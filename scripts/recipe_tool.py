@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import ipaddress
 import json
 import re
@@ -14,15 +15,18 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, parse_qsl, urlencode, urlparse, urlunparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "catalog.json"
 RECIPES_DIR = ROOT / "recipes"
-VERSION = "0.3.1"
+VERSION = "0.4.0"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
+VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+BINDING_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+BINDING_FORMAT_RE = re.compile(r"^[A-Za-z0-9._~-]*\{value\}[A-Za-z0-9._~-]*$")
 SECRET_KEYS = {
     "access_token",
     "api_key",
@@ -145,6 +149,7 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
     required = {
         "$schema",
         "id",
+        "contract_version",
         "title",
         "question",
         "source_id",
@@ -155,22 +160,52 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
         "attribution",
         "last_verified",
     }
-    _require_exact_keys(recipe, required, required, path)
+    _require_exact_keys(recipe, required, required | {"parameters"}, path)
     if recipe["$schema"] != "../recipe.schema.json":
         raise RecipeError(f"{path}.$schema must be ../recipe.schema.json")
 
     recipe_id = _require_string(recipe["id"], f"{path}.id")
     if not ID_RE.fullmatch(recipe_id):
         raise RecipeError(f"{path}.id must contain lowercase letters, digits, and hyphens")
+    contract_version = _require_string(recipe["contract_version"], f"{path}.contract_version")
+    if not VERSION_RE.fullmatch(contract_version):
+        raise RecipeError(f"{path}.contract_version must use semantic version format X.Y.Z")
     _require_localized(recipe["title"], f"{path}.title")
     _require_localized(recipe["question"], f"{path}.question")
     _require_string(recipe["source_id"], f"{path}.source_id")
+
+    parameters = recipe.get("parameters", {})
+    if not isinstance(parameters, dict):
+        raise RecipeError(f"{path}.parameters must be an object")
+    if "parameters" in recipe and not parameters:
+        raise RecipeError(f"{path}.parameters must not be empty")
+    for parameter_name, parameter in parameters.items():
+        parameter_path = f"{path}.parameters.{parameter_name}"
+        if not ID_RE.fullmatch(parameter_name):
+            raise RecipeError(
+                f"{parameter_path} name must contain lowercase letters, digits, and hyphens"
+            )
+        if not isinstance(parameter, dict):
+            raise RecipeError(f"{parameter_path} must be an object")
+        parameter_keys = {"type", "description", "default", "minimum", "maximum"}
+        _require_exact_keys(parameter, parameter_keys, parameter_keys, parameter_path)
+        if parameter["type"] != "integer":
+            raise RecipeError(f"{parameter_path}.type must be integer")
+        _require_localized(parameter["description"], f"{parameter_path}.description")
+        for number_key in ("default", "minimum", "maximum"):
+            number = parameter[number_key]
+            if isinstance(number, bool) or not isinstance(number, int):
+                raise RecipeError(f"{parameter_path}.{number_key} must be an integer")
+        if parameter["minimum"] > parameter["maximum"]:
+            raise RecipeError(f"{parameter_path}.minimum must not exceed maximum")
+        if not parameter["minimum"] <= parameter["default"] <= parameter["maximum"]:
+            raise RecipeError(f"{parameter_path}.default must be within minimum and maximum")
 
     request = recipe["request"]
     if not isinstance(request, dict):
         raise RecipeError(f"{path}.request must be an object")
     request_required = {"method", "url", "allowed_hosts"}
-    request_allowed = request_required | {"headers"}
+    request_allowed = request_required | {"headers", "bindings"}
     _require_exact_keys(request, request_required, request_allowed, f"{path}.request")
     if request["method"] != "GET":
         raise RecipeError(f"{path}.request.method must be GET")
@@ -201,6 +236,52 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
         header_value = _require_string(value, f"{path}.request.headers.{key}")
         if "\r" in header_value or "\n" in header_value:
             raise RecipeError(f"{path}.request.headers.{key} must not contain line breaks")
+
+    bindings = request.get("bindings", [])
+    if not isinstance(bindings, list):
+        raise RecipeError(f"{path}.request.bindings must be an array")
+    if parameters and not bindings:
+        raise RecipeError(f"{path}.request.bindings is required when parameters are defined")
+    if bindings and not parameters:
+        raise RecipeError(f"{path}.request.bindings requires parameters")
+    bound_parameters: set[str] = set()
+    bound_query_names: set[str] = set()
+    query_pairs = parse_qsl(urlparse(url).query, keep_blank_values=True)
+    query_names = {name for name, _ in query_pairs}
+    for index, binding in enumerate(bindings):
+        binding_path = f"{path}.request.bindings[{index}]"
+        if not isinstance(binding, dict):
+            raise RecipeError(f"{binding_path} must be an object")
+        binding_keys = {"parameter", "location", "name", "format"}
+        _require_exact_keys(binding, binding_keys, binding_keys, binding_path)
+        parameter_name = _require_string(binding["parameter"], f"{binding_path}.parameter")
+        if parameter_name not in parameters:
+            raise RecipeError(f"{binding_path}.parameter references an unknown parameter")
+        if parameter_name in bound_parameters:
+            raise RecipeError(f"{binding_path}.parameter must be unique")
+        bound_parameters.add(parameter_name)
+        if binding["location"] != "query":
+            raise RecipeError(f"{binding_path}.location must be query")
+        query_name = _require_string(binding["name"], f"{binding_path}.name")
+        if not BINDING_NAME_RE.fullmatch(query_name):
+            raise RecipeError(f"{binding_path}.name is not a safe query parameter name")
+        if query_name.lower() in SECRET_KEYS:
+            raise RecipeError(f"{binding_path}.name must not be secret-like")
+        if query_name in bound_query_names:
+            raise RecipeError(f"{binding_path}.name must be unique")
+        if query_name not in query_names:
+            raise RecipeError(f"{binding_path}.name must already exist in request.url")
+        if sum(name == query_name for name, _ in query_pairs) != 1:
+            raise RecipeError(f"{binding_path}.name must occur exactly once in request.url")
+        bound_query_names.add(query_name)
+        binding_format = _require_string(binding["format"], f"{binding_path}.format")
+        if not BINDING_FORMAT_RE.fullmatch(binding_format):
+            raise RecipeError(
+                f"{binding_path}.format must contain exactly one safe {{value}} placeholder"
+            )
+    if bound_parameters != set(parameters):
+        missing_parameters = ", ".join(sorted(set(parameters) - bound_parameters))
+        raise RecipeError(f"{path}.request.bindings is missing parameter(s): {missing_parameters}")
 
     expect = recipe["expect"]
     if not isinstance(expect, dict):
@@ -276,7 +357,73 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
     _validate_reference_url(attribution["license_url"], f"{path}.attribution.license_url")
     _require_string(attribution["credit"], f"{path}.attribution.credit")
     _parse_date(recipe["last_verified"], f"{path}.last_verified")
+    if parameters:
+        rendered_url = render_request_url(recipe, resolve_parameters(recipe))
+        if rendered_url != url:
+            raise RecipeError(
+                f"{path}.request.url must equal the URL rendered from parameter defaults"
+            )
     return recipe
+
+
+def resolve_parameters(
+    recipe: dict[str, Any],
+    provided: dict[str, Any] | None = None,
+) -> dict[str, int]:
+    """Resolve supplied values against the reviewed parameter contract."""
+    definitions = recipe.get("parameters", {})
+    supplied = provided or {}
+    if not isinstance(supplied, dict):
+        raise RecipeError("parameters must be an object")
+    unknown = sorted(set(supplied) - set(definitions))
+    if unknown:
+        raise RecipeError(f"unknown parameter(s): {', '.join(unknown)}")
+
+    resolved: dict[str, int] = {}
+    for name, definition in definitions.items():
+        value = supplied.get(name, definition["default"])
+        if isinstance(value, str) and re.fullmatch(r"-?[0-9]+", value):
+            value = int(value)
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise RecipeError(f"parameter {name!r} must be an integer")
+        if value < definition["minimum"] or value > definition["maximum"]:
+            raise RecipeError(
+                f"parameter {name!r} must be from "
+                f"{definition['minimum']} to {definition['maximum']}"
+            )
+        resolved[name] = value
+    return resolved
+
+
+def render_request_url(recipe: dict[str, Any], parameters: dict[str, int]) -> str:
+    """Render only reviewed query bindings without allowing host or path changes."""
+    request_config = recipe["request"]
+    parsed = urlparse(request_config["url"])
+    query = parse_qsl(parsed.query, keep_blank_values=True)
+    replacements: dict[str, str] = {}
+    for binding in request_config.get("bindings", []):
+        replacements[binding["name"]] = binding["format"].replace(
+            "{value}",
+            str(parameters[binding["parameter"]]),
+        )
+    rendered_query = [
+        (name, replacements.get(name, value))
+        for name, value in query
+    ]
+    rendered = urlunparse(parsed._replace(query=urlencode(rendered_query)))
+    allowed_hosts = [host.lower() for host in request_config["allowed_hosts"]]
+    _validate_url_syntax(rendered, allowed_hosts, "rendered request URL")
+    return rendered
+
+
+def _canonical_json_sha256(value: Any) -> str:
+    encoded = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return f"sha256:{hashlib.sha256(encoded).hexdigest()}"
 
 
 def load_catalog() -> dict[str, dict[str, Any]]:
@@ -400,10 +547,9 @@ class _SafeRedirectHandler(HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def _fetch_json(recipe: dict[str, Any]) -> tuple[Any, str, int]:
+def _fetch_json(recipe: dict[str, Any], url: str) -> tuple[Any, str, int, str]:
     request_config = recipe["request"]
     allowed_hosts = [host.lower() for host in request_config["allowed_hosts"]]
-    url = request_config["url"]
     _validate_url_syntax(url, allowed_hosts, "request.url")
     for host in allowed_hosts:
         _ensure_public_dns(host)
@@ -450,7 +596,8 @@ def _fetch_json(recipe: dict[str, Any]) -> tuple[Any, str, int]:
     except json.JSONDecodeError as exc:
         raise RecipeError(f"response was not valid JSON: {exc}") from exc
     elapsed_ms = round((time.monotonic() - started) * 1000)
-    return document, final_url, elapsed_ms
+    response_sha256 = f"sha256:{hashlib.sha256(raw).hexdigest()}"
+    return document, final_url, elapsed_ms, response_sha256
 
 
 def _check_assertions(recipe: dict[str, Any], document: Any) -> None:
@@ -497,8 +644,13 @@ def _transform_value(value: Any, transform: str | None) -> Any:
     raise RecipeError(f"unsupported transform: {transform}")
 
 
-def execute_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
-    document, final_url, elapsed_ms = _fetch_json(recipe)
+def execute_recipe(
+    recipe: dict[str, Any],
+    parameters: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    resolved_parameters = resolve_parameters(recipe, parameters)
+    request_url = render_request_url(recipe, resolved_parameters)
+    document, final_url, elapsed_ms, response_sha256 = _fetch_json(recipe, request_url)
     _check_assertions(recipe, document)
     values: dict[str, dict[str, Any]] = {}
     for field in recipe["result"]["fields"]:
@@ -514,11 +666,47 @@ def execute_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
                 item[optional_key] = field[optional_key]
         values[field["name"]] = item
 
+    retrieved_at = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    receipt_body = {
+        "$schema": (
+            "https://raw.githubusercontent.com/yhay81/public-data-catalog/"
+            "main/receipt.schema.json"
+        ),
+        "receipt_version": "1.0.0",
+        "contract": {
+            "id": recipe["id"],
+            "version": recipe["contract_version"],
+            "last_verified": recipe["last_verified"],
+        },
+        "parameters": resolved_parameters,
+        "request": {
+            "method": "GET",
+            "url": final_url,
+            "retrieved_at": retrieved_at,
+            "elapsed_ms": elapsed_ms,
+            "response_sha256": response_sha256,
+        },
+        "verification": {
+            "assertions_passed": len(recipe["expect"]["assertions"]),
+            "runner": f"public-data-catalog-recipe-runner/{VERSION}",
+        },
+        "provenance": {
+            "source_id": recipe["source_id"],
+            **recipe["attribution"],
+        },
+        "results_sha256": _canonical_json_sha256(values),
+    }
+    receipt = {
+        **receipt_body,
+        "receipt_id": _canonical_json_sha256(receipt_body),
+    }
     return {
         "status": "ok",
         "recipe_id": recipe["id"],
+        "contract_version": recipe["contract_version"],
         "question": recipe["question"],
-        "retrieved_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "parameters": resolved_parameters,
+        "retrieved_at": retrieved_at,
         "elapsed_ms": elapsed_ms,
         "request_url": final_url,
         "results": values,
@@ -527,6 +715,35 @@ def execute_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
             "source_id": recipe["source_id"],
             **recipe["attribution"],
             "recipe_last_verified": recipe["last_verified"],
+        },
+        "receipt": receipt,
+    }
+
+
+def verify_execution_result(result: object) -> dict[str, Any]:
+    """Verify receipt integrity for a previously returned execution result."""
+    if not isinstance(result, dict):
+        raise RecipeError("execution result must be an object")
+    receipt = result.get("receipt")
+    results = result.get("results")
+    if not isinstance(receipt, dict) or not isinstance(results, dict):
+        raise RecipeError("execution result must contain receipt and results objects")
+    receipt_id = receipt.get("receipt_id")
+    if not isinstance(receipt_id, str):
+        raise RecipeError("receipt.receipt_id must be a string")
+    receipt_body = {key: value for key, value in receipt.items() if key != "receipt_id"}
+    expected_receipt_id = _canonical_json_sha256(receipt_body)
+    expected_results_hash = _canonical_json_sha256(results)
+    valid = (
+        receipt_id == expected_receipt_id
+        and receipt.get("results_sha256") == expected_results_hash
+    )
+    return {
+        "valid": valid,
+        "receipt_id": receipt_id,
+        "checks": {
+            "receipt_integrity": receipt_id == expected_receipt_id,
+            "results_integrity": receipt.get("results_sha256") == expected_results_hash,
         },
     }
 
@@ -542,8 +759,13 @@ def _display_text_value(value: Any) -> str:
 def _format_text_result(result: dict[str, Any]) -> str:
     lines = [
         f"質問: {result['question']['ja']}",
-        "結果:",
     ]
+    if result.get("parameters"):
+        rendered_parameters = ", ".join(
+            f"{name}={value}" for name, value in result["parameters"].items()
+        )
+        lines.append(f"パラメータ: {rendered_parameters}")
+    lines.append("結果:")
     for item in result["results"].values():
         value = _display_text_value(item["value"])
         unit = f" {item['unit']}" if "unit" in item else ""
@@ -564,6 +786,8 @@ def _format_text_result(result: dict[str, Any]) -> str:
             f"取得日時: {result['retrieved_at']}",
         ]
     )
+    if isinstance(result.get("receipt"), dict):
+        lines.append(f"実行レシート: {result['receipt']['receipt_id']}")
     return "\n".join(lines)
 
 
@@ -586,6 +810,13 @@ def _build_parser() -> argparse.ArgumentParser:
     run_parser = subparsers.add_parser("run", help="run one recipe and print attributed results")
     run_parser.add_argument("recipe_id")
     run_parser.add_argument(
+        "--param",
+        action="append",
+        default=[],
+        metavar="NAME=VALUE",
+        help="supply a reviewed recipe parameter; may be repeated",
+    )
+    run_parser.add_argument(
         "--format",
         choices=("json", "text"),
         default="json",
@@ -594,22 +825,62 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     check_parser = subparsers.add_parser("check", help="run recipe probes")
     check_parser.add_argument("recipe_id", nargs="?")
+    verify_parser = subparsers.add_parser(
+        "verify",
+        help="verify the integrity of a saved JSON execution result",
+    )
+    verify_parser.add_argument(
+        "input",
+        nargs="?",
+        default="-",
+        help="result file, or - for standard input (default: -)",
+    )
     return parser
+
+
+def _parse_cli_parameters(items: list[str]) -> dict[str, str]:
+    parameters: dict[str, str] = {}
+    for item in items:
+        if "=" not in item:
+            raise RecipeError(f"parameter must use NAME=VALUE: {item!r}")
+        name, value = item.split("=", 1)
+        if not name or not value:
+            raise RecipeError(f"parameter must use NAME=VALUE: {item!r}")
+        if name in parameters:
+            raise RecipeError(f"duplicate parameter: {name}")
+        parameters[name] = value
+    return parameters
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
     try:
+        if args.command == "verify":
+            try:
+                serialized = (
+                    sys.stdin.read()
+                    if args.input == "-"
+                    else Path(args.input).read_text(encoding="utf-8")
+                )
+                execution = json.loads(serialized)
+            except (OSError, json.JSONDecodeError) as exc:
+                raise RecipeError(f"could not read execution result: {exc}") from exc
+            verification = verify_execution_result(execution)
+            print(json.dumps(verification, ensure_ascii=False, indent=2))
+            return 0 if verification["valid"] else 1
+
         recipes = load_recipes()
         if args.command == "list":
             if args.json:
                 payload = [
                     {
                         "id": recipe["id"],
+                        "contract_version": recipe["contract_version"],
                         "title": recipe["title"],
                         "question": recipe["question"],
                         "source_id": recipe["source_id"],
+                        "parameters": recipe.get("parameters", {}),
                     }
                     for recipe in recipes.values()
                 ]
@@ -622,7 +893,10 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(_get_recipe(recipes, args.recipe_id), ensure_ascii=False, indent=2))
             return 0
         if args.command == "run":
-            result = execute_recipe(_get_recipe(recipes, args.recipe_id))
+            result = execute_recipe(
+                _get_recipe(recipes, args.recipe_id),
+                _parse_cli_parameters(args.param),
+            )
             if args.output_format == "text":
                 print(_format_text_result(result))
             else:

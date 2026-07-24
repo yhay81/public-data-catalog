@@ -2,6 +2,14 @@
 
 This log keeps the research direction visible and records why entries were added or deferred. The structured details remain in `catalog.json`.
 
+## Agent and interoperability spike: 2026-07-24
+
+One fixed Tokyo population recipe was generalized into a strictly bounded 2015–2025 year contract. The parameter can replace only the reviewed `Time` query field; it cannot alter the host, path, method, or other query dimensions.
+
+Execution receipts now bind contract version, parameters, request, response hash, extracted-result hash, provenance, and runner version. A three-tool MCP adapter (`search_data`, `execute`, and `verify`) uses the same contract bundle locally and on a stateless Cloudflare Worker. A live remote smoke test listed all three tools, executed the 2025 contract, returned 14,246,219 people, and verified the resulting receipt.
+
+DCAT 3 JSON-LD and a portable runtime bundle are generated from the repository sources of truth. Cloudflare remains a deployment adapter; bulk storage, R2, D1, Iceberg, and A2A were deliberately not introduced because the current corpus and measured workload do not require them.
+
 ## First recipe proof set: 2026-07-24
 
 Five bounded, registration-free retrieval recipes were implemented and successfully executed:

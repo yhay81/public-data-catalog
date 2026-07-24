@@ -8,6 +8,7 @@
 - **具体的な公開データの問いを再現可能にしたい:** `Retrieval recipe request` Issueフォーム
 - **初見での実行テストを行った:** `External execution test` Issueフォーム
 - **一般的な利用上の質問:** 既存Issueを検索してから、レシピID、Python版、秘密情報を除いたコマンド、期待する結果を含む最小のIssue
+- **MCP接続の問題:** クライアント名と版、接続先、ツール名、秘密情報を除いたエラーを含む最小のIssue
 - **脆弱性を見つけた:** [SECURITY.md](./SECURITY.md) に従い、攻撃手順や秘密情報を公開Issueに書かない
 
 Issueを開く前に、可能であれば次を実行してください。
@@ -31,6 +32,7 @@ This repository is maintained in public. Choose the route that matches the probl
 - **A concrete public-data question should become reproducible:** use the `Retrieval recipe request` form.
 - **You tested onboarding independently:** use the `External execution test` form.
 - **You have a general usage question:** search existing issues, then open a minimal issue with the recipe ID, Python version, sanitized command, and expected outcome.
+- **An MCP connection fails:** include the client and version, endpoint, tool name, and sanitized error in a minimal issue.
 - **You found a vulnerability:** follow [SECURITY.md](./SECURITY.md) and do not publish exploit details or secrets in an issue.
 
 Before opening an issue:

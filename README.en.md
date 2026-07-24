@@ -30,10 +30,29 @@ python3 scripts/recipe_tool.py run tokyo-population-2023
 
 Published values can be revised by the source. Every successful result includes the retrieval time, final request URL, interpretation notes, official evidence, attribution text, and license URL.
 
+## Connect an AI agent
+
+The public server uses the current MCP Streamable HTTP transport:
+
+```json
+{
+  "mcpServers": {
+    "public-data-catalog": {
+      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
+    }
+  }
+}
+```
+
+It exposes only three tools: `search_data` discovers sources and contracts, `execute` runs a reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.
+
+For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries and [`server.json`](./server.json) for MCP Registry metadata.
+
 ## Verified recipes
 
 | ID | Question | Source | Authentication |
 | --- | --- | --- | --- |
+| `tokyo-population-by-year` | What was Tokyo's population in a selected year from 2015–2025? | Statistics Dashboard | None |
 | `tokyo-population-2023` | What was Tokyo's total population in 2023? | Statistics Dashboard | None |
 | `japan-unemployment-rate-2023` | What was Japan's unemployment rate in 2023? | Statistics Dashboard | None |
 | `egov-population-dataset-search` | Can e-Gov find datasets about population? | e-Gov Data Portal | None |
@@ -46,7 +65,11 @@ List and inspect the available contracts:
 python3 scripts/recipe_tool.py list
 python3 scripts/recipe_tool.py list --json
 python3 scripts/recipe_tool.py show usgs-noto-earthquake-2024
+python3 scripts/recipe_tool.py run tokyo-population-by-year --param year=2025
+python3 scripts/recipe_tool.py verify result.json
 ```
+
+Successful JSON results include an integrity receipt that binds the contract version, parameters, request, response hash, extracted-result hash, and provenance.
 
 ## Trust boundary
 
@@ -65,9 +88,15 @@ See the [recipe format](./docs/recipe-format.md), [security policy](./SECURITY.m
 python3 scripts/validate_catalog.py
 python3 -m unittest discover -s tests -v
 python3 scripts/recipe_tool.py check
+npm ci
+npm run artifacts:check
+npm run typecheck
+npm test
 ```
 
 Pull-request CI performs local contract and unit checks. A separate weekly and manually dispatchable workflow runs the bounded live probes.
+
+`catalog.json` and `recipes/*.json` remain the sources of truth. The deterministic [agent bundle](./generated/catalog.bundle.json) and [DCAT 3 JSON-LD export](./generated/catalog.dcat.jsonld) provide portable, vendor-neutral consumption formats.
 
 ## Contributing
 

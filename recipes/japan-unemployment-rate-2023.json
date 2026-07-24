@@ -1,6 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "japan-unemployment-rate-2023",
+  "contract_version": "1.0.0",
   "title": {
     "ja": "2023年の日本の完全失業率",
     "en": "Japan unemployment rate in 2023"

@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "catalog.json"
 SCHEMA_PATH = ROOT / "catalog.schema.json"
 RECIPE_SCHEMA_PATH = ROOT / "recipe.schema.json"
+RECEIPT_SCHEMA_PATH = ROOT / "receipt.schema.json"
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
 VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
@@ -106,6 +107,7 @@ def validate() -> None:
         catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
         schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
         recipe_schema = json.loads(RECIPE_SCHEMA_PATH.read_text(encoding="utf-8"))
+        receipt_schema = json.loads(RECEIPT_SCHEMA_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         fail(str(exc))
 
@@ -116,6 +118,11 @@ def validate() -> None:
         or recipe_schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema"
     ):
         fail("recipe.schema.json must declare JSON Schema draft 2020-12")
+    if (
+        not isinstance(receipt_schema, dict)
+        or receipt_schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema"
+    ):
+        fail("receipt.schema.json must declare JSON Schema draft 2020-12")
     if not isinstance(catalog, dict):
         fail("catalog.json root must be an object")
 

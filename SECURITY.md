@@ -22,3 +22,9 @@ The maintainer will acknowledge a report as soon as practical, investigate it, a
 ## Runner threat model
 
 The recipe runner accepts only reviewed, repository-local recipes. Requests must use HTTPS and GET, use an explicit host allowlist, avoid secret-like query fields, resolve to public network addresses, and remain below a configured response-size limit. These controls reduce risk but do not make arbitrary third-party recipes safe. Review recipe changes before running them.
+
+## Hosted MCP threat model
+
+The public MCP endpoint is unauthenticated and read-only. It accepts only committed recipe IDs and their declared bounded parameters; it does not accept arbitrary URLs, request headers, SQL, code, or credentials. Do not send secrets or personal data in tool arguments. The application does not intentionally persist MCP arguments or upstream responses, although normal Cloudflare operational logs and the upstream provider's access logs may contain request metadata.
+
+Execution receipts check internal consistency and can detect a changed result when the receipt is retained unchanged. They are not digital signatures and do not prove publisher authenticity. Treat the official source and its usage terms as authoritative.

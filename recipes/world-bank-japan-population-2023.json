@@ -1,6 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "world-bank-japan-population-2023",
+  "contract_version": "1.0.0",
   "title": {
     "ja": "世界銀行による2023年の日本の総人口",
     "en": "Japan population in 2023 from the World Bank"

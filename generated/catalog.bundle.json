@@ -1,16 +1,27 @@
 {
-  "$schema": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/catalog.schema.json",
+  "bundle_version": "1.0.0",
   "catalog_version": "0.4.0",
   "last_updated": "2026-07-24",
-  "entries": [
+  "sources": [
     {
       "id": "estat-api",
       "title": "e-Stat API",
       "publisher": "National Statistics Center, Japan",
       "type": "api",
-      "domains": ["official-statistics", "economy", "society", "population", "japan"],
-      "geography": ["JP"],
-      "languages": ["ja", "en"],
+      "domains": [
+        "official-statistics",
+        "economy",
+        "society",
+        "population",
+        "japan"
+      ],
+      "geography": [
+        "JP"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies",
         "end": "ongoing",
@@ -21,7 +32,11 @@
         "auth": "registration",
         "base_url": "https://api.e-stat.go.jp/rest/3.0/app/",
         "docs_url": "https://www.e-stat.go.jp/api/index.php/en",
-        "formats": ["json", "xml", "csv"],
+        "formats": [
+          "json",
+          "xml",
+          "csv"
+        ],
         "rate_limit_notes": "An e-Stat account and application ID are required. Keep the application ID outside the repository."
       },
       "license": {
@@ -53,9 +68,22 @@
       "title": "Statistics Dashboard Web API",
       "publisher": "Statistics Bureau, Ministry of Internal Affairs and Communications, Japan",
       "type": "api",
-      "domains": ["official-statistics", "population", "labor", "economy", "society", "japan"],
-      "geography": ["JP", "global"],
-      "languages": ["ja", "en"],
+      "domains": [
+        "official-statistics",
+        "population",
+        "labor",
+        "economy",
+        "society",
+        "japan"
+      ],
+      "geography": [
+        "JP",
+        "global"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by indicator",
         "end": "ongoing",
@@ -66,7 +94,12 @@
         "auth": "none",
         "base_url": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData",
         "docs_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
-        "formats": ["json", "json-stat", "xml", "csv"],
+        "formats": [
+          "json",
+          "json-stat",
+          "xml",
+          "csv"
+        ],
         "rate_limit_notes": "No registration is required. Keep requests narrowly scoped, avoid large repeated downloads, and retry conservatively because the service can report temporary congestion."
       },
       "license": {
@@ -99,9 +132,19 @@
       "title": "Open-Meteo Weather API",
       "publisher": "Open-Meteo",
       "type": "api",
-      "domains": ["weather", "forecast", "climate", "air-quality", "geospatial"],
-      "geography": ["global"],
-      "languages": ["en"],
+      "domains": [
+        "weather",
+        "forecast",
+        "climate",
+        "air-quality",
+        "geospatial"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by model and endpoint",
         "end": "forecast horizon",
@@ -112,7 +155,11 @@
         "auth": "none",
         "base_url": "https://api.open-meteo.com/v1/forecast",
         "docs_url": "https://open-meteo.com/en/docs",
-        "formats": ["json", "csv", "xlsx"],
+        "formats": [
+          "json",
+          "csv",
+          "xlsx"
+        ],
         "rate_limit_notes": "The free endpoint is for non-commercial use and is limited to roughly 10,000 calls per day, with additional per-hour and per-minute limits."
       },
       "license": {
@@ -145,9 +192,20 @@
       "title": "World Bank Indicators API",
       "publisher": "World Bank",
       "type": "api",
-      "domains": ["development", "economy", "population", "health", "education", "environment"],
-      "geography": ["global"],
-      "languages": ["en"],
+      "domains": [
+        "development",
+        "economy",
+        "population",
+        "health",
+        "education",
+        "environment"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by indicator",
         "end": "varies by indicator",
@@ -158,7 +216,10 @@
         "auth": "none",
         "base_url": "https://api.worldbank.org/v2/",
         "docs_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
-        "formats": ["json", "xml"],
+        "formats": [
+          "json",
+          "xml"
+        ],
         "rate_limit_notes": "Check the service documentation and use pagination for broad queries."
       },
       "license": {
@@ -190,9 +251,19 @@
       "title": "GBIF API",
       "publisher": "Global Biodiversity Information Facility",
       "type": "api",
-      "domains": ["biodiversity", "species", "taxonomy", "occurrence", "conservation"],
-      "geography": ["global"],
-      "languages": ["en"],
+      "domains": [
+        "biodiversity",
+        "species",
+        "taxonomy",
+        "occurrence",
+        "conservation"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by occurrence record",
         "end": "ongoing",
@@ -203,7 +274,9 @@
         "auth": "none_for_most_searches",
         "base_url": "https://api.gbif.org/v1/",
         "docs_url": "https://techdocs.gbif.org/en/openapi/",
-        "formats": ["json"],
+        "formats": [
+          "json"
+        ],
         "rate_limit_notes": "Most read queries do not require authentication. Download requests and write operations have separate authentication requirements."
       },
       "license": {
@@ -235,9 +308,20 @@
       "title": "U.S. Census Data API",
       "publisher": "U.S. Census Bureau",
       "type": "api",
-      "domains": ["population", "demographics", "economy", "housing", "geography", "public-health"],
-      "geography": ["US"],
-      "languages": ["en"],
+      "domains": [
+        "population",
+        "demographics",
+        "economy",
+        "housing",
+        "geography",
+        "public-health"
+      ],
+      "geography": [
+        "US"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by dataset and vintage",
         "end": "varies by dataset",
@@ -248,7 +332,9 @@
         "auth": "optional_api_key",
         "base_url": "https://api.census.gov/data",
         "docs_url": "https://www.census.gov/data/developers/guidance/api-user-guide.html",
-        "formats": ["json"],
+        "formats": [
+          "json"
+        ],
         "rate_limit_notes": "An API key is available for higher request limits. Dataset availability, variables, and geography predicates differ by vintage."
       },
       "license": {
@@ -280,9 +366,19 @@
       "title": "OpenAlex API",
       "publisher": "OurResearch / OpenAlex",
       "type": "api",
-      "domains": ["scholarly-literature", "researchers", "institutions", "publishers", "topics"],
-      "geography": ["global"],
-      "languages": ["en"],
+      "domains": [
+        "scholarly-literature",
+        "researchers",
+        "institutions",
+        "publishers",
+        "topics"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by work",
         "end": "ongoing",
@@ -293,7 +389,9 @@
         "auth": "required_api_key",
         "base_url": "https://api.openalex.org",
         "docs_url": "https://developers.openalex.org/api-reference/introduction",
-        "formats": ["json"],
+        "formats": [
+          "json"
+        ],
         "rate_limit_notes": "API keys are free. Pricing and daily usage depend on the endpoint and plan; use per_page, filters, select, and cursor pagination deliberately."
       },
       "license": {
@@ -325,9 +423,19 @@
       "title": "e-Gov Data Portal",
       "publisher": "Digital Agency, Government of Japan",
       "type": "portal",
-      "domains": ["open-data-portal", "government", "official-statistics", "public-administration"],
-      "geography": ["JP"],
-      "languages": ["ja", "en"],
+      "domains": [
+        "open-data-portal",
+        "government",
+        "official-statistics",
+        "public-administration"
+      ],
+      "geography": [
+        "JP"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by dataset",
         "end": "ongoing",
@@ -338,7 +446,12 @@
         "auth": "none_for_catalog; dataset-specific for resources",
         "base_url": "https://data.e-gov.go.jp/",
         "docs_url": "https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41",
-        "formats": ["json", "csv", "xml", "varies by resource"],
+        "formats": [
+          "json",
+          "csv",
+          "xml",
+          "varies by resource"
+        ],
         "rate_limit_notes": "The catalog API is publicly described, while resource endpoints and download limits depend on the dataset provider and resource documentation."
       },
       "license": {
@@ -372,9 +485,18 @@
       "title": "USGS Earthquake Catalog API",
       "publisher": "U.S. Geological Survey",
       "type": "api",
-      "domains": ["earthquakes", "hazards", "geophysics", "seismology"],
-      "geography": ["global"],
-      "languages": ["en"],
+      "domains": [
+        "earthquakes",
+        "hazards",
+        "geophysics",
+        "seismology"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by catalog",
         "end": "ongoing",
@@ -385,7 +507,13 @@
         "auth": "none",
         "base_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
         "docs_url": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
-        "formats": ["geojson", "csv", "xml", "kml", "quakeml"],
+        "formats": [
+          "geojson",
+          "csv",
+          "xml",
+          "kml",
+          "quakeml"
+        ],
         "rate_limit_notes": "The query service limits a request to 20,000 events. Use the real-time GeoJSON feeds for display-oriented automation and follow the feed lifecycle policy."
       },
       "license": {
@@ -418,9 +546,19 @@
       "title": "OpenStreetMap Overpass API",
       "publisher": "OpenStreetMap community / Overpass API operators",
       "type": "api",
-      "domains": ["geospatial", "maps", "transport", "buildings", "points-of-interest"],
-      "geography": ["global"],
-      "languages": ["multilingual"],
+      "domains": [
+        "geospatial",
+        "maps",
+        "transport",
+        "buildings",
+        "points-of-interest"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "multilingual"
+      ],
       "temporal_coverage": {
         "start": "varies by object history",
         "end": "current map database",
@@ -431,7 +569,11 @@
         "auth": "none_for_public_instances",
         "base_url": "https://overpass-api.de/api/interpreter",
         "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
-        "formats": ["json", "xml", "csv"],
+        "formats": [
+          "json",
+          "xml",
+          "csv"
+        ],
         "rate_limit_notes": "The main public instance recommends staying below roughly 10,000 queries and 1 GB of downloads per day, identifying the client with User-Agent or Referer headers."
       },
       "license": {
@@ -463,9 +605,20 @@
       "title": "Copernicus Climate Data Store",
       "publisher": "Copernicus Climate Change Service / ECMWF",
       "type": "portal",
-      "domains": ["climate", "weather", "reanalysis", "environment", "earth-observation"],
-      "geography": ["global", "europe"],
-      "languages": ["en"],
+      "domains": [
+        "climate",
+        "weather",
+        "reanalysis",
+        "environment",
+        "earth-observation"
+      ],
+      "geography": [
+        "global",
+        "europe"
+      ],
+      "languages": [
+        "en"
+      ],
       "temporal_coverage": {
         "start": "varies by dataset; ERA5 from 1940",
         "end": "present or dataset-specific projection horizon",
@@ -476,7 +629,12 @@
         "auth": "account_and_personal_api_token",
         "base_url": "https://cds.climate.copernicus.eu/api",
         "docs_url": "https://cds.climate.copernicus.eu/how-to-api",
-        "formats": ["grib", "netcdf", "csv", "zarr"],
+        "formats": [
+          "grib",
+          "netcdf",
+          "csv",
+          "zarr"
+        ],
         "rate_limit_notes": "Registration, dataset license acceptance, job queues, and resource limits apply. Limits and availability vary with workload and dataset; build requests from the dataset form and avoid unnecessary large extracts."
       },
       "license": {
@@ -509,9 +667,19 @@
       "title": "Europe PMC RESTful Web Service",
       "publisher": "EMBL-EBI / Europe PMC",
       "type": "api",
-      "domains": ["biomedical-literature", "life-sciences", "research", "text-mining"],
-      "geography": ["global"],
-      "languages": ["en", "varies by publication"],
+      "domains": [
+        "biomedical-literature",
+        "life-sciences",
+        "research",
+        "text-mining"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "en",
+        "varies by publication"
+      ],
       "temporal_coverage": {
         "start": "varies by source",
         "end": "ongoing",
@@ -522,7 +690,11 @@
         "auth": "none_for_public_api",
         "base_url": "https://www.ebi.ac.uk/europepmc/webservices/rest",
         "docs_url": "https://europepmc.org/RestfulWebService",
-        "formats": ["json", "xml", "dublin-core"],
+        "formats": [
+          "json",
+          "xml",
+          "dublin-core"
+        ],
         "rate_limit_notes": "Use the REST service with precise queries, pagination, and result types. For large-scale content retrieval, use the documented FTP or OAI routes rather than scraping the website."
       },
       "license": {
@@ -554,9 +726,19 @@
       "title": "Open Food Facts API",
       "publisher": "Open Food Facts",
       "type": "api",
-      "domains": ["food", "nutrition", "ingredients", "allergens", "consumer-products"],
-      "geography": ["global"],
-      "languages": ["multilingual"],
+      "domains": [
+        "food",
+        "nutrition",
+        "ingredients",
+        "allergens",
+        "consumer-products"
+      ],
+      "geography": [
+        "global"
+      ],
+      "languages": [
+        "multilingual"
+      ],
       "temporal_coverage": {
         "start": "varies by product record",
         "end": "ongoing",
@@ -567,7 +749,11 @@
         "auth": "none_for_reads; app_auth_for_writes",
         "base_url": "https://world.openfoodfacts.org/api/v3",
         "docs_url": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/",
-        "formats": ["json", "csv", "jsonl"],
+        "formats": [
+          "json",
+          "csv",
+          "jsonl"
+        ],
         "rate_limit_notes": "Read product requests are limited to about 15 requests per minute per IP and search requests to about 10 per minute per IP. Use exports or a local instance for more than a few hundred products, and identify the application with a custom User-Agent."
       },
       "license": {
@@ -593,6 +779,573 @@
         "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/",
         "https://world.openfoodfacts.org/terms-of-use"
       ]
+    }
+  ],
+  "recipes": [
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "egov-population-dataset-search",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "e-Govで人口データセットを探す",
+        "en": "Find population datasets in e-Gov"
+      },
+      "question": {
+        "ja": "e-Govデータポータルで人口に関する公開データセットを探せるか。",
+        "en": "Can we find public datasets about population in the e-Gov Data Portal?"
+      },
+      "source_id": "egov-data-portal",
+      "request": {
+        "method": "GET",
+        "url": "https://data.e-gov.go.jp/data/api/action/package_search?q=%E4%BA%BA%E5%8F%A3&rows=2&start=0",
+        "allowed_hosts": [
+          "data.e-gov.go.jp"
+        ],
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 500000,
+        "assertions": [
+          {
+            "pointer": "/success",
+            "equals": true
+          },
+          {
+            "pointer": "/result/count",
+            "minimum": 1
+          },
+          {
+            "pointer": "/result/results",
+            "min_length": 2
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "match-count",
+            "label": {
+              "ja": "検索一致件数",
+              "en": "Matching datasets"
+            },
+            "pointer": "/result/count",
+            "unit": "件"
+          },
+          {
+            "name": "first-title",
+            "label": {
+              "ja": "先頭のデータセット",
+              "en": "First dataset"
+            },
+            "pointer": "/result/results/0/title"
+          },
+          {
+            "name": "first-publisher",
+            "label": {
+              "ja": "先頭データセットの提供者",
+              "en": "First dataset publisher"
+            },
+            "pointer": "/result/results/0/publisher"
+          },
+          {
+            "name": "second-title",
+            "label": {
+              "ja": "2件目のデータセット",
+              "en": "Second dataset"
+            },
+            "pointer": "/result/results/1/title"
+          }
+        ]
+      },
+      "interpretation": [
+        "これはデータカタログの検索結果であり、個別データの値そのものではありません。",
+        "検索結果の各resourceについて、形式、更新日、URL、個別ライセンスを追加確認してください。",
+        "検索順位と一致件数は、ポータルの収録内容や検索索引の更新によって変わります。"
+      ],
+      "attribution": {
+        "source_url": "https://data.e-gov.go.jp/data/ja/api_guide",
+        "license_url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+        "credit": "出典：e-Govデータポータル（https://data.e-gov.go.jp/）"
+      },
+      "last_verified": "2026-07-24"
+    },
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "japan-unemployment-rate-2023",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "2023年の日本の完全失業率",
+        "en": "Japan unemployment rate in 2023"
+      },
+      "question": {
+        "ja": "2023年の日本の完全失業率（男女計）は何パーセントか。",
+        "en": "What was Japan's unemployment rate for both sexes in 2023?"
+      },
+      "source_id": "statistics-dashboard-api",
+      "request": {
+        "method": "GET",
+        "url": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0301010000020020010&RegionCode=00000&Time=2023CY00&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y&SectionHeaderFlg=1",
+        "allowed_hosts": [
+          "dashboard.e-stat.go.jp"
+        ],
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 100000,
+        "assertions": [
+          {
+            "pointer": "/GET_STATS/RESULT/status",
+            "equals": "0"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/RESULT_INF/TOTAL_NUMBER",
+            "equals": "1"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ",
+            "min_length": 1
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "unemployment-rate",
+            "label": {
+              "ja": "完全失業率（男女計）",
+              "en": "Unemployment rate, both sexes"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/$",
+            "unit": "%",
+            "transform": "number"
+          },
+          {
+            "name": "survey-code",
+            "label": {
+              "ja": "統計調査コード",
+              "en": "Statistical survey code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@stat"
+          },
+          {
+            "name": "time-code",
+            "label": {
+              "ja": "時間コード",
+              "en": "Time code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@time"
+          }
+        ]
+      },
+      "interpretation": [
+        "完全失業率は、労働力人口に占める完全失業者の割合です。",
+        "このレシピは年次の原数値を取得し、季節調整済み月次値とは区別します。",
+        "人口ベンチマークの切替えに伴う時系列上の変動があり得ます。"
+      ],
+      "attribution": {
+        "source_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
+        "license_url": "https://dashboard.e-stat.go.jp/static/terms",
+        "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）"
+      },
+      "last_verified": "2026-07-24"
+    },
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "tokyo-population-2023",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "2023年の東京都の総人口",
+        "en": "Tokyo total population in 2023"
+      },
+      "question": {
+        "ja": "2023年の東京都の総人口は何人か。",
+        "en": "What was the total population of Tokyo in 2023?"
+      },
+      "source_id": "statistics-dashboard-api",
+      "request": {
+        "method": "GET",
+        "url": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionCode=13000&Time=2023CY00&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y&SectionHeaderFlg=1",
+        "allowed_hosts": [
+          "dashboard.e-stat.go.jp"
+        ],
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 100000,
+        "assertions": [
+          {
+            "pointer": "/GET_STATS/RESULT/status",
+            "equals": "0"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/RESULT_INF/TOTAL_NUMBER",
+            "equals": "1"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ",
+            "min_length": 1
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "population",
+            "label": {
+              "ja": "総人口",
+              "en": "Total population"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/$",
+            "unit": "人",
+            "transform": "integer"
+          },
+          {
+            "name": "region-code",
+            "label": {
+              "ja": "地域コード",
+              "en": "Region code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@regionCode"
+          },
+          {
+            "name": "time-code",
+            "label": {
+              "ja": "時間コード",
+              "en": "Time code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@time"
+          },
+          {
+            "name": "provisional-code",
+            "label": {
+              "ja": "速報・確報コード",
+              "en": "Provisional/final code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@isProvisional",
+            "description": "0は確報を表します。"
+          }
+        ]
+      },
+      "interpretation": [
+        "総人口は日本人・外国人の別不詳および年齢不詳を含みます。",
+        "人口推計は国勢調査人口を基準に、その後の人口動向から算出されます。",
+        "地域コード13000は東京都、時間コード2023CY00は2023年を表します。"
+      ],
+      "attribution": {
+        "source_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
+        "license_url": "https://dashboard.e-stat.go.jp/static/terms",
+        "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）"
+      },
+      "last_verified": "2026-07-24"
+    },
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "tokyo-population-by-year",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "東京都の年次総人口",
+        "en": "Tokyo annual total population"
+      },
+      "question": {
+        "ja": "指定した年の東京都の総人口は何人か。",
+        "en": "What was Tokyo's total population in the requested year?"
+      },
+      "source_id": "statistics-dashboard-api",
+      "parameters": {
+        "year": {
+          "type": "integer",
+          "description": {
+            "ja": "取得する暦年（検証済み範囲：2015年から2025年）",
+            "en": "Calendar year to retrieve (verified range: 2015 through 2025)"
+          },
+          "default": 2023,
+          "minimum": 2015,
+          "maximum": 2025
+        }
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionCode=13000&Time=2023CY00&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y&SectionHeaderFlg=1",
+        "allowed_hosts": [
+          "dashboard.e-stat.go.jp"
+        ],
+        "headers": {
+          "Accept": "application/json"
+        },
+        "bindings": [
+          {
+            "parameter": "year",
+            "location": "query",
+            "name": "Time",
+            "format": "{value}CY00"
+          }
+        ]
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 100000,
+        "assertions": [
+          {
+            "pointer": "/GET_STATS/RESULT/status",
+            "equals": "0"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/RESULT_INF/TOTAL_NUMBER",
+            "equals": "1"
+          },
+          {
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ",
+            "min_length": 1
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "population",
+            "label": {
+              "ja": "総人口",
+              "en": "Total population"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/$",
+            "unit": "人",
+            "transform": "integer"
+          },
+          {
+            "name": "region-code",
+            "label": {
+              "ja": "地域コード",
+              "en": "Region code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@regionCode"
+          },
+          {
+            "name": "time-code",
+            "label": {
+              "ja": "時間コード",
+              "en": "Time code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@time"
+          },
+          {
+            "name": "provisional-code",
+            "label": {
+              "ja": "速報・確報コード",
+              "en": "Provisional/final code"
+            },
+            "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@isProvisional",
+            "description": "0は確報、1は速報を表します。"
+          }
+        ]
+      },
+      "interpretation": [
+        "総人口は日本人・外国人の別不詳および年齢不詳を含みます。",
+        "人口推計は国勢調査人口を基準に、その後の人口動向から算出されます。",
+        "地域コード13000は東京都です。時間コードと速報・確報コードを結果と一緒に確認してください。"
+      ],
+      "attribution": {
+        "source_url": "https://dashboard.e-stat.go.jp/static/api?language=ja",
+        "license_url": "https://dashboard.e-stat.go.jp/static/terms",
+        "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）"
+      },
+      "last_verified": "2026-07-24"
+    },
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "usgs-noto-earthquake-2024",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "USGSカタログの2024年能登半島地震",
+        "en": "2024 Noto Peninsula earthquake in the USGS catalog"
+      },
+      "question": {
+        "ja": "USGS地震カタログで2024年能登半島地震の規模と発生時刻はどう記録されているか。",
+        "en": "How does the USGS catalog record the magnitude and time of the 2024 Noto Peninsula earthquake?"
+      },
+      "source_id": "usgs-earthquake-api",
+      "request": {
+        "method": "GET",
+        "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-01-01T07%3A10%3A00Z&endtime=2024-01-01T07%3A11%3A00Z&minlatitude=37&maxlatitude=38&minlongitude=136&maxlongitude=138&minmagnitude=7&limit=1",
+        "allowed_hosts": [
+          "earthquake.usgs.gov"
+        ],
+        "headers": {
+          "Accept": "application/geo+json, application/json"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 100000,
+        "assertions": [
+          {
+            "pointer": "/type",
+            "equals": "FeatureCollection"
+          },
+          {
+            "pointer": "/features",
+            "min_length": 1
+          },
+          {
+            "pointer": "/features/0/id",
+            "equals": "us6000m0xl"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "magnitude",
+            "label": {
+              "ja": "マグニチュード",
+              "en": "Magnitude"
+            },
+            "pointer": "/features/0/properties/mag"
+          },
+          {
+            "name": "magnitude-type",
+            "label": {
+              "ja": "マグニチュード種別",
+              "en": "Magnitude type"
+            },
+            "pointer": "/features/0/properties/magType"
+          },
+          {
+            "name": "occurred-at",
+            "label": {
+              "ja": "発生時刻",
+              "en": "Occurrence time"
+            },
+            "pointer": "/features/0/properties/time",
+            "unit": "UTC",
+            "transform": "unix_milliseconds_to_iso8601"
+          },
+          {
+            "name": "place",
+            "label": {
+              "ja": "USGSの地点表記",
+              "en": "USGS place label"
+            },
+            "pointer": "/features/0/properties/place"
+          },
+          {
+            "name": "event-id",
+            "label": {
+              "ja": "USGSイベントID",
+              "en": "USGS event ID"
+            },
+            "pointer": "/features/0/id"
+          }
+        ]
+      },
+      "interpretation": [
+        "USGSのマグニチュード、震源、イベント名称は再解析により更新される場合があります。",
+        "日本の気象庁が公表する値と、測定網、計算方式、改訂時期が異なる場合があります。",
+        "このレシピは時刻、緯度経度、最小マグニチュードで取得範囲を限定しています。"
+      ],
+      "attribution": {
+        "source_url": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
+        "license_url": "https://www.usgs.gov/data-management/data-licensing",
+        "credit": "Source: U.S. Geological Survey Earthquake Hazards Program."
+      },
+      "last_verified": "2026-07-24"
+    },
+    {
+      "$schema": "../recipe.schema.json",
+      "id": "world-bank-japan-population-2023",
+      "contract_version": "1.0.0",
+      "title": {
+        "ja": "世界銀行による2023年の日本の総人口",
+        "en": "Japan population in 2023 from the World Bank"
+      },
+      "question": {
+        "ja": "世界銀行指標で2023年の日本の総人口は何人か。",
+        "en": "What was Japan's total population in 2023 according to the World Bank indicator?"
+      },
+      "source_id": "world-bank-indicators",
+      "request": {
+        "method": "GET",
+        "url": "https://api.worldbank.org/v2/country/JPN/indicator/SP.POP.TOTL?format=json&date=2023&per_page=1",
+        "allowed_hosts": [
+          "api.worldbank.org"
+        ],
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "content_type_contains": "application/json",
+        "max_bytes": 100000,
+        "assertions": [
+          {
+            "pointer": "/1",
+            "min_length": 1
+          },
+          {
+            "pointer": "/1/0/countryiso3code",
+            "equals": "JPN"
+          },
+          {
+            "pointer": "/1/0/date",
+            "equals": "2023"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "population",
+            "label": {
+              "ja": "総人口",
+              "en": "Total population"
+            },
+            "pointer": "/1/0/value",
+            "unit": "人",
+            "transform": "integer"
+          },
+          {
+            "name": "indicator-code",
+            "label": {
+              "ja": "指標コード",
+              "en": "Indicator code"
+            },
+            "pointer": "/1/0/indicator/id"
+          },
+          {
+            "name": "source-last-updated",
+            "label": {
+              "ja": "世界銀行側の最終更新日",
+              "en": "World Bank source last updated"
+            },
+            "pointer": "/0/lastupdated"
+          }
+        ]
+      },
+      "interpretation": [
+        "指標コードSP.POP.TOTLはPopulation, totalを表します。",
+        "世界銀行値は改訂されることがあり、国内統計と定義、基準日、改訂時期が異なる場合があります。",
+        "国内統計との比較では、値だけでなく指標メタデータと出典機関を確認してください。"
+      ],
+      "attribution": {
+        "source_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
+        "license_url": "https://datacatalog.worldbank.org/public-licenses",
+        "credit": "Source: World Bank, Population total (SP.POP.TOTL), Japan, 2023."
+      },
+      "last_verified": "2026-07-24"
     }
   ]
 }

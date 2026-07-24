@@ -1,6 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "egov-population-dataset-search",
+  "contract_version": "1.0.0",
   "title": {
     "ja": "e-Govで人口データセットを探す",
     "en": "Find population datasets in e-Gov"

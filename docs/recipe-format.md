@@ -9,8 +9,10 @@ The JSON Schema is [`recipe.schema.json`](../recipe.schema.json). Each recipe is
 | Field | Purpose |
 | --- | --- |
 | `id` | Stable lowercase recipe identifier; it must match the JSON filename |
+| `contract_version` | Semantic version for the executable contract |
 | `title`, `question` | Japanese and English human-readable intent |
 | `source_id` | Reference to an entry in `catalog.json` |
+| `parameters` | Optional, typed values with defaults and reviewed bounds |
 | `request` | Reviewed HTTPS GET request and exact host allowlist |
 | `expect` | HTTP, content-type, size, and JSON response assertions |
 | `result.fields` | Values to extract with RFC 6901 JSON Pointers |
@@ -30,9 +32,50 @@ The initial format is deliberately narrow.
 - Only the `Accept` request header can be customized.
 - Each recipe limits the maximum response size to at most 1 MB.
 - Requests have a timeout and only one conservative retry.
-- Arbitrary commands, request bodies, local files, and dynamic URL templates are not supported.
+- Parameters can bind only to an existing query field. The host and path are immutable.
+- The initial parameter type is a bounded integer, and a safe format may wrap only `{value}`.
+- Arbitrary commands, request bodies, local files, and free-form URL templates are not supported.
 
 These constraints keep a recipe reviewable. A new capability should be added only when a real, reviewed public-data question cannot be represented safely without it.
+
+## Parameters
+
+A parameterized recipe retains a canonical URL rendered from the defaults:
+
+```json
+{
+  "parameters": {
+    "year": {
+      "type": "integer",
+      "description": {
+        "ja": "取得する暦年",
+        "en": "Calendar year to retrieve"
+      },
+      "default": 2023,
+      "minimum": 2015,
+      "maximum": 2025
+    }
+  },
+  "request": {
+    "bindings": [
+      {
+        "parameter": "year",
+        "location": "query",
+        "name": "Time",
+        "format": "{value}CY00"
+      }
+    ]
+  }
+}
+```
+
+Each parameter must have exactly one binding, each binding must name a query field already present in the canonical URL, and formatting may contain exactly one `{value}` placeholder. Changing a parameter range or meaning requires review and an appropriate `contract_version` change.
+
+## Execution receipts
+
+Successful executions include a receipt conforming to [`receipt.schema.json`](../receipt.schema.json). Its hashes bind the contract, resolved parameters, request, response body, extracted results, and provenance. `verify` detects a result change while the receipt itself remains trusted. The receipt is not a publisher signature, cannot prove authenticity on its own, and does not replace freshness probes.
+
+The response hash covers the exact received bytes. Result and receipt IDs hash compact UTF-8 JSON with object keys sorted recursively; `receipt_id` itself is excluded when calculating the receipt ID.
 
 ## Assertions
 

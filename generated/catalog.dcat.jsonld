@@ -1,0 +1,381 @@
+{
+  "@context": {
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "https://github.com/yhay81/public-data-catalog",
+  "@type": "dcat:Catalog",
+  "dct:title": "Public Data Catalog — Verified Recipes for Japan",
+  "dct:description": "Japanese-first public-data source profiles with reviewed, executable retrieval contracts.",
+  "dct:modified": "2026-07-24",
+  "dct:license": {
+    "@id": "https://opensource.org/license/mit"
+  },
+  "dcat:service": [
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-estat-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "estat-api",
+      "dct:title": "e-Stat API",
+      "dct:description": "Japanese official statistics in machine-readable form. Find a statsDataId and inspect table metadata and code lists before requesting numeric observations.",
+      "dct:publisher": "National Statistics Center, Japan",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.e-stat.go.jp/api/en/terms-of-use"
+      },
+      "dcat:keyword": [
+        "official-statistics",
+        "economy",
+        "society",
+        "population",
+        "japan"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://www.e-stat.go.jp/api/index.php/en"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.e-stat.go.jp/rest/3.0/app/"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://www.e-stat.go.jp/api/index.php/en"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-statistics-dashboard-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "statistics-dashboard-api",
+      "dct:title": "Statistics Dashboard Web API",
+      "dct:description": "A registration-free REST API for about 6,000 statistical indicator series organized by indicator, time, and region. It is useful for bounded national, prefectural, municipal, and international comparisons while preserving units, survey names, provisional status, and annotations.",
+      "dct:publisher": "Statistics Bureau, Ministry of Internal Affairs and Communications, Japan",
+      "dct:modified": "2026-07-24",
+      "dct:license": {
+        "@id": "https://dashboard.e-stat.go.jp/static/terms"
+      },
+      "dcat:keyword": [
+        "official-statistics",
+        "population",
+        "labor",
+        "economy",
+        "society",
+        "japan"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://dashboard.e-stat.go.jp/static/api?language=ja"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://dashboard.e-stat.go.jp/api/1.0/Json/getData"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://dashboard.e-stat.go.jp/static/api?language=ja"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-open-meteo",
+      "@type": "dcat:DataService",
+      "dct:identifier": "open-meteo",
+      "dct:title": "Open-Meteo Weather API",
+      "dct:description": "Coordinate-first weather, forecast, historical, climate, air-quality, and related data APIs. Query variables and units are explicit request parameters and responses are simple JSON by default.",
+      "dct:publisher": "Open-Meteo",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://open-meteo.com/en/license"
+      },
+      "dcat:keyword": [
+        "weather",
+        "forecast",
+        "climate",
+        "air-quality",
+        "geospatial"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://open-meteo.com/en/docs"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.open-meteo.com/v1/forecast"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://open-meteo.com/en/docs"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-world-bank-indicators",
+      "@type": "dcat:DataService",
+      "dct:identifier": "world-bank-indicators",
+      "dct:title": "World Bank Indicators API",
+      "dct:description": "Global development indicators such as GDP, population, health, education, and energy. Stable indicator codes and country codes are the main query vocabulary.",
+      "dct:publisher": "World Bank",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://datacatalog.worldbank.org/public-licenses"
+      },
+      "dcat:keyword": [
+        "development",
+        "economy",
+        "population",
+        "health",
+        "education",
+        "environment"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.worldbank.org/v2/"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-gbif-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "gbif-api",
+      "dct:title": "GBIF API",
+      "dct:description": "A global biodiversity network for occurrence records, taxonomic names, datasets, and publishing organizations. It is useful for species and location discovery, but record provenance and uncertainty must remain attached.",
+      "dct:publisher": "Global Biodiversity Information Facility",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.gbif.org/terms"
+      },
+      "dcat:keyword": [
+        "biodiversity",
+        "species",
+        "taxonomy",
+        "occurrence",
+        "conservation"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://techdocs.gbif.org/en/openapi/"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.gbif.org/v1/"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://techdocs.gbif.org/en/openapi/"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-us-census-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "us-census-api",
+      "dct:title": "U.S. Census Data API",
+      "dct:description": "Machine-readable U.S. demographic, socioeconomic, housing, economic, and geographic statistics organized by dataset vintage and FIPS-based geography.",
+      "dct:publisher": "U.S. Census Bureau",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.census.gov/data/developers/about/terms-of-service.html"
+      },
+      "dcat:keyword": [
+        "population",
+        "demographics",
+        "economy",
+        "housing",
+        "geography",
+        "public-health"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://www.census.gov/data/developers/guidance/api-user-guide.html"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.census.gov/data"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://www.census.gov/data/developers/guidance/api-user-guide.html"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-openalex-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "openalex-api",
+      "dct:title": "OpenAlex API",
+      "dct:description": "An open graph of scholarly works, authors, sources, institutions, topics, publishers, and funders. Entity IDs and structured filters are more reliable than name-only matching.",
+      "dct:publisher": "OurResearch / OpenAlex",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://developers.openalex.org/"
+      },
+      "dcat:keyword": [
+        "scholarly-literature",
+        "researchers",
+        "institutions",
+        "publishers",
+        "topics"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://developers.openalex.org/api-reference/introduction"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://api.openalex.org"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://developers.openalex.org/api-reference/introduction"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-egov-data-portal",
+      "@type": "dcat:DataService",
+      "dct:identifier": "egov-data-portal",
+      "dct:title": "e-Gov Data Portal",
+      "dct:description": "A central-government catalog for discovering Japanese ministry and agency datasets, resources, organizations, and related metadata. Use it as a discovery layer, then follow the specific resource and provider conditions.",
+      "dct:publisher": "Digital Agency, Government of Japan",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0"
+      },
+      "dcat:keyword": [
+        "open-data-portal",
+        "government",
+        "official-statistics",
+        "public-administration"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://data.e-gov.go.jp/"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-usgs-earthquake-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "usgs-earthquake-api",
+      "dct:title": "USGS Earthquake Catalog API",
+      "dct:description": "A searchable catalog of earthquake events and related seismic products, with geographic, temporal, depth, magnitude, and event-type filters. GeoJSON is convenient for maps, while QuakeML and XML preserve richer seismological structure.",
+      "dct:publisher": "U.S. Geological Survey",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.usgs.gov/data-management/data-licensing"
+      },
+      "dcat:keyword": [
+        "earthquakes",
+        "hazards",
+        "geophysics",
+        "seismology"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://earthquake.usgs.gov/fdsnws/event/1/"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-overpass-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "overpass-api",
+      "dct:title": "OpenStreetMap Overpass API",
+      "dct:description": "A read-only query service over OpenStreetMap map data. It can select nearby or tagged features such as roads, buildings, transit stops, amenities, and land use without downloading the entire planet.",
+      "dct:publisher": "OpenStreetMap community / Overpass API operators",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://www.openstreetmap.org/copyright"
+      },
+      "dcat:keyword": [
+        "geospatial",
+        "maps",
+        "transport",
+        "buildings",
+        "points-of-interest"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://wiki.openstreetmap.org/wiki/Overpass_API"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://overpass-api.de/api/interpreter"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://wiki.openstreetmap.org/wiki/Overpass_API"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-copernicus-climate-data-store",
+      "@type": "dcat:DataService",
+      "dct:identifier": "copernicus-climate-data-store",
+      "dct:title": "Copernicus Climate Data Store",
+      "dct:description": "A catalog and API for climate observations, reanalyses, forecasts, projections, and derived indicators. ERA5 provides long global reanalysis series, while other datasets cover atmosphere, land, ocean, drought, and climate impacts.",
+      "dct:publisher": "Copernicus Climate Change Service / ECMWF",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://cds.climate.copernicus.eu/licences/terms-of-use-cds"
+      },
+      "dcat:keyword": [
+        "climate",
+        "weather",
+        "reanalysis",
+        "environment",
+        "earth-observation"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://cds.climate.copernicus.eu/how-to-api"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://cds.climate.copernicus.eu/api"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://cds.climate.copernicus.eu/how-to-api"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-europe-pmc-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "europe-pmc-api",
+      "dct:title": "Europe PMC RESTful Web Service",
+      "dct:description": "A life-sciences literature service covering publications, preprints, citations, database links, open-access full text, and text-mining annotations. It is useful for literature discovery and entity-linked biomedical evidence, not as a blanket license for all article content.",
+      "dct:publisher": "EMBL-EBI / Europe PMC",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://europepmc.org/developers"
+      },
+      "dcat:keyword": [
+        "biomedical-literature",
+        "life-sciences",
+        "research",
+        "text-mining"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://europepmc.org/RestfulWebService"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://www.ebi.ac.uk/europepmc/webservices/rest"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://europepmc.org/RestfulWebService"
+      }
+    },
+    {
+      "@id": "https://github.com/yhay81/public-data-catalog#source-open-food-facts-api",
+      "@type": "dcat:DataService",
+      "dct:identifier": "open-food-facts-api",
+      "dct:title": "Open Food Facts API",
+      "dct:description": "A community-contributed product database with barcodes, ingredients, nutrition facts, allergens, labels, and computed indicators. It supports product lookup and structured search, with exports for larger analyses.",
+      "dct:publisher": "Open Food Facts",
+      "dct:modified": "2026-07-13",
+      "dct:license": {
+        "@id": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/"
+      },
+      "dcat:keyword": [
+        "food",
+        "nutrition",
+        "ingredients",
+        "allergens",
+        "consumer-products"
+      ],
+      "dcat:landingPage": {
+        "@id": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/"
+      },
+      "dcat:endpointURL": {
+        "@id": "https://world.openfoodfacts.org/api/v3"
+      },
+      "dcat:endpointDescription": {
+        "@id": "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/"
+      }
+    }
+  ],
+  "dcat:dataset": []
+}

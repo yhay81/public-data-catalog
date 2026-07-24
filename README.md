@@ -41,6 +41,24 @@ python3 scripts/recipe_tool.py run tokyo-population-2023 --format text
 
 値は公式ソース側で改訂される可能性があります。実行結果には、取得日時、実際のリクエストURL、解釈上の注意、出典、ライセンスも含まれます。
 
+## AIエージェントから使う
+
+公開MCPサーバーは、現在標準のStreamable HTTPで接続できます。
+
+```json
+{
+  "mcpServers": {
+    "public-data-catalog": {
+      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
+    }
+  }
+}
+```
+
+公開するツールは、情報源と契約を探す `search_data`、レビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。
+
+ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
+
 ## 使い方
 
 ```sh
@@ -53,19 +71,26 @@ python3 scripts/recipe_tool.py list --json
 # 1つのレシピを実行する
 python3 scripts/recipe_tool.py run japan-unemployment-rate-2023
 
+# 検証済み範囲内で年を指定する
+python3 scripts/recipe_tool.py run tokyo-population-by-year --param year=2025
+
 # 人が読みやすい短い形式
 python3 scripts/recipe_tool.py run japan-unemployment-rate-2023 --format text
 
 # 全レシピの応答契約を確認する
 python3 scripts/recipe_tool.py check
+
+# 保存したJSON結果の整合性を確認する
+python3 scripts/recipe_tool.py verify result.json
 ```
 
-`run` の既定出力は、AIや後続処理で扱える完全なJSONです。`--format text` は値・解釈・出典・ライセンスを人が素早く確認するための表示です。
+`run` の既定出力は、AIや後続処理で扱える完全なJSONです。成功結果には応答と抽出結果のSHA-256を束ねた整合性確認用の実行レシートが付きます。`--format text` は値・解釈・出典・ライセンスを人が素早く確認するための表示です。
 
 ## 検証済みレシピ
 
 | ID | 質問 | 情報源 | 認証 |
 | --- | --- | --- | --- |
+| `tokyo-population-by-year` | 2015–2025年から指定した年の東京都の総人口は何人か | 統計ダッシュボード | 不要 |
 | `tokyo-population-2023` | 2023年の東京都の総人口は何人か | 統計ダッシュボード | 不要 |
 | `japan-unemployment-rate-2023` | 2023年の日本の完全失業率は何%か | 統計ダッシュボード | 不要 |
 | `egov-population-dataset-search` | e-Govで人口データセットを探せるか | e-Govデータポータル | 不要 |
@@ -92,7 +117,7 @@ python3 scripts/recipe_tool.py check
 | `europe-pmc-api` | 生命科学文献・注釈 | 世界 | 不要 | JSON / XML |
 | `open-food-facts-api` | 食品・栄養・成分 | 世界 | 読み取りは不要 | JSON / CSV / JSONL |
 
-`catalog.json` が情報源プロファイルの正本で、構造は [catalog.schema.json](./catalog.schema.json) で定義しています。レシピは [`recipes/`](./recipes/) の各JSONファイルが正本です。
+`catalog.json` が情報源プロファイルの正本で、構造は [catalog.schema.json](./catalog.schema.json) で定義しています。レシピは [`recipes/`](./recipes/) の各JSONファイルが正本です。エージェントや静的配布向けの統合バンドル [`generated/catalog.bundle.json`](./generated/catalog.bundle.json) と、標準カタログ連携向けの [DCAT 3 JSON-LD](./generated/catalog.dcat.jsonld) はそこから決定的に生成します。
 
 ## 設計原則
 
@@ -112,6 +137,10 @@ python3 scripts/recipe_tool.py check
 python3 scripts/validate_catalog.py
 python3 -m unittest discover -s tests -v
 python3 scripts/recipe_tool.py check
+npm ci
+npm run artifacts:check
+npm run typecheck
+npm test
 ```
 
 通常のプルリクエストでは構造と単体テストだけを実行し、外部APIへのprobeは週次および手動実行に分けています。

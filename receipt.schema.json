@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/receipt.schema.json",
+  "title": "Verified Public Data Execution Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "receipt_version",
+    "receipt_id",
+    "contract",
+    "parameters",
+    "request",
+    "verification",
+    "provenance",
+    "results_sha256"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/receipt.schema.json"
+    },
+    "receipt_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "last_verified"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "last_verified": {"type": "string", "format": "date"}
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "integer", "boolean"]
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "url",
+        "retrieved_at",
+        "elapsed_ms",
+        "response_sha256"
+      ],
+      "properties": {
+        "method": {"const": "GET"},
+        "url": {"type": "string", "format": "uri"},
+        "retrieved_at": {"type": "string", "format": "date-time"},
+        "elapsed_ms": {"type": "integer", "minimum": 0},
+        "response_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertions_passed", "runner"],
+      "properties": {
+        "assertions_passed": {"type": "integer", "minimum": 1},
+        "runner": {"type": "string", "minLength": 1}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "source_url", "license_url", "credit"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+        "source_url": {"type": "string", "format": "uri"},
+        "license_url": {"type": "string", "format": "uri"},
+        "credit": {"type": "string", "minLength": 1}
+      }
+    },
+    "results_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

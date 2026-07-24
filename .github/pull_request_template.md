@@ -10,6 +10,7 @@
 
 - [ ] `python3 scripts/validate_catalog.py`
 - [ ] `python3 -m unittest discover -s tests -v`
+- [ ] `npm ci && npm run artifacts:check && npm run typecheck && npm test`
 - [ ] `python3 scripts/recipe_tool.py check <recipe-id>` for each affected recipe
 - [ ] The request is bounded, read-only, HTTPS, and contains no credentials
 - [ ] Units, codes, revisions, attribution, license, and caveats are retained

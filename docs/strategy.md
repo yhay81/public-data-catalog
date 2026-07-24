@@ -28,7 +28,7 @@ The defensible gap is the last mile between “an API or dataset exists” and �
 4. CI checks the local contract; bounded probes detect upstream drift.
 5. An independent session attempts the recipe without extra research.
 6. Failures improve the recipe or narrow the supported scope.
-7. Only repeated adjacent demand justifies parameters, packaging, or agent adapters.
+7. A single narrow parameter/MCP spike tests technical feasibility; only repeated adjacent demand justifies expanding it.
 
 The north-star measure is **independently reproduced, attributable retrieval scenarios**, not catalog entries, tools, stars, or API calls alone.
 
@@ -57,7 +57,7 @@ If activation passes but demand does not, narrow the user or question family.
 
 ### Gate C — distribution
 
-Only after repeated use:
+One bounded implementation spike now exists so this gate can be measured with a real adapter. Expand it only after repeated use:
 
 - parameterize one proven recipe family with strict allowlists;
 - test one distribution adapter, such as an installable CLI or a small read-only MCP surface;

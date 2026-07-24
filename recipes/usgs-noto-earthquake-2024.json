@@ -1,6 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "usgs-noto-earthquake-2024",
+  "contract_version": "1.0.0",
   "title": {
     "ja": "USGSカタログの2024年能登半島地震",
     "en": "2024 Noto Peninsula earthquake in the USGS catalog"

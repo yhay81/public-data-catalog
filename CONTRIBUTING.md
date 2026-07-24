@@ -34,6 +34,7 @@ Issueの `Retrieval recipe request` を使い、次を示してください。
 ## レシピの必須情報
 
 - 一意な `id`
+- 変更内容に応じて更新するセマンティックな `contract_version`
 - 日本語・英語のタイトルと具体的な問い
 - `catalog.json` に存在する `source_id`
 - HTTPS、GET、許可ホスト、最大応答サイズ
@@ -77,8 +78,15 @@ JSON Pointerと安全制約の詳細は [docs/recipe-format.md](./docs/recipe-fo
 python3 scripts/validate_catalog.py
 python3 -m unittest discover -s tests -v
 python3 scripts/recipe_tool.py check <recipe-id>
+npm ci
+npm run artifacts
+npm run artifacts:check
+npm run typecheck
+npm test
 git diff --check
 ```
+
+`catalog.json` または `recipes/*.json` を変えた場合は `npm run artifacts` で配布バンドルとDCAT JSON-LDを再生成してください。生成物を直接編集しないでください。
 
 ネットワークを使うprobeが実行できない場合は、理由と手動確認方法をプルリクエストに明記してください。項目を更新した場合は、なぜ変更したか、公式ソースのどこで確認したか、どの応答を検証したかを残してください。
 

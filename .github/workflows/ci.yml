@@ -16,7 +16,19 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.11"
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install MCP dependencies
+        run: npm ci
       - name: Validate catalog and recipes
         run: python3 scripts/validate_catalog.py
+      - name: Verify generated artifacts
+        run: npm run artifacts:check
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -v
+      - name: Type-check MCP and Worker
+        run: npm run typecheck
+      - name: Test MCP tools
+        run: npm test

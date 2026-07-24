@@ -66,11 +66,11 @@ The catalog should grow when a verified recipe makes a meaningful question easie
 
 ## Current proof set
 
-The first proof set contains five bounded, registration-free recipes:
+The proof set contains six bounded, registration-free recipes:
 
-- two Japanese official-statistics questions through Statistics Dashboard;
+- two fixed Japanese official-statistics questions and one bounded year family through Statistics Dashboard;
 - one Japanese government data-catalog discovery question;
 - one international comparison through the World Bank;
 - one Japan-related earthquake record through the USGS catalog.
 
-This set is an implementation milestone, not proof of demand. The next gate is independent execution by at least five people or AI-agent sessions.
+This set and its MCP adapter are implementation milestones, not proof of demand. The next gate is independent execution by at least five people or AI-agent sessions.
