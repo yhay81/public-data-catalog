@@ -85,44 +85,93 @@
       <section class="hero" id="top" aria-labelledby="hero-title">
         <canvas id="route-field" aria-hidden="true"></canvas>
         <div class="hero-grid" aria-hidden="true"></div>
-        <p class="hero-kicker reveal-now">
-          OPEN-SOURCE MCP FOR JAPANESE PUBLIC DATA
-        </p>
-        <div class="hero-brand reveal-now" aria-label="PDC">PDC</div>
-        <div class="hero-copy reveal-now">
-          <p class="hero-product">PDC / PUBLIC DATA CATALOG</p>
-          <h1 id="hero-title">
-            日本の公的データを、<br />AIから検索・<br class="mobile-only" />取得・検証。
-          </h1>
-          <p class="hero-summary">
-            PDCは、公式APIへの検証済み取得レシピをMCPまたはPythonから
-            実行できるOSSです。回答には出典、ライセンス、解釈上の注意、
-            改ざん検知用レシートが残ります。
-          </p>
-          <div class="hero-example">
-            <span>EXAMPLE</span>
-            <p>
-              「2025年の東京都の人口は？」
-              <strong>→ 14,246,219人</strong>
-              ＋ 出典 ＋ ライセンス ＋ 検証結果
+        <div class="hero-stage">
+          <div class="hero-intro reveal-now">
+            <p class="hero-kicker">OPEN-SOURCE PUBLIC DATA MCP</p>
+            <div class="hero-brand" aria-label="PDC">PDC</div>
+            <h1 id="hero-title">公的データを、<br />AIへ。</h1>
+            <p class="hero-summary">
+              日本の公式APIを検索・実行・検証するオープンソース基盤
             </p>
+            <div class="hero-actions">
+              <a class="primary-action" href="#connect">
+                公開MCPを接続 <span aria-hidden="true">→</span>
+              </a>
+              <a class="text-action" href="#proof">
+                実際の出力 <span aria-hidden="true">↓</span>
+              </a>
+            </div>
           </div>
-          <div class="hero-actions">
-            <a class="primary-action" href="#connect">
-              公開MCPを接続 <span aria-hidden="true">→</span>
-            </a>
-            <a class="text-action" href="#method">
-              できることを見る <span aria-hidden="true">↓</span>
-            </a>
+
+          <div
+            class="data-flow reveal-now"
+            aria-label="AIの質問を公式APIで検索、実行、検証し、出典付き回答を返す流れ"
+          >
+            <div class="flow-input">
+              <div class="flow-window">
+                <span class="flow-actor">AI AGENT</span>
+                <span class="flow-state">QUESTION</span>
+              </div>
+              <p>2025年の<br />東京都の人口は？</p>
+              <span class="flow-cursor" aria-hidden="true"></span>
+            </div>
+
+            <div class="flow-pipeline" aria-hidden="true">
+              <div class="flow-track">
+                <span class="flow-packet packet-one"></span>
+                <span class="flow-packet packet-two"></span>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step">
+                  <span>01</span>
+                  <strong>SEARCH</strong>
+                  <small>RECIPE FOUND</small>
+                </div>
+                <div class="flow-step">
+                  <span>02</span>
+                  <strong>EXECUTE</strong>
+                  <small>OFFICIAL API</small>
+                </div>
+                <div class="flow-step">
+                  <span>03</span>
+                  <strong>VERIFY</strong>
+                  <small>8 CHECKS PASS</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="flow-output">
+              <div class="flow-window">
+                <span class="flow-actor">VERIFIED ANSWER</span>
+                <span class="verified-badge">
+                  <i aria-hidden="true"></i> PASS
+                </span>
+              </div>
+              <div class="flow-result">
+                <strong>14,246,219</strong>
+                <span>人</span>
+              </div>
+              <dl class="flow-evidence">
+                <div>
+                  <dt>SOURCE</dt>
+                  <dd>e-Stat / 統計ダッシュボード</dd>
+                </div>
+                <div>
+                  <dt>LICENCE</dt>
+                  <dd>公式利用規約</dd>
+                </div>
+                <div>
+                  <dt>RECEIPT</dt>
+                  <dd>SHA-256 VERIFIED</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
         <div class="live-indicator reveal-now" aria-live="polite">
           <span class="live-dot" aria-hidden="true"></span>
           <span id="live-status">Checking public MCP</span>
         </div>
-        <p class="hero-route-label" aria-hidden="true">
-          QUESTION → OFFICIAL SOURCE → VERIFIED ANSWER
-        </p>
       </section>
 
       <section class="method section-shell" id="method" aria-labelledby="method-title">
