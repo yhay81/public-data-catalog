@@ -7,7 +7,7 @@
       name="description"
       content="PDCは、日本の公的データをAIエージェントやPythonから検索・取得・検証できるOSSです。回答には出典、ライセンス、注意点、検証レシートが残ります。"
     />
-    <meta name="theme-color" content="#0b0d0d" />
+    <meta name="theme-color" content="#f6f7f9" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ja_JP" />
     <meta
@@ -41,7 +41,7 @@
     />
     <link rel="canonical" href="https://public-data-catalog-mcp.yusuke8h.workers.dev/" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/styles.css?v=visual-flow-1" />
+    <link rel="stylesheet" href="/styles.css?v=functional-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -59,380 +59,216 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="PDC ホーム">
-        <span class="wordmark-mark" aria-hidden="true">
-          <i></i><i></i><i></i>
+      <a class="brand" href="#top" aria-label="PDC ホーム">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span>
+          <strong>PDC</strong>
+          <small>Public Data Catalog</small>
         </span>
-        <span>PDC</span>
       </a>
       <nav aria-label="メインナビゲーション">
-        <a href="#method">できること</a>
-        <a href="#proof">取得例</a>
-        <a href="#connect">接続</a>
-        <a href="#test">検証参加</a>
+        <a href="#setup">接続方法</a>
+        <a href="#example">出力例</a>
         <a
-          class="nav-source"
           href="https://github.com/yhay81/public-data-catalog"
           target="_blank"
           rel="noreferrer"
         >
-          GitHub <span aria-hidden="true">↗</span>
+          GitHub ↗
         </a>
       </nav>
     </header>
 
     <main>
-      <section class="hero" id="top" aria-labelledby="hero-title">
-        <canvas id="route-field" aria-hidden="true"></canvas>
-        <div class="hero-grid" aria-hidden="true"></div>
-        <div class="hero-stage">
-          <div class="hero-intro reveal-now">
-            <p class="hero-kicker">OPEN-SOURCE PUBLIC DATA MCP</p>
-            <div class="hero-brand" aria-label="PDC">PDC</div>
-            <h1 id="hero-title">公的データを、<br />AIへ。</h1>
-            <p class="hero-summary">
-              日本の公式APIを検索・実行・検証するオープンソース基盤
-            </p>
-            <div class="hero-actions">
-              <a class="primary-action" href="#connect">
-                公開MCPを接続 <span aria-hidden="true">→</span>
-              </a>
-              <a class="text-action" href="#proof">
-                実際の出力 <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-          </div>
-
-          <div
-            class="data-flow reveal-now"
-            aria-label="AIの質問を公式APIで検索、実行、検証し、出典付き回答を返す流れ"
-          >
-            <div class="flow-input">
-              <div class="flow-window">
-                <span class="flow-actor">AI AGENT</span>
-                <span class="flow-state">QUESTION</span>
-              </div>
-              <p>2025年の<br />東京都の人口は？</p>
-              <span class="flow-cursor" aria-hidden="true"></span>
-            </div>
-
-            <div class="flow-pipeline" aria-hidden="true">
-              <div class="flow-track">
-                <span class="flow-packet packet-one"></span>
-                <span class="flow-packet packet-two"></span>
-              </div>
-              <div class="flow-steps">
-                <div class="flow-step">
-                  <span>01</span>
-                  <strong>SEARCH</strong>
-                  <small>RECIPE FOUND</small>
-                </div>
-                <div class="flow-step">
-                  <span>02</span>
-                  <strong>EXECUTE</strong>
-                  <small>OFFICIAL API</small>
-                </div>
-                <div class="flow-step">
-                  <span>03</span>
-                  <strong>VERIFY</strong>
-                  <small>8 CHECKS PASS</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="flow-output">
-              <div class="flow-window">
-                <span class="flow-actor">VERIFIED ANSWER</span>
-                <span class="verified-badge">
-                  <i aria-hidden="true"></i> PASS
-                </span>
-              </div>
-              <div class="flow-result">
-                <strong>14,246,219</strong>
-                <span>人</span>
-              </div>
-              <dl class="flow-evidence">
-                <div>
-                  <dt>SOURCE</dt>
-                  <dd>e-Stat / 統計ダッシュボード</dd>
-                </div>
-                <div>
-                  <dt>LICENCE</dt>
-                  <dd>公式利用規約</dd>
-                </div>
-                <div>
-                  <dt>RECEIPT</dt>
-                  <dd>SHA-256 VERIFIED</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </div>
-        <div class="live-indicator reveal-now" aria-live="polite">
-          <span class="live-dot" aria-hidden="true"></span>
-          <span id="live-status">Checking public MCP</span>
-        </div>
-      </section>
-
-      <section class="method section-shell" id="method" aria-labelledby="method-title">
-        <div class="section-index reveal">01 / WHAT PDC DOES</div>
-        <div class="section-heading reveal">
-          <p class="eyebrow">FROM A QUESTION TO A CHECKABLE ANSWER.</p>
-          <h2 id="method-title">質問を、<br />根拠付きの答えにする。</h2>
-        </div>
-        <div class="method-list">
-          <article class="method-item reveal">
-            <p class="method-number">01</p>
-            <div>
-              <h3>SEARCH</h3>
-              <p>
-                「2025年の東京都の人口は？」のような問いから、
-                答えられる公式ソースとレビュー済みの取得レシピを選びます。
-              </p>
-            </div>
-            <code>search_data</code>
-          </article>
-          <article class="method-item reveal">
-            <p class="method-number">02</p>
-            <div>
-              <h3>EXECUTE</h3>
-              <p>
-                年などの許可済みパラメータだけを使い、公式APIから必要な範囲を
-                小さく取得します。任意URL、SQL、コードは実行しません。
-              </p>
-            </div>
-            <code>execute</code>
-          </article>
-          <article class="method-item reveal">
-            <p class="method-number">03</p>
-            <div>
-              <h3>VERIFY</h3>
-              <p>
-                値と一緒に出典、ライセンス、注意点、取得時刻を返し、
-                改ざんされていないことを検証用レシートで確かめます。
-              </p>
-            </div>
-            <code>verify</code>
-          </article>
-        </div>
-      </section>
-
-      <section class="proof" id="proof" aria-labelledby="proof-title">
-        <div class="proof-copy section-shell">
-          <div class="section-index reveal">02 / REAL OUTPUT</div>
-          <div class="proof-title-wrap reveal">
-            <p class="eyebrow">A REAL ANSWER, WITH ITS EVIDENCE ATTACHED.</p>
-            <h2 id="proof-title">回答に、<br />再確認できる証拠を残す。</h2>
-          </div>
-          <div class="result-sample reveal">
-            <div class="result-value">
-              <span>14,246,219</span>
-              <small>人</small>
-            </div>
-            <p>取得例：「2025年の東京都の総人口は？」</p>
-            <dl>
-              <div>
-                <dt>SOURCE</dt>
-                <dd>
-                  <a
-                    href="https://dashboard.e-stat.go.jp/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    統計ダッシュボード Web API ↗
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt>LICENCE</dt>
-                <dd>
-                  <a
-                    href="https://dashboard.e-stat.go.jp/static/terms"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    公式利用規約 ↗
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt>CAVEAT</dt>
-                <dd>公式ソース側で値が改訂される可能性があります</dd>
-              </div>
-              <div>
-                <dt>VERIFIED</dt>
-                <dd>8 checks · Python / TypeScript cross-runtime</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-        <figure class="brand-image reveal">
-          <img
-            src="/og.png"
-            width="1200"
-            height="630"
-            loading="lazy"
-            alt="検索・実行・検証の三つのチェックポイントを閉じた監査回路で示すPDCのブランドビジュアル"
-          />
-          <figcaption>
-            SEARCH · EXECUTE · VERIFY / CLOSED AUDIT CIRCUIT
-          </figcaption>
-        </figure>
-      </section>
-
-      <section class="connect section-shell" id="connect" aria-labelledby="connect-title">
-        <div class="section-index reveal">03 / CONNECT</div>
-        <div class="connect-intro reveal">
-          <p class="eyebrow">STREAMABLE HTTP · NO ACCOUNT REQUIRED</p>
-          <h2 id="connect-title">
-            CodexやClaude Codeから、<br />すぐ使う。
-          </h2>
-          <p>
-            公開endpointをMCP対応クライアントへ登録すれば、
-            自然言語の質問から検索・実行・検証を呼び出せます。
-            アカウントやAPIキーは不要です。
+      <section class="start" id="top" aria-labelledby="start-title">
+        <div class="start-copy">
+          <p class="product-label">PUBLIC DATA CATALOG</p>
+          <h1 id="start-title">公的データを、<br />AIで使う。</h1>
+          <p class="start-summary">
+            公式APIのデータを、出典・ライセンス・検証結果と一緒に返すMCPサーバーです。
           </p>
-        </div>
-        <div class="connection-block reveal">
-          <div class="connection-toolbar">
-            <span>STREAMABLE HTTP ENDPOINT</span>
-            <button type="button" id="copy-config">COPY URL</button>
+          <div class="service-status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="live-status">接続確認中</span>
+            <span class="status-note">アカウント不要</span>
           </div>
-          <pre><code id="config-code">https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp</code></pre>
-          <p id="copy-result" aria-live="polite"></p>
         </div>
-        <div class="connect-links reveal">
-          <a
-            href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Codex / Claude Code Setup <span aria-hidden="true">↗</span>
-          </a>
-          <a
-            href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
-            target="_blank"
-            rel="noreferrer"
-          >
-            MCP Registry <span aria-hidden="true">↗</span>
-          </a>
+
+        <div class="start-action" aria-labelledby="endpoint-title">
+          <div class="action-heading">
+            <div>
+              <span class="step-number">最初にすること</span>
+              <h2 id="endpoint-title">接続URLをコピー</h2>
+            </div>
+            <span class="action-time">約10秒</span>
+          </div>
+          <div class="endpoint-control">
+            <code id="config-code">https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp</code>
+            <button type="button" id="copy-config">URLをコピー</button>
+          </div>
+          <div class="action-next">
+            <p id="copy-result" aria-live="polite">
+              コピー後、MCPクライアントの設定へ追加します。
+            </p>
+            <a
+              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              接続手順を開く <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup page-shell" id="setup" aria-labelledby="setup-title">
+        <header class="section-heading">
+          <p>SETUP</p>
+          <h2 id="setup-title">3ステップで使い始める</h2>
+        </header>
+        <ol class="setup-list">
+          <li>
+            <span>1</span>
+            <div>
+              <h3>URLをコピー</h3>
+              <p>上のボタンで公開MCPの接続先をコピーします。</p>
+            </div>
+            <a href="#top">コピーする ↑</a>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <h3>クライアントへ追加</h3>
+              <p>Codex、Claude CodeなどのMCP設定へ貼り付けます。</p>
+            </div>
+            <a
+              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              設定例を見る ↗
+            </a>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <h3>質問する</h3>
+              <p>利用できるデータを探し、そのまま取得と検証を実行できます。</p>
+            </div>
+            <code>東京都の人口データを探して</code>
+          </li>
+        </ol>
+      </section>
+
+      <section class="example page-shell" id="example" aria-labelledby="example-title">
+        <header class="section-heading">
+          <p>OUTPUT</p>
+          <h2 id="example-title">返ってくるもの</h2>
+        </header>
+        <div class="answer">
+          <div class="answer-main">
+            <p class="answer-question">2025年の東京都の総人口は？</p>
+            <p class="answer-value">14,246,219 <span>人</span></p>
+          </div>
+          <dl class="answer-evidence">
+            <div>
+              <dt>出典</dt>
+              <dd>
+                <a
+                  href="https://dashboard.e-stat.go.jp/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  統計ダッシュボード Web API ↗
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt>ライセンス</dt>
+              <dd>
+                <a
+                  href="https://dashboard.e-stat.go.jp/static/terms"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  公式利用規約 ↗
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt>検証</dt>
+              <dd><span class="pass-mark">✓</span> 8 checks passed</dd>
+            </div>
+            <div>
+              <dt>注意点</dt>
+              <dd>公式ソース側で値が改訂される可能性があります</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="more page-shell" aria-labelledby="more-title">
+        <header class="section-heading">
+          <p>MORE</p>
+          <h2 id="more-title">ほかの使い方</h2>
+        </header>
+        <div class="more-links">
           <a
             href="https://github.com/yhay81/public-data-catalog#aiエージェントから使う"
             target="_blank"
             rel="noreferrer"
           >
-            Local stdio <span aria-hidden="true">↗</span>
+            <span>
+              <strong>ローカルで実行</strong>
+              <small>Python / stdio</small>
+            </span>
+            <i aria-hidden="true">↗</i>
           </a>
-          <a href="/health">Health JSON <span aria-hidden="true">↗</span></a>
-        </div>
-      </section>
-
-      <section class="test-drive section-shell" id="test" aria-labelledby="test-title">
-        <div class="section-index reveal">04 / INDEPENDENT TEST</div>
-        <div class="test-meter reveal" aria-label="独立テスト進捗 5件中0件">
-          <span>0</span>
-          <small>/ 5</small>
-          <p>INDEPENDENT<br />SESSIONS</p>
-        </div>
-        <div class="test-copy reveal">
-          <p class="eyebrow">PROVE THE PATH, NOT THE DEMO.</p>
-          <h2 id="test-title">2分で試して、<br />迷った場所を残す。</h2>
-          <p>
-            PDCが本当に役立つかは、作者ではない人とエージェントが、
-            説明なしで出典付き結果へ届けるかで決まります。
-            クリーンな環境で1レシピを実行し、成功も失敗も報告してください。
-          </p>
-          <div class="test-actions">
-            <a
-              class="primary-action"
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/external-test-protocol.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              独立テストを始める <span aria-hidden="true">→</span>
-            </a>
-            <a
-              class="text-action"
-              href="https://github.com/yhay81/public-data-catalog/issues/new?template=external-test.yml"
-              target="_blank"
-              rel="noreferrer"
-            >
-              結果を報告 <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-          <p class="test-privacy">
-            NO PROMPTS · NO PERSONAL DATA · SANITIZED RESULT ONLY
-          </p>
-        </div>
-      </section>
-
-      <section class="runtime section-shell" id="runtime" aria-labelledby="runtime-title">
-        <div class="section-index reveal">05 / RUNTIME</div>
-        <div class="runtime-heading reveal">
-          <p class="eyebrow">PORTABLE CORE. EDGE DELIVERY.</p>
-          <h2 id="runtime-title">Cloudflareで届ける。<br />契約は閉じ込めない。</h2>
-        </div>
-        <div class="runtime-grid">
-          <div class="runtime-current reveal">
-            <p class="runtime-label">PRODUCTION / NOW</p>
-            <h3>TypeScript MCP<br />on Cloudflare Workers</h3>
-            <ul>
-              <li><span>Protocol</span>MCP Streamable HTTP</li>
-              <li><span>Server</span>Model Context Protocol TypeScript SDK</li>
-              <li><span>Edge adapter</span>Cloudflare Agents SDK</li>
-              <li><span>Portable runner</span>Python 3.11 standard library</li>
-              <li><span>Interop</span>JSON Schema · DCAT 3 · MCP Registry</li>
-            </ul>
-          </div>
-          <div class="runtime-hayate reveal">
-            <p class="runtime-label">PYTHON EDGE / READY PATH</p>
-            <h3>Hayate can use<br />the same contracts.</h3>
-            <p>
-              Hayate 0.10はCloudflare Python Workersへ直接接続でき、
-              stateless Streamable HTTPのMCP transportをルートとして実装できます。
-              PDCの契約・レシート・適合テストはランタイム非依存なので、
-              Hayate版を並行検証できます。
-            </p>
-            <p class="runtime-note">
-              稼働中のTypeScript版は維持し、同じテストを通過してから切り替える方針です。
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="closing" aria-labelledby="closing-title">
-        <canvas id="closing-field" aria-hidden="true"></canvas>
-        <div class="closing-inner reveal">
-          <p>PDC / PUBLIC DATA CATALOG</p>
-          <h2 id="closing-title">答えに、<br />帰り道を残す。</h2>
-          <div>
-            <a class="primary-action dark" href="#connect">
-              MCPを接続する <span aria-hidden="true">→</span>
-            </a>
-            <a
-              class="text-action dark"
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/roadmap.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              ROADMAP <span aria-hidden="true">↗</span>
-            </a>
-            <a
-              class="text-action dark"
-              href="https://github.com/yhay81/public-data-catalog"
-              target="_blank"
-              rel="noreferrer"
-            >
-              CONTRIBUTE ON GITHUB <span aria-hidden="true">↗</span>
-            </a>
-          </div>
+          <a
+            href="https://github.com/yhay81/public-data-catalog/tree/main/catalog"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>
+              <strong>データとレシピを見る</strong>
+              <small>13 sources / 6 recipes</small>
+            </span>
+            <i aria-hidden="true">↗</i>
+          </a>
+          <a
+            href="https://github.com/yhay81/public-data-catalog/blob/main/docs/external-test-protocol.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>
+              <strong>検証に参加</strong>
+              <small>2分の独立テスト</small>
+            </span>
+            <i aria-hidden="true">↗</i>
+          </a>
         </div>
       </section>
     </main>
 
-    <footer>
-      <p>PDC · MIT LICENSE · JAPAN · 2026</p>
-      <p>OFFICIAL DATA REMAINS SUBJECT TO EACH SOURCE’S TERMS.</p>
+    <footer class="site-footer page-shell">
+      <p>PDC · MIT License</p>
+      <div>
+        <a href="/health">稼働状態</a>
+        <a
+          href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
+          target="_blank"
+          rel="noreferrer"
+        >
+          MCP Registry
+        </a>
+        <a
+          href="https://github.com/yhay81/public-data-catalog"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
     </footer>
 
     <script src="/app.js" defer></script>
