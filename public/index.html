@@ -203,23 +203,25 @@
           <p>
             MCP対応クライアントへ公開URLを登録すると、
             検索・実行・検証の3ツールが利用できます。
+            CodexとClaude Codeは接続ガイドから1分で設定できます。
           </p>
         </div>
         <div class="connection-block reveal">
           <div class="connection-toolbar">
-            <span>MCP CLIENT CONFIG</span>
+            <span>STREAMABLE HTTP ENDPOINT</span>
             <button type="button" id="copy-config">COPY</button>
           </div>
-          <pre><code id="config-code">{
-  "mcpServers": {
-    "public-data-catalog": {
-      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
-    }
-  }
-}</code></pre>
+          <pre><code id="config-code">https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp</code></pre>
           <p id="copy-result" aria-live="polite"></p>
         </div>
         <div class="connect-links reveal">
+          <a
+            href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Codex / Claude Code Setup <span aria-hidden="true">↗</span>
+          </a>
           <a
             href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
             target="_blank"
