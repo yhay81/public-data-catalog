@@ -23,7 +23,7 @@ async function copyConfig() {
     textarea.remove();
   }
   copyButton.textContent = "COPIED";
-  copyResult.textContent = "Configuration copied to clipboard.";
+  copyResult.textContent = "Endpoint copied to clipboard.";
   window.setTimeout(() => {
     copyButton.textContent = "COPY";
     copyResult.textContent = "";
