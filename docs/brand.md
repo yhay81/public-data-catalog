@@ -42,8 +42,10 @@ use the mark for unrelated data products.
 | Paper secondary | Warm gray | `#C7C1B6` |
 
 Signal lime marks actions, live state, and verification checkpoints. It should
-remain an accent rather than a large background. The graphic motif is many
-source paths converging through three checkpoints into one reviewed route.
+remain an accent rather than a large background. The graphic motif is a closed,
+non-directional audit circuit containing three checkpoints. It must not use
+maps, borders, coastlines, national symbols, or arrows that suggest data is
+moving toward a geographic destination.
 
 Use a heavy condensed sans serif for large display text, a neutral Japanese
 sans serif for prose, and monospace for contracts, endpoints, identifiers, and

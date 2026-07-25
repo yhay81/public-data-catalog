@@ -6,7 +6,7 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![公式データを検証済みの取得結果へ変換するPDCのブランドビジュアル](./public/og.png)
+![検索・実行・検証を閉じた監査回路で表すPDCのブランドビジュアル](./public/og.png)
 
 日本の公共データを中心に、AIや開発者が**具体的な問いから、根拠付きで再現可能な最初の取得まで**進むための、テスト済みレシピ集です。
 

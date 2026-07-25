@@ -6,7 +6,7 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![PDC brand visual showing official public-data sources converging into a reviewed route](./public/og.png)
+![PDC brand visual showing three verification checkpoints inside a closed audit circuit](./public/og.png)
 
 Japanese-first, tested retrieval recipes that help developers and AI agents move from a concrete public-data question to a small, reproducible, attributable result.
 
