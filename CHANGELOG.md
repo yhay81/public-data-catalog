@@ -7,6 +7,7 @@ All notable changes to this project are documented here.
 ### Added
 
 - A PDC brand system and public landing page explaining the trust model, MCP connection, production stack, and Hayate compatibility path.
+- An evidence-gated product roadmap from independent activation through repeat use, operational trust, interoperability, and optional federation.
 
 ## 0.4.0 - 2026-07-24
 

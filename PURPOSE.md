@@ -2,6 +2,17 @@
 
 This repository reduces the uncertainty between a data question and the first trustworthy, reproducible result from public data.
 
+## Ultimate outcome
+
+Public-data claims used by AI agents and people should remain traceable to an
+official source, reproducible under a versioned retrieval contract, and
+checkable by an independent implementation.
+
+PDC does not try to own or mirror the underlying data. Its ultimate value is the
+open trust layer around selecting, retrieving, interpreting, citing, and
+rechecking official data. The project roadmap and evidence gates are defined in
+[docs/roadmap.md](./docs/roadmap.md).
+
 The activity is not successful merely because the catalog contains many sources. It creates value when an AI or a person can use the maintained information to:
 
 - decide whether a source is appropriate for a concrete question;
