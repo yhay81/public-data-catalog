@@ -20,7 +20,7 @@ not imply that every agent host has been tested.
 | Client | Server surface | Discovery | Tool call | Evidence verification | Status |
 | --- | --- | --- | --- | --- | --- |
 | MCP Inspector 0.21.2 | local stdio | 3 tools listed | live `execute` returned the reviewed 2025 result | valid Python receipt accepted; provenance-only tamper rejected | passing |
-| MCP Inspector 0.21.2 | public Streamable HTTP | 3 tools listed | `search_data` returned the reviewed Tokyo contracts | full-envelope verification must be repeated after the next deployment | partial |
+| MCP Inspector 0.21.2 | public Streamable HTTP | 3 tools listed | `search_data` and live parameterized `execute` passed | all 8 checks accepted a valid Python receipt; provenance-only tamper rejected | passing |
 | External agent host A | public Streamable HTTP | not run | not run | not run | pending |
 | External agent host B | public Streamable HTTP | not run | not run | not run | pending |
 
