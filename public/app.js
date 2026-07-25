@@ -1,36 +1,34 @@
-const configText = `{
-  "mcpServers": {
-    "public-data-catalog": {
-      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
-    }
-  }
-}`;
-
 const copyButton = document.querySelector("#copy-config");
 const copyResult = document.querySelector("#copy-result");
+const endpointText = document.querySelector("#config-code")?.textContent?.trim() ?? "";
 
-async function copyConfig() {
+async function copyEndpoint() {
+  let copied = false;
   try {
-    await navigator.clipboard.writeText(configText);
+    await navigator.clipboard.writeText(endpointText);
+    copied = true;
   } catch {
     const textarea = document.createElement("textarea");
-    textarea.value = configText;
+    textarea.value = endpointText;
     textarea.style.position = "fixed";
     textarea.style.opacity = "0";
     document.body.append(textarea);
     textarea.select();
-    document.execCommand("copy");
+    copied = document.execCommand("copy");
     textarea.remove();
   }
-  copyButton.textContent = "COPIED";
-  copyResult.textContent = "Endpoint copied to clipboard.";
+
+  copyButton.textContent = copied ? "COPIED" : "COPY FAILED";
+  copyResult.textContent = copied
+    ? "MCP endpointをコピーしました。"
+    : "URLを選択して手動でコピーしてください。";
   window.setTimeout(() => {
-    copyButton.textContent = "COPY";
+    copyButton.textContent = "COPY URL";
     copyResult.textContent = "";
   }, 2400);
 }
 
-copyButton?.addEventListener("click", copyConfig);
+copyButton?.addEventListener("click", copyEndpoint);
 
 const liveIndicator = document.querySelector(".live-indicator");
 const liveStatus = document.querySelector("#live-status");

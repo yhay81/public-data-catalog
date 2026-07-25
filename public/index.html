@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="PDCは、公的データの発見・実行・検証を、出典とライセンス付きの再現可能な経路にするオープンソース基盤です。"
+      content="PDCは、日本の公的データをAIエージェントやPythonから検索・取得・検証できるOSSです。回答には出典、ライセンス、注意点、検証レシートが残ります。"
     />
     <meta name="theme-color" content="#0b0d0d" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ja_JP" />
-    <meta property="og:title" content="PDC — Public Data Catalog" />
-    <meta property="og:description" content="公的データに、検証済みの経路を。" />
+    <meta
+      property="og:title"
+      content="PDC — 日本の公的データをAIから検索・取得・検証"
+    />
+    <meta
+      property="og:description"
+      content="検証済みレシピをMCPまたはPythonから実行。出典、ライセンス、注意点、検証レシートを回答に残すOSS。"
+    />
     <meta
       property="og:url"
       content="https://public-data-catalog-mcp.yusuke8h.workers.dev/"
@@ -21,8 +27,14 @@
       content="https://public-data-catalog-mcp.yusuke8h.workers.dev/og.png?v=audit-circuit"
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PDC — Public Data Catalog" />
-    <meta name="twitter:description" content="公的データに、検証済みの経路を。" />
+    <meta
+      name="twitter:title"
+      content="PDC — 日本の公的データをAIから検索・取得・検証"
+    />
+    <meta
+      name="twitter:description"
+      content="検証済みレシピをMCPまたはPythonから実行。出典、ライセンス、注意点、検証レシートを回答に残すOSS。"
+    />
     <meta
       name="twitter:image"
       content="https://public-data-catalog-mcp.yusuke8h.workers.dev/og.png?v=audit-circuit"
@@ -35,7 +47,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareSourceCode",
         "name": "PDC — Public Data Catalog",
-        "description": "Verified, source-attributed public-data retrieval contracts for people and AI agents.",
+        "description": "Open-source MCP and Python tools for searching, retrieving, and verifying Japanese public data with provenance, licensing, caveats, and integrity receipts.",
         "codeRepository": "https://github.com/yhay81/public-data-catalog",
         "license": "https://opensource.org/license/mit",
         "programmingLanguage": ["TypeScript", "Python"],
@@ -43,7 +55,7 @@
         "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/"
       }
     </script>
-    <title>PDC — Public Data Catalog</title>
+    <title>PDC — 日本の公的データをAIから検索・取得・検証</title>
   </head>
   <body>
     <header class="site-header">
@@ -54,10 +66,10 @@
         <span>PDC</span>
       </a>
       <nav aria-label="メインナビゲーション">
-        <a href="#method">Method</a>
-        <a href="#connect">Connect</a>
-        <a href="#test">Test</a>
-        <a href="#runtime">Runtime</a>
+        <a href="#method">できること</a>
+        <a href="#proof">取得例</a>
+        <a href="#connect">接続</a>
+        <a href="#test">検証参加</a>
         <a
           class="nav-source"
           href="https://github.com/yhay81/public-data-catalog"
@@ -73,26 +85,34 @@
       <section class="hero" id="top" aria-labelledby="hero-title">
         <canvas id="route-field" aria-hidden="true"></canvas>
         <div class="hero-grid" aria-hidden="true"></div>
-        <p class="hero-kicker reveal-now">OPEN SOURCE · MCP · JAPANESE-FIRST</p>
+        <p class="hero-kicker reveal-now">
+          OPEN-SOURCE MCP FOR JAPANESE PUBLIC DATA
+        </p>
         <div class="hero-brand reveal-now" aria-label="PDC">PDC</div>
         <div class="hero-copy reveal-now">
-          <p class="hero-product">PUBLIC DATA CATALOG</p>
-          <h1 id="hero-title">公的データに、<br />検証済みの経路を。</h1>
+          <p class="hero-product">PDC / PUBLIC DATA CATALOG</p>
+          <h1 id="hero-title">
+            日本の公的データを、<br />AIから検索・<br class="mobile-only" />取得・検証。
+          </h1>
           <p class="hero-summary">
-            AIエージェントが公式データを探し、小さく実行し、
-            出典・ライセンス・整合性を保ったまま答えへ進むためのOSS。
+            PDCは、公式APIへの検証済み取得レシピをMCPまたはPythonから
+            実行できるOSSです。回答には出典、ライセンス、解釈上の注意、
+            改ざん検知用レシートが残ります。
           </p>
+          <div class="hero-example">
+            <span>EXAMPLE</span>
+            <p>
+              「2025年の東京都の人口は？」
+              <strong>→ 14,246,219人</strong>
+              ＋ 出典 ＋ ライセンス ＋ 検証結果
+            </p>
+          </div>
           <div class="hero-actions">
             <a class="primary-action" href="#connect">
-              エージェントに接続 <span aria-hidden="true">→</span>
+              公開MCPを接続 <span aria-hidden="true">→</span>
             </a>
-            <a
-              class="text-action"
-              href="https://github.com/yhay81/public-data-catalog"
-              target="_blank"
-              rel="noreferrer"
-            >
-              ソースを見る <span aria-hidden="true">↗</span>
+            <a class="text-action" href="#method">
+              できることを見る <span aria-hidden="true">↓</span>
             </a>
           </div>
         </div>
@@ -101,15 +121,15 @@
           <span id="live-status">Checking public MCP</span>
         </div>
         <p class="hero-route-label" aria-hidden="true">
-          SOURCE → CONTRACT → RECEIPT
+          QUESTION → OFFICIAL SOURCE → VERIFIED ANSWER
         </p>
       </section>
 
       <section class="method section-shell" id="method" aria-labelledby="method-title">
-        <div class="section-index reveal">01 / METHOD</div>
+        <div class="section-index reveal">01 / WHAT PDC DOES</div>
         <div class="section-heading reveal">
-          <p class="eyebrow">THREE OPERATIONS. ONE TRUST BOUNDARY.</p>
-          <h2 id="method-title">探す。実行する。<br />確かめる。</h2>
+          <p class="eyebrow">FROM A QUESTION TO A CHECKABLE ANSWER.</p>
+          <h2 id="method-title">質問を、<br />根拠付きの答えにする。</h2>
         </div>
         <div class="method-list">
           <article class="method-item reveal">
@@ -117,8 +137,8 @@
             <div>
               <h3>SEARCH</h3>
               <p>
-                公式ソースと検証済み契約を、ネットワーク取得なしで発見する。
-                データ件数ではなく、答えられる問いから探します。
+                「2025年の東京都の人口は？」のような問いから、
+                答えられる公式ソースとレビュー済みの取得レシピを選びます。
               </p>
             </div>
             <code>search_data</code>
@@ -128,8 +148,8 @@
             <div>
               <h3>EXECUTE</h3>
               <p>
-                許可済みHTTPS GETだけを、型・範囲・最大サイズの境界内で実行する。
-                任意URL、SQL、コードは受け取りません。
+                年などの許可済みパラメータだけを使い、公式APIから必要な範囲を
+                小さく取得します。任意URL、SQL、コードは実行しません。
               </p>
             </div>
             <code>execute</code>
@@ -139,8 +159,8 @@
             <div>
               <h3>VERIFY</h3>
               <p>
-                契約版、パラメータ、応答、抽出結果、出典を束ねたレシートの
-                整合性をネットワークなしで確認する。
+                値と一緒に出典、ライセンス、注意点、取得時刻を返し、
+                改ざんされていないことを検証用レシートで確かめます。
               </p>
             </div>
             <code>verify</code>
@@ -148,35 +168,51 @@
         </div>
       </section>
 
-      <section class="proof" aria-labelledby="proof-title">
+      <section class="proof" id="proof" aria-labelledby="proof-title">
         <div class="proof-copy section-shell">
-          <div class="section-index reveal">02 / PROOF</div>
+          <div class="section-index reveal">02 / REAL OUTPUT</div>
           <div class="proof-title-wrap reveal">
-            <p class="eyebrow">ONE RESULT, WITH ITS EVIDENCE ATTACHED.</p>
-            <h2 id="proof-title">値だけを、<br />置き去りにしない。</h2>
+            <p class="eyebrow">A REAL ANSWER, WITH ITS EVIDENCE ATTACHED.</p>
+            <h2 id="proof-title">回答に、<br />再確認できる証拠を残す。</h2>
           </div>
           <div class="result-sample reveal">
             <div class="result-value">
               <span>14,246,219</span>
               <small>人</small>
             </div>
-            <p>東京都の総人口 · 2025年</p>
+            <p>取得例：「2025年の東京都の総人口は？」</p>
             <dl>
               <div>
-                <dt>CONTRACT</dt>
-                <dd>tokyo-population-by-year@1.0.0</dd>
+                <dt>SOURCE</dt>
+                <dd>
+                  <a
+                    href="https://dashboard.e-stat.go.jp/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    統計ダッシュボード Web API ↗
+                  </a>
+                </dd>
               </div>
               <div>
-                <dt>PARAMETER</dt>
-                <dd>year = 2025</dd>
+                <dt>LICENCE</dt>
+                <dd>
+                  <a
+                    href="https://dashboard.e-stat.go.jp/static/terms"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    公式利用規約 ↗
+                  </a>
+                </dd>
               </div>
               <div>
-                <dt>PROVENANCE</dt>
-                <dd>Statistics Dashboard Web API</dd>
+                <dt>CAVEAT</dt>
+                <dd>公式ソース側で値が改訂される可能性があります</dd>
               </div>
               <div>
-                <dt>RECEIPT</dt>
-                <dd>SHA-256 · cross-runtime verified</dd>
+                <dt>VERIFIED</dt>
+                <dd>8 checks · Python / TypeScript cross-runtime</dd>
               </div>
             </dl>
           </div>
@@ -199,17 +235,19 @@
         <div class="section-index reveal">03 / CONNECT</div>
         <div class="connect-intro reveal">
           <p class="eyebrow">STREAMABLE HTTP · NO ACCOUNT REQUIRED</p>
-          <h2 id="connect-title">URLをひとつ。<br />道具をみっつ。</h2>
+          <h2 id="connect-title">
+            CodexやClaude Codeから、<br />すぐ使う。
+          </h2>
           <p>
-            MCP対応クライアントへ公開URLを登録すると、
-            検索・実行・検証の3ツールが利用できます。
-            CodexとClaude Codeは接続ガイドから1分で設定できます。
+            公開endpointをMCP対応クライアントへ登録すれば、
+            自然言語の質問から検索・実行・検証を呼び出せます。
+            アカウントやAPIキーは不要です。
           </p>
         </div>
         <div class="connection-block reveal">
           <div class="connection-toolbar">
             <span>STREAMABLE HTTP ENDPOINT</span>
-            <button type="button" id="copy-config">COPY</button>
+            <button type="button" id="copy-config">COPY URL</button>
           </div>
           <pre><code id="config-code">https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp</code></pre>
           <p id="copy-result" aria-live="polite"></p>

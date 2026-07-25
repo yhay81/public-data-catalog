@@ -172,10 +172,14 @@ footer {
   color: var(--signal);
 }
 
+.mobile-only {
+  display: none;
+}
+
 .hero-brand {
-  margin: clamp(2.2rem, 7vh, 5.5rem) 0 0 -0.045em;
+  margin: clamp(1.8rem, 4vh, 3.5rem) 0 0 -0.045em;
   font-family: Impact, "Arial Narrow", sans-serif;
-  font-size: clamp(10rem, 29vw, 29rem);
+  font-size: clamp(8rem, 21vw, 20rem);
   font-weight: 900;
   line-height: 0.62;
   letter-spacing: -0.065em;
@@ -185,9 +189,9 @@ footer {
 .hero-copy {
   position: relative;
   z-index: 2;
-  width: min(48rem, 68vw);
-  margin-top: clamp(3rem, 8vh, 6rem);
-  padding-left: clamp(0rem, 7vw, 8rem);
+  width: min(64rem, 82vw);
+  margin-top: clamp(2rem, 4vh, 3.5rem);
+  padding-left: clamp(0rem, 6vw, 7rem);
 }
 
 .hero-product {
@@ -203,18 +207,48 @@ footer {
 .runtime h2,
 .closing h2 {
   margin: 0;
-  font-size: clamp(2.6rem, 6vw, 6.4rem);
+  font-size: clamp(2.6rem, 5vw, 5.7rem);
   font-weight: 680;
   line-height: 1.02;
   letter-spacing: -0.07em;
 }
 
 .hero-summary {
-  width: min(34rem, 100%);
-  margin: 1.5rem 0 0;
+  width: min(46rem, 100%);
+  margin: 1.25rem 0 0;
   color: var(--paper-dim);
-  font-size: clamp(0.96rem, 1.5vw, 1.2rem);
-  line-height: 1.9;
+  font-size: clamp(0.96rem, 1.25vw, 1.12rem);
+  line-height: 1.75;
+}
+
+.hero-example {
+  display: flex;
+  width: min(52rem, 100%);
+  align-items: baseline;
+  gap: 1.2rem;
+  margin-top: 1.25rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.hero-example span {
+  flex: 0 0 auto;
+  color: var(--signal);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+.hero-example p {
+  margin: 0;
+  color: var(--paper-dim);
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  line-height: 1.7;
+}
+
+.hero-example strong {
+  color: var(--paper);
+  font-weight: 700;
 }
 
 .hero-actions,
@@ -222,7 +256,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .primary-action {
@@ -465,6 +499,12 @@ footer {
 
 .result-sample dd {
   overflow-wrap: anywhere;
+}
+
+.result-sample a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22rem;
 }
 
 .brand-image {
@@ -833,18 +873,18 @@ footer {
   }
 
   .hero-brand {
-    margin-top: clamp(5rem, 17vh, 9rem);
-    font-size: clamp(9rem, 41vw, 18rem);
+    margin-top: clamp(2.5rem, 7vh, 4rem);
+    font-size: clamp(8.5rem, 38vw, 15rem);
   }
 
   .hero-copy {
     width: 100%;
-    margin-top: 4rem;
+    margin-top: 2rem;
     padding-left: 0;
   }
 
   .hero h1 {
-    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    font-size: clamp(2.35rem, 9vw, 4.25rem);
   }
 
   .live-indicator {
@@ -927,6 +967,20 @@ footer {
 }
 
 @media (max-width: 540px) {
+  .mobile-only {
+    display: initial;
+  }
+
+  .hero {
+    padding-bottom: 5.5rem;
+  }
+
+  .hero-example {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
   .hero-actions,
   .test-actions,
   .closing-inner > div {
