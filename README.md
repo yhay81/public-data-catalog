@@ -47,19 +47,19 @@ python3 scripts/recipe_tool.py run tokyo-population-2023 --format text
 
 公開MCPサーバーは、現在標準のStreamable HTTPで接続できます。
 
-```json
-{
-  "mcpServers": {
-    "public-data-catalog": {
-      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
-    }
-  }
-}
+```sh
+# Codex
+codex mcp add public-data-catalog \
+  --url https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
+
+# Claude Code
+claude mcp add --transport http public-data-catalog \
+  https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
 ```
 
 公開するツールは、情報源と契約を探す `search_data`、レビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。
 
-ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、実証済み範囲は [互換性マトリクス](./docs/compatibility.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
+[クライアント別接続ガイド](./docs/client-setup.md)には、画面からの設定、1分確認、切断、トラブルシューティングまでをまとめています。ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、実証済み範囲は [互換性マトリクス](./docs/compatibility.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
 
 ## 使い方
 

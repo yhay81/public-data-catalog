@@ -21,8 +21,11 @@ Choose one path:
 
 - **Clean Python:** use a clean checkout and Python 3.11 or newer.
 - **MCP person or agent:** use a fresh client profile or agent context and add
-  only the public MCP URL from `README.md`. Record the client or host and its
-  version. For an AI agent, also record the model name when it is safe to share.
+  only the public MCP URL using the
+  [client setup guide](./client-setup.md). Record the client or host and its
+  version. The setup guide is allowed during the timed attempt; do not reuse
+  its completed smoke-check session. For an AI agent, also record the model
+  name when it is safe to share.
 
 Then:
 

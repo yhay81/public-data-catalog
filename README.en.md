@@ -36,19 +36,19 @@ Published values can be revised by the source. Every successful result includes 
 
 The public server uses the current MCP Streamable HTTP transport:
 
-```json
-{
-  "mcpServers": {
-    "public-data-catalog": {
-      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
-    }
-  }
-}
+```sh
+# Codex
+codex mcp add public-data-catalog \
+  --url https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
+
+# Claude Code
+claude mcp add --transport http public-data-catalog \
+  https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
 ```
 
 It exposes only three tools: `search_data` discovers sources and contracts, `execute` runs a reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.
 
-For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries, the [compatibility matrix](./docs/compatibility.md) for proven surfaces, and [`server.json`](./server.json) for MCP Registry metadata.
+The [client setup guide](./docs/client-setup.md) covers UI setup, a one-minute connection check, removal, and troubleshooting. For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries, the [compatibility matrix](./docs/compatibility.md) for proven surfaces, and [`server.json`](./server.json) for MCP Registry metadata.
 
 ## Verified recipes
 
