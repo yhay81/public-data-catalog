@@ -59,7 +59,7 @@ python3 scripts/recipe_tool.py run tokyo-population-2023 --format text
 
 公開するツールは、情報源と契約を探す `search_data`、レビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。
 
-ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
+ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、実証済み範囲は [互換性マトリクス](./docs/compatibility.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
 
 ## 使い方
 
@@ -99,7 +99,7 @@ python3 scripts/recipe_tool.py verify result.json
 | `world-bank-japan-population-2023` | 世界銀行による2023年の日本の総人口は何人か | World Bank | 不要 |
 | `usgs-noto-earthquake-2024` | USGSは能登半島地震をどう記録しているか | USGS | 不要 |
 
-レシピの構造と安全上の制約は [docs/recipe-format.md](./docs/recipe-format.md)、現在の検証状況は [docs/status.md](./docs/status.md) にあります。初見での再現性を検証する場合は [外部実行テスト手順](./docs/external-test-protocol.md) を使い、[参加用Issue #2](https://github.com/yhay81/public-data-catalog/issues/2) から結果を共有してください。
+レシピの構造と安全上の制約は [docs/recipe-format.md](./docs/recipe-format.md)、現在の検証状況は [docs/status.md](./docs/status.md) にあります。初見での再現性を検証する場合は [外部実行テスト手順](./docs/external-test-protocol.md) を使い、[テスト結果フォーム](https://github.com/yhay81/public-data-catalog/issues/new?template=external-test.yml) から成功も失敗も共有してください。AIエージェントを評価する場合は、全6レシピを網羅した [9つの評価シナリオ](./evals/README.md) と採点器を利用できます。
 
 ## 情報源プロファイル
 
@@ -137,6 +137,7 @@ python3 scripts/recipe_tool.py verify result.json
 
 ```sh
 python3 scripts/validate_catalog.py
+python3 scripts/evaluate_agent_traces.py --check-set
 python3 -m unittest discover -s tests -v
 python3 scripts/recipe_tool.py check
 npm ci

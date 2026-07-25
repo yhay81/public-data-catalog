@@ -24,12 +24,30 @@ body:
         - AI agent
     validations:
       required: true
+  - type: dropdown
+    id: execution-path
+    attributes:
+      label: Execution path
+      options:
+        - Clean Python runner
+        - Public MCP
+        - Local stdio MCP
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client or host
+      description: For MCP, include client/host and version. For clean Python, write the Python version.
+      placeholder: MCP Inspector 0.21.2, or Python 3.12
+    validations:
+      required: true
   - type: input
     id: environment
     attributes:
       label: Environment
-      description: Operating system and Python version only.
-      placeholder: macOS 15, Python 3.12
+      description: Operating system only. Do not include usernames, hostnames, or identifiers.
+      placeholder: macOS 15
     validations:
       required: true
   - type: input
@@ -86,6 +104,31 @@ body:
         - "Yes"
         - "Maybe"
         - "No"
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence-retained
+    attributes:
+      label: Were source, licence URL, and successful receipt verification retained?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Real workflow
+      description: Where would this result be used? Write "none" if there is no real use.
+      placeholder: Prefectural policy briefing with cited population figures.
+    validations:
+      required: true
+  - type: textarea
+    id: adjacent-question
+    attributes:
+      label: Adjacent question wanted next
+      description: Record one natural next question, or write "none".
+      placeholder: Compare Tokyo with Kanagawa for the same year.
     validations:
       required: true
   - type: textarea

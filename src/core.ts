@@ -383,6 +383,16 @@ async function sha256Json(value: unknown): Promise<string> {
   return sha256Bytes(new TextEncoder().encode(JSON.stringify(sortJson(value))));
 }
 
+function jsonEqual(left: unknown, right: unknown): boolean {
+  return JSON.stringify(sortJson(left)) === JSON.stringify(sortJson(right));
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined;
+}
+
 export async function executeContract(
   input: ExecuteInput,
   fetchImpl: typeof fetch = fetch,
@@ -511,13 +521,76 @@ export async function verifyExecution(execution: unknown) {
   const expectedResultsHash = await sha256Json(results);
   const receiptIntegrity = receiptId === expectedReceiptId;
   const resultsIntegrity = receiptRecord.results_sha256 === expectedResultsHash;
+  const contract = asRecord(receiptRecord.contract);
+  const request = asRecord(receiptRecord.request);
+  const provenance = asRecord(receiptRecord.provenance);
+  const contractBinding =
+    contract !== undefined &&
+    candidate.recipe_id === contract.id &&
+    candidate.contract_version === contract.version;
+  const parametersBinding = jsonEqual(candidate.parameters, receiptRecord.parameters);
+  const requestBinding =
+    request !== undefined &&
+    candidate.request_url === request.url &&
+    candidate.retrieved_at === request.retrieved_at &&
+    candidate.elapsed_ms === request.elapsed_ms;
+  const provenanceBinding =
+    contract !== undefined &&
+    provenance !== undefined &&
+    jsonEqual(candidate.provenance, {
+      ...provenance,
+      recipe_last_verified: contract.last_verified,
+    });
+  const recipe =
+    contract && typeof contract.id === "string" ? recipes.get(contract.id) : undefined;
+  let catalogBinding = false;
+  if (
+    recipe &&
+    contract &&
+    request &&
+    provenance &&
+    jsonEqual(contract, {
+      id: recipe.id,
+      version: recipe.contract_version,
+      last_verified: recipe.last_verified,
+    }) &&
+    jsonEqual(provenance, {
+      source_id: recipe.source_id,
+      ...recipe.attribution,
+    }) &&
+    jsonEqual(candidate.question, recipe.question) &&
+    jsonEqual(candidate.interpretation, recipe.interpretation) &&
+    request.method === recipe.request.method
+  ) {
+    try {
+      const receiptParameters = asRecord(receiptRecord.parameters);
+      if (receiptParameters) {
+        const resolvedParameters = resolveParameters(recipe, receiptParameters);
+        const requestUrl = new URL(String(request.url));
+        validateUrl(
+          requestUrl,
+          recipe.request.allowed_hosts.map((host) => host.toLocaleLowerCase()),
+        );
+        catalogBinding = jsonEqual(receiptParameters, resolvedParameters);
+      }
+    } catch {
+      catalogBinding = false;
+    }
+  }
+  const checks = {
+    receipt_integrity: receiptIntegrity,
+    results_integrity: resultsIntegrity,
+    execution_status: candidate.status === "ok",
+    contract_binding: contractBinding,
+    parameters_binding: parametersBinding,
+    request_binding: requestBinding,
+    provenance_binding: provenanceBinding,
+    catalog_binding: catalogBinding,
+  };
   return {
-    valid: receiptIntegrity && resultsIntegrity,
+    valid: Object.values(checks).every(Boolean),
     receipt_id: receiptId,
-    checks: {
-      receipt_integrity: receiptIntegrity,
-      results_integrity: resultsIntegrity,
-    },
+    checks,
   };
 }
 

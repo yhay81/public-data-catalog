@@ -143,6 +143,9 @@ As of 2026-07-25:
 - MCP Registry preview publication;
 - weekly live probes and local conformance tests;
 - a public brand site and connection guide;
+- a nine-scenario agent evaluation set covering all six recipes and false-success
+  cases;
+- a published compatibility matrix with local stdio and cross-runtime evidence;
 - zero completed independent execution reports.
 
 The technical spike is complete. Demand and independent usability are not yet

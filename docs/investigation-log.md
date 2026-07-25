@@ -2,6 +2,27 @@
 
 This log keeps the research direction visible and records why entries were added or deferred. The structured details remain in `catalog.json`.
 
+## Full-envelope trust audit: 2026-07-25
+
+The original offline verifier recomputed the receipt and extracted-result
+hashes, but did not compare the displayed contract, parameters, request
+metadata, provenance, question, or interpretation with the receipt and reviewed
+recipe. A modified source or licence URL could therefore remain beside a
+`valid: true` result when the receipt itself was unchanged.
+
+Python and TypeScript now perform the same eight checks across receipt,
+results, execution status, contract, parameters, request metadata, provenance,
+and the bundled reviewed recipe. Existing receipt version 1 remains compatible.
+A live Python execution was accepted by the TypeScript verifier through the
+official MCP Inspector client, while a provenance-only modification was
+rejected.
+
+Nine agent scenarios now cover all six recipes, reviewed parameter binding,
+out-of-range refusal, attribution, receipt verification, tamper rejection, and
+upstream-error handling. This closes an internal evaluation gap but does not
+count as independent use. Two human sessions, two agent sessions, two external
+hosts, real workflow intent, and repeat use remain evidence gates.
+
 ## Agent and interoperability spike: 2026-07-24
 
 One fixed Tokyo population recipe was generalized into a strictly bounded 2015–2025 year contract. The parameter can replace only the reviewed `Time` query field; it cannot alter the host, path, method, or other query dimensions.

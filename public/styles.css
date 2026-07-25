@@ -310,6 +310,7 @@ footer {
 
 .method,
 .connect,
+.test-drive,
 .runtime {
   position: relative;
   padding-top: clamp(6rem, 12vw, 11rem);
@@ -566,6 +567,77 @@ footer {
   letter-spacing: 0.08em;
 }
 
+.test-drive {
+  display: grid;
+  align-items: end;
+  gap: clamp(4rem, 9vw, 10rem);
+  border-top: 1px solid var(--line);
+  background:
+    linear-gradient(90deg, rgba(184, 255, 61, 0.045), transparent 52%),
+    var(--ink);
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(24rem, 1.2fr);
+}
+
+.test-meter {
+  display: grid;
+  align-items: end;
+  border-bottom: 1px solid var(--signal);
+  grid-template-columns: auto auto 1fr;
+}
+
+.test-meter span {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(9rem, 22vw, 23rem);
+  line-height: 0.72;
+  letter-spacing: -0.055em;
+}
+
+.test-meter small {
+  align-self: center;
+  margin: 0 1.2rem;
+  color: var(--signal);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(1rem, 2vw, 2rem);
+}
+
+.test-meter p {
+  margin: 0 0 1rem;
+  color: var(--paper-dim);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.58rem;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+}
+
+.test-copy h2 {
+  margin-top: 1.5rem;
+}
+
+.test-copy > p:not(.eyebrow, .test-privacy) {
+  max-width: 39rem;
+  margin: 1.8rem 0 0;
+  color: var(--paper-dim);
+  font-size: 0.92rem;
+  line-height: 1.95;
+}
+
+.test-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+}
+
+.test-privacy {
+  margin: 3rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  color: var(--signal);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+}
+
 .runtime {
   border-top: 1px solid var(--line);
 }
@@ -788,6 +860,7 @@ footer {
   .section-heading,
   .proof-copy,
   .connect,
+  .test-drive,
   .runtime-heading,
   .runtime-grid {
     grid-template-columns: 1fr;
@@ -822,6 +895,14 @@ footer {
     grid-column: 1;
   }
 
+  .test-drive {
+    align-items: start;
+  }
+
+  .test-meter {
+    max-width: 34rem;
+  }
+
   .runtime-grid {
     border-top: 0;
   }
@@ -847,6 +928,7 @@ footer {
 
 @media (max-width: 540px) {
   .hero-actions,
+  .test-actions,
   .closing-inner > div {
     align-items: flex-start;
     flex-direction: column;

@@ -35,15 +35,16 @@ Session reports belong in
 
 | Surface | Current evidence | Status |
 | --- | --- | --- |
-| Python reference runner | 29 unit tests passing on 2026-07-25 | passing |
+| Python reference runner | 33 unit tests passing on 2026-07-25 | passing |
 | TypeScript MCP core | 5 integration tests passing on 2026-07-25 | passing |
+| Full evidence-envelope verification | 8 checks in Python and TypeScript; provenance-only tamper rejected cross-runtime | passing |
 | Generated artifacts | deterministic bundle and DCAT check passing | passing |
 | Remote MCP | `tools/list`, live `execute`, and `verify` smoke test on 2026-07-25 | passing |
 | MCP Registry | remote metadata published; registry remains in preview | published |
 | Weekly recipe probes | all six recipes manually verified on 2026-07-24 | passing at last review |
-| Client compatibility matrix | not yet published | pending |
-| Agent evaluation set | not yet published | pending |
-| Probe investigation time | not yet recorded | unknown |
+| Client compatibility matrix | [published](./compatibility.md); local Inspector passing; public full-envelope retest and 2 external hosts pending | partial |
+| Agent evaluation set | 9 checked-in scenarios cover all 6 recipes and required failure behaviors; independent runs pending | published |
+| Probe investigation time | [log created](./maintenance-log.md); historical time was not measured | unknown |
 
 Technical readiness is not a substitute for independent activation or demand.
 

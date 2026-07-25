@@ -204,7 +204,7 @@ class ResultTests(unittest.TestCase):
         self.assertIn("https://dashboard.e-stat.go.jp/static/terms", text)
         self.assertIn("取得URL: https://example.go.jp/data?id=tokyo", text)
 
-    def test_execution_receipt_detects_result_tampering(self) -> None:
+    def _execution_result(self) -> dict[str, object]:
         recipe = recipe_tool.load_recipes()["tokyo-population-by-year"]
         document = {
             "GET_STATS": {
@@ -237,11 +237,57 @@ class ResultTests(unittest.TestCase):
             ),
         ):
             result = recipe_tool.execute_recipe(recipe, {"year": 2025})
-        self.assertTrue(recipe_tool.verify_execution_result(result)["valid"])
-        result["results"]["population"]["value"] += 1
+        return result
+
+    def test_execution_receipt_verifies_the_full_evidence_envelope(self) -> None:
+        result = self._execution_result()
         verification = recipe_tool.verify_execution_result(result)
-        self.assertFalse(verification["valid"])
-        self.assertFalse(verification["checks"]["results_integrity"])
+        self.assertTrue(verification["valid"])
+        self.assertEqual(
+            verification["checks"],
+            {
+                "receipt_integrity": True,
+                "results_integrity": True,
+                "execution_status": True,
+                "contract_binding": True,
+                "parameters_binding": True,
+                "request_binding": True,
+                "provenance_binding": True,
+                "catalog_binding": True,
+            },
+        )
+
+    def test_execution_receipt_detects_evidence_envelope_tampering(self) -> None:
+        cases = {
+            "results": lambda value: value["results"]["population"].update(
+                {"value": 14_246_220}
+            ),
+            "status": lambda value: value.update({"status": "unverified"}),
+            "recipe": lambda value: value.update({"recipe_id": "different-recipe"}),
+            "parameters": lambda value: value.update({"parameters": {"year": 2024}}),
+            "request URL": lambda value: value.update(
+                {"request_url": "https://example.com/"}
+            ),
+            "retrieval time": lambda value: value.update(
+                {"retrieved_at": "2020-01-01T00:00:00Z"}
+            ),
+            "elapsed time": lambda value: value.update({"elapsed_ms": 999}),
+            "provenance": lambda value: value["provenance"].update(
+                {"source_url": "https://example.com/"}
+            ),
+            "question": lambda value: value.update(
+                {"question": {"ja": "別の質問", "en": "Other"}}
+            ),
+            "interpretation": lambda value: value.update(
+                {"interpretation": ["注意事項なし"]}
+            ),
+        }
+        baseline = self._execution_result()
+        for label, tamper in cases.items():
+            with self.subTest(field=label):
+                candidate = copy.deepcopy(baseline)
+                tamper(candidate)
+                self.assertFalse(recipe_tool.verify_execution_result(candidate)["valid"])
 
 
 class CommandLineTests(unittest.TestCase):
@@ -279,15 +325,7 @@ class CommandLineTests(unittest.TestCase):
         self.assertIn("catalog valid: 13 entries; recipes valid: 6", completed.stdout)
 
     def test_verify_reads_an_execution_result_from_standard_input(self) -> None:
-        results = {"population": {"value": 14_246_219}}
-        receipt_body = {"results_sha256": recipe_tool._canonical_json_sha256(results)}
-        execution = {
-            "results": results,
-            "receipt": {
-                **receipt_body,
-                "receipt_id": recipe_tool._canonical_json_sha256(receipt_body),
-            },
-        }
+        execution = ResultTests()._execution_result()
         completed = subprocess.run(
             [sys.executable, str(MODULE_PATH), "verify", "-"],
             cwd=ROOT,

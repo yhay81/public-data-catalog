@@ -48,7 +48,7 @@ The public server uses the current MCP Streamable HTTP transport:
 
 It exposes only three tools: `search_data` discovers sources and contracts, `execute` runs a reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.
 
-For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries and [`server.json`](./server.json) for MCP Registry metadata.
+For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries, the [compatibility matrix](./docs/compatibility.md) for proven surfaces, and [`server.json`](./server.json) for MCP Registry metadata.
 
 ## Verified recipes
 
@@ -88,6 +88,7 @@ See the [recipe format](./docs/recipe-format.md), [security policy](./SECURITY.m
 
 ```sh
 python3 scripts/validate_catalog.py
+python3 scripts/evaluate_agent_traces.py --check-set
 python3 -m unittest discover -s tests -v
 python3 scripts/recipe_tool.py check
 npm ci
@@ -110,7 +111,7 @@ Start with a concrete question, not a request to increase the source count.
 4. Run local validation and the affected live probe.
 5. Record the result, evidence, units, identifiers, and interpretation caveats.
 
-An independent onboarding test is also a valuable first contribution. Follow the [external execution protocol](./docs/external-test-protocol.md) and join [Issue #2](https://github.com/yhay81/public-data-catalog/issues/2).
+An independent onboarding test is also a valuable first contribution. Follow the [external execution protocol](./docs/external-test-protocol.md) and submit the [external-test form](https://github.com/yhay81/public-data-catalog/issues/new?template=external-test.yml). Agent hosts can use the [nine-scenario evaluation set and scorer](./evals/README.md), which cover all six recipes and false-success cases.
 
 The project's differentiation and evidence gates are documented in [strategy](./docs/strategy.md) and the [roadmap](./docs/roadmap.md). For usage and reporting routes, see [SUPPORT.md](./SUPPORT.md).
 
