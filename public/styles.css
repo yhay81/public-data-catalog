@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Noto Sans JP PDC";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/noto-sans-jp-pdc.woff2?v=1") format("woff2");
+}
+
 :root {
   --canvas: #f6f7f9;
   --surface: #ffffff;
@@ -16,7 +24,7 @@
   --gutter: clamp(1.25rem, 4vw, 2rem);
   color-scheme: light;
   font-family:
-    Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", Arial, sans-serif;
+    "Noto Sans JP PDC", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
   font-synthesis: none;
 }
 
@@ -165,9 +173,9 @@ button {
 .start h1 {
   margin: 0;
   font-size: clamp(3.3rem, 5vw, 4rem);
-  font-weight: 650;
+  font-weight: 700;
   line-height: 1.02;
-  letter-spacing: -0.075em;
+  letter-spacing: -0.055em;
   white-space: nowrap;
 }
 
@@ -235,7 +243,8 @@ button {
 .action-heading h2 {
   margin: 0;
   font-size: clamp(1.3rem, 2vw, 1.65rem);
-  letter-spacing: -0.035em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 .action-time {
@@ -354,8 +363,8 @@ button {
 .section-heading h2 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 620;
-  letter-spacing: -0.055em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .setup-list {
@@ -453,9 +462,10 @@ button {
 .answer-value {
   margin: 0;
   font-size: clamp(3.6rem, 7vw, 6.6rem);
-  font-weight: 620;
+  font-weight: 650;
   line-height: 0.95;
-  letter-spacing: -0.07em;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
 }
 
 .answer-value span {
