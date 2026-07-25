@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://public-data-catalog-mcp.yusuke8h.workers.dev/sitemap.xml

@@ -6,9 +6,11 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![公式データを検証済みの取得結果へ変換する流れ](./docs/assets/social-preview.png)
+![公式データを検証済みの取得結果へ変換するPDCのブランドビジュアル](./public/og.png)
 
 日本の公共データを中心に、AIや開発者が**具体的な問いから、根拠付きで再現可能な最初の取得まで**進むための、テスト済みレシピ集です。
+
+ブランドサイト: [PDC — 公的データに、検証済みの経路を。](https://public-data-catalog-mcp.yusuke8h.workers.dev/) · [ブランドガイド](./docs/brand.md)
 
 単なるリンク集ではありません。実行可能な小さなリクエスト、期待する応答、単位・コード・改訂上の注意、出典、ライセンス、確認日を一緒に管理します。
 

@@ -6,9 +6,11 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![Official public-data sources flowing through validation into an attributed result](./docs/assets/social-preview.png)
+![PDC brand visual showing official public-data sources converging into a reviewed route](./public/og.png)
 
 Japanese-first, tested retrieval recipes that help developers and AI agents move from a concrete public-data question to a small, reproducible, attributable result.
+
+Brand site: [PDC — Verified routes to official public data](https://public-data-catalog-mcp.yusuke8h.workers.dev/) · [Brand guide](./docs/brand.md)
 
 This is not another exhaustive link list or a mirror of government data. Each recipe keeps a bounded request, response assertions, extracted values, interpretation notes, provenance, license, and verification date together.
 

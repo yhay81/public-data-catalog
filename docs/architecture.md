@@ -59,6 +59,22 @@ The same server factory is used by:
 
 The tool surface stays at three tools even as recipe count grows. This keeps agent context cost stable and preserves a clear policy boundary. The hosted Worker creates a fresh MCP server for every request, following the security requirement introduced in MCP TypeScript SDK 1.26.
 
+## Runtime strategy
+
+The production remote server currently uses the MCP TypeScript SDK, Zod input
+schemas, Cloudflare Agents' stateless handler, and Cloudflare Workers. The
+dependency-free Python runner remains the portable execution reference.
+
+Hayate 0.10 can also run directly on Cloudflare Python Workers. A Hayate adapter
+can expose the same three-tool stateless Streamable HTTP endpoint without
+changing the catalog, retrieval-contract, or receipt formats. It is a viable
+Python-edge path, not a required client dependency.
+
+Migration is evidence-gated: keep the production TypeScript endpoint in place,
+implement the Hayate adapter beside it, and run the same tool-list,
+execute/verify, receipt-vector, and remote smoke tests against both. Switch the
+public route only after those outputs and security boundaries agree.
+
 ## Interoperability
 
 - JSON Schema defines source profiles, executable contracts, and receipts.
