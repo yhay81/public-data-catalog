@@ -10,6 +10,7 @@ retrospectively.
 | Date | Probe run | Result | Investigation minutes | Contracts affected | Decision or follow-up |
 | --- | --- | --- | ---: | ---: | --- |
 | 2026-07-25 | Baseline created | Historical runs not timed | unknown | 6 | Start timing at the next reviewed scheduled or manual probe |
+| 2026-07-25 | Post-release manual `recipe_tool.py check` | All six contracts passed | 0 | 6 | No investigation or contract change required |
 
 For a failure, classify the cause as one of:
 
