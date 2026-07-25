@@ -73,7 +73,7 @@ Each parameter must have exactly one binding, each binding must name a query fie
 
 ## Execution receipts
 
-Successful executions include a receipt conforming to [`receipt.schema.json`](../receipt.schema.json). Its hashes bind the contract, resolved parameters, request, response body, extracted results, and provenance. `verify` detects a result change while the receipt itself remains trusted. The receipt is not a publisher signature, cannot prove authenticity on its own, and does not replace freshness probes.
+Successful executions include a receipt conforming to [`receipt.schema.json`](../receipt.schema.json). Its hashes bind the contract, resolved parameters, request, response body, extracted results, and provenance. `verify` also checks that those receipt fields match the displayed execution envelope and that the question and interpretation match the reviewed recipe version in the bundled catalog. It therefore detects later changes to results, contract identity, parameters, request metadata, attribution, licence, question, or interpretation while the receipt itself remains trusted. The receipt is not a publisher signature, cannot prove authenticity on its own, and does not replace freshness probes.
 
 The response hash covers the exact received bytes. Result and receipt IDs hash compact UTF-8 JSON with object keys sorted recursively; `receipt_id` itself is excluded when calculating the receipt ID.
 

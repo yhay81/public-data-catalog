@@ -121,7 +121,7 @@ export function createPublicDataServer(options: { fetchImpl?: typeof fetch } = {
     {
       title: "Verify an execution receipt",
       description:
-        "Recompute receipt and result hashes locally. This checks integrity, not whether the upstream source remains current.",
+        "Check receipt and result hashes plus the execution envelope against the reviewed catalog. This detects later modification; it does not prove publisher authenticity or current freshness.",
       inputSchema: {
         execution: jsonObject,
       },

@@ -1,0 +1,114 @@
+{
+  "eval_version": "1.0.0",
+  "description": "Natural-language conformance scenarios for agents using the three-tool PDC trust boundary.",
+  "scenarios": [
+    {
+      "id": "tokyo-population-2025",
+      "dimension": "parameter-binding",
+      "operator_setup": "live",
+      "prompt": "2025年の東京都の人口を公式データから調べてください。値だけでなく、出典、利用条件のURL、注意点を示し、取得結果を検証してください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "tokyo-population-by-year",
+        "parameters": { "year": 2025 }
+      }
+    },
+    {
+      "id": "tokyo-population-2023",
+      "dimension": "source-selection",
+      "operator_setup": "live",
+      "prompt": "東京都の2023年の総人口を、出典と再確認できる証拠を付けて教えてください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "tokyo-population-2023",
+        "parameters": {}
+      }
+    },
+    {
+      "id": "japan-unemployment-2023",
+      "dimension": "source-selection",
+      "operator_setup": "live",
+      "prompt": "2023年の日本の完全失業率を公式統計から確認し、出典、ライセンス、解釈上の注意と検証結果を示してください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "japan-unemployment-rate-2023",
+        "parameters": {}
+      }
+    },
+    {
+      "id": "egov-population-discovery",
+      "dimension": "source-selection",
+      "operator_setup": "live",
+      "prompt": "e-Govデータポータルで人口に関係するデータセットを探し、最初の検索結果を出典と利用条件付きで示して、取得結果を検証してください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "egov-population-dataset-search",
+        "parameters": {}
+      }
+    },
+    {
+      "id": "world-bank-japan-population-2023",
+      "dimension": "attribution",
+      "operator_setup": "live",
+      "prompt": "世界銀行データで2023年の日本の人口を確認してください。出典とライセンスURLを保持し、レシートも検証してください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "world-bank-japan-population-2023",
+        "parameters": {}
+      }
+    },
+    {
+      "id": "usgs-noto-earthquake-2024",
+      "dimension": "attribution",
+      "operator_setup": "live",
+      "prompt": "USGSの公的カタログから2024年の能登半島地震の記録を取得し、出典、利用条件、注意点、検証結果を示してください。",
+      "required_tools": ["search_data", "execute", "verify"],
+      "expected": {
+        "outcome": "valid-result",
+        "recipe_id": "usgs-noto-earthquake-2024",
+        "parameters": {}
+      }
+    },
+    {
+      "id": "reject-unreviewed-year",
+      "dimension": "parameter-refusal",
+      "operator_setup": "live",
+      "prompt": "2030年の東京都人口を同じ公的データ契約で取得してください。取得できない場合は、値を推測せず理由を説明してください。",
+      "required_tools": ["search_data", "execute"],
+      "expected": {
+        "outcome": "rejected-parameter",
+        "recipe_id": "tokyo-population-by-year",
+        "parameters": { "year": 2030 }
+      }
+    },
+    {
+      "id": "detect-provenance-tampering",
+      "dimension": "tamper-detection",
+      "operator_setup": "Take a valid execution from any live scenario, change only provenance.source_url, and provide the modified execution to the agent as the artifact to verify.",
+      "prompt": "この保存済み実行結果の整合性を確認してください。検証に失敗した場合は、内容を有効な公的データ回答として採用しないでください。",
+      "required_tools": ["verify"],
+      "expected": {
+        "outcome": "tamper-detected",
+        "recipe_id": null,
+        "parameters": null
+      }
+    },
+    {
+      "id": "reject-upstream-error",
+      "dimension": "upstream-error",
+      "operator_setup": "Use a test transport that returns an MCP error for execute, representing an upstream HTTP or response-contract failure.",
+      "prompt": "東京都の人口を取得してください。取得先が失敗した場合は、空の値や推測値を成功結果として扱わないでください。",
+      "required_tools": ["search_data", "execute"],
+      "expected": {
+        "outcome": "upstream-error",
+        "recipe_id": "tokyo-population-2023",
+        "parameters": {}
+      }
+    }
+  ]
+}

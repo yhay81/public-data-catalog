@@ -47,7 +47,12 @@ Every successful execution returns the extracted result and a receipt containing
 - source, license, and required credit;
 - extracted-result SHA-256 and a receipt SHA-256.
 
-`verify` recomputes the receipt and result hashes without network access. It detects later modification; it does not prove that an official publisher signed the source data or that a value remains current.
+`verify` recomputes the receipt and result hashes without network access, checks
+that the displayed contract, parameters, request metadata, and provenance match
+the receipt, and checks the question and interpretation against the reviewed
+recipe version in the bundled catalog. It detects later modification across the
+full evidence envelope. It does not prove that an official publisher signed the
+source data or that a value remains current.
 
 ## Agent connection
 

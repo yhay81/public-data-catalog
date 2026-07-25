@@ -99,7 +99,7 @@ test("search_data discovers source profiles and their contracts without network 
   }
 });
 
-test("execute binds a reviewed parameter and verify detects later tampering", async () => {
+test("execute binds a reviewed parameter and verify covers the full evidence envelope", async () => {
   let requestedUrl = "";
   const fakeFetch: typeof fetch = async (input) => {
     requestedUrl = String(input);
@@ -135,14 +135,57 @@ test("execute binds a reviewed parameter and verify detects later tampering", as
       name: "verify",
       arguments: { execution },
     });
-    assert.equal((verified.structuredContent as { valid: boolean }).valid, true);
-
-    (execution.results as { population: { value: number } }).population.value += 1;
-    const tampered = await client.callTool({
-      name: "verify",
-      arguments: { execution },
+    const verifiedPayload = verified.structuredContent as {
+      valid: boolean;
+      checks: Record<string, boolean>;
+    };
+    assert.equal(verifiedPayload.valid, true);
+    assert.deepEqual(verifiedPayload.checks, {
+      receipt_integrity: true,
+      results_integrity: true,
+      execution_status: true,
+      contract_binding: true,
+      parameters_binding: true,
+      request_binding: true,
+      provenance_binding: true,
+      catalog_binding: true,
     });
-    assert.equal((tampered.structuredContent as { valid: boolean }).valid, false);
+
+    const tamperCases: Array<[string, (candidate: Record<string, unknown>) => void]> = [
+      [
+        "results",
+        (candidate) => {
+          (candidate.results as { population: { value: number } }).population.value += 1;
+        },
+      ],
+      ["status", (candidate) => { candidate.status = "unverified"; }],
+      ["recipe", (candidate) => { candidate.recipe_id = "different-recipe"; }],
+      ["parameters", (candidate) => { candidate.parameters = { year: 2024 }; }],
+      ["request URL", (candidate) => { candidate.request_url = "https://example.com/"; }],
+      ["retrieval time", (candidate) => { candidate.retrieved_at = "2020-01-01T00:00:00Z"; }],
+      ["elapsed time", (candidate) => { candidate.elapsed_ms = 999; }],
+      [
+        "provenance",
+        (candidate) => {
+          (candidate.provenance as Record<string, unknown>).source_url = "https://example.com/";
+        },
+      ],
+      ["question", (candidate) => { candidate.question = { ja: "別の質問", en: "Other" }; }],
+      ["interpretation", (candidate) => { candidate.interpretation = ["注意事項なし"]; }],
+    ];
+    for (const [label, tamper] of tamperCases) {
+      const candidate = structuredClone(execution);
+      tamper(candidate);
+      const tampered = await client.callTool({
+        name: "verify",
+        arguments: { execution: candidate },
+      });
+      assert.equal(
+        (tampered.structuredContent as { valid: boolean }).valid,
+        false,
+        `${label} tampering should be detected`,
+      );
+    }
   } finally {
     await client.close();
     await server.close();

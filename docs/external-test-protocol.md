@@ -17,13 +17,29 @@ Passing this gate is evidence that the retrieval unit is usable. It is not evide
 
 ## Session procedure
 
-1. Use a clean checkout and Python 3.11 or newer.
-2. Start the timer before opening `README.md`.
-3. Do not provide verbal instructions beyond: “Use this repository to run the assigned recipe and obtain its result with provenance.”
-4. The tester may read any file in the repository and use normal local tools.
-5. Do not use web search or provider documentation. If external research becomes necessary, record it as a failed no-search attempt and let the tester continue.
-6. Stop the timer when the tester can identify the requested value or record together with its source and license URL.
-7. Sanitize all captured output. Never collect environment variables, credentials, personal data, or unrelated shell history.
+Choose one path:
+
+- **Clean Python:** use a clean checkout and Python 3.11 or newer.
+- **MCP person or agent:** use a fresh client profile or agent context and add
+  only the public MCP URL from `README.md`. Record the client or host and its
+  version. For an AI agent, also record the model name when it is safe to share.
+
+Then:
+
+1. Start the timer before opening `README.md`.
+2. For Python, do not provide verbal instructions beyond: “Use this repository
+   to run the assigned recipe and obtain its result with provenance.” For MCP,
+   provide only the corresponding natural-language prompt from
+   [`evals/agent-scenarios.json`](../evals/agent-scenarios.json).
+3. The tester may read any file in the repository and use normal local tools.
+   The agent may use only the three PDC tools for public-data retrieval during
+   the timed attempt.
+4. Do not use web search or provider documentation. If external research becomes necessary, record it as a failed no-search attempt and let the tester continue.
+5. Stop the timer when the tester can identify the requested value or record
+   together with its source and license URL and can show a successful
+   `verify` result. If the path is clean Python, use
+   `python3 scripts/recipe_tool.py verify` on the saved JSON result.
+6. Sanitize all captured output. Never collect environment variables, credentials, personal data, or unrelated shell history.
 
 An upstream request can fail temporarily. Record the exact failure category rather than coaching the tester around it:
 
@@ -39,12 +55,14 @@ An upstream request can fail temporarily. Record the exact failure category rath
 Submit the `External execution test` issue form once per session. Record:
 
 - recipe ID and session type;
-- Python version and operating system;
+- execution path, client or host version, and operating system;
 - start-to-result time;
 - whether the first attempt succeeded;
 - whether additional web search or unpublished help was needed;
 - the first confusing step;
-- whether the result would be useful in a real workflow;
+- whether source, licence, and receipt verification remained attached;
+- the real workflow where the result would be useful, or `none`;
+- one adjacent question the tester wanted next, or `none`;
 - a small, sanitized result or error.
 
 Do not average away failures. Keep each session as a separate observation, then summarize the gate after five sessions.

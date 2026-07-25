@@ -721,7 +721,7 @@ def execute_recipe(
 
 
 def verify_execution_result(result: object) -> dict[str, Any]:
-    """Verify receipt integrity for a previously returned execution result."""
+    """Verify a saved execution result against its receipt and reviewed recipe."""
     if not isinstance(result, dict):
         raise RecipeError("execution result must be an object")
     receipt = result.get("receipt")
@@ -734,17 +734,82 @@ def verify_execution_result(result: object) -> dict[str, Any]:
     receipt_body = {key: value for key, value in receipt.items() if key != "receipt_id"}
     expected_receipt_id = _canonical_json_sha256(receipt_body)
     expected_results_hash = _canonical_json_sha256(results)
-    valid = (
-        receipt_id == expected_receipt_id
-        and receipt.get("results_sha256") == expected_results_hash
+    contract = receipt.get("contract")
+    request = receipt.get("request")
+    provenance = receipt.get("provenance")
+    contract_binding = (
+        isinstance(contract, dict)
+        and result.get("recipe_id") == contract.get("id")
+        and result.get("contract_version") == contract.get("version")
     )
+    parameters_binding = result.get("parameters") == receipt.get("parameters")
+    request_binding = (
+        isinstance(request, dict)
+        and result.get("request_url") == request.get("url")
+        and result.get("retrieved_at") == request.get("retrieved_at")
+        and result.get("elapsed_ms") == request.get("elapsed_ms")
+    )
+    provenance_binding = (
+        isinstance(contract, dict)
+        and isinstance(provenance, dict)
+        and result.get("provenance")
+        == {
+            **provenance,
+            "recipe_last_verified": contract.get("last_verified"),
+        }
+    )
+    catalog_binding = False
+    if (
+        isinstance(contract, dict)
+        and isinstance(request, dict)
+        and isinstance(provenance, dict)
+        and isinstance(contract.get("id"), str)
+    ):
+        recipe = load_recipes().get(contract["id"])
+        if recipe is not None:
+            try:
+                receipt_parameters = receipt.get("parameters")
+                if not isinstance(receipt_parameters, dict):
+                    raise RecipeError("receipt.parameters must be an object")
+                resolved_parameters = resolve_parameters(recipe, receipt_parameters)
+                _validate_url_syntax(
+                    str(request.get("url")),
+                    recipe["request"]["allowed_hosts"],
+                    "receipt.request.url",
+                )
+                catalog_binding = (
+                    contract
+                    == {
+                        "id": recipe["id"],
+                        "version": recipe["contract_version"],
+                        "last_verified": recipe["last_verified"],
+                    }
+                    and provenance
+                    == {
+                        "source_id": recipe["source_id"],
+                        **recipe["attribution"],
+                    }
+                    and result.get("question") == recipe["question"]
+                    and result.get("interpretation") == recipe["interpretation"]
+                    and request.get("method") == recipe["request"]["method"]
+                    and receipt_parameters == resolved_parameters
+                )
+            except (RecipeError, TypeError, ValueError):
+                catalog_binding = False
+    checks = {
+        "receipt_integrity": receipt_id == expected_receipt_id,
+        "results_integrity": receipt.get("results_sha256") == expected_results_hash,
+        "execution_status": result.get("status") == "ok",
+        "contract_binding": contract_binding,
+        "parameters_binding": parameters_binding,
+        "request_binding": request_binding,
+        "provenance_binding": provenance_binding,
+        "catalog_binding": catalog_binding,
+    }
     return {
-        "valid": valid,
+        "valid": all(checks.values()),
         "receipt_id": receipt_id,
-        "checks": {
-            "receipt_integrity": receipt_id == expected_receipt_id,
-            "results_integrity": receipt.get("results_sha256") == expected_results_hash,
-        },
+        "checks": checks,
     }
 
 
