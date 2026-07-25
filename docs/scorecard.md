@@ -41,10 +41,10 @@ Session reports belong in
 | Generated artifacts | deterministic bundle and DCAT check passing | passing |
 | Remote MCP | MCP Inspector `tools/list`, live parameterized `execute`, 8-check cross-runtime `verify`, and provenance-tamper rejection on 2026-07-25 | passing |
 | MCP Registry | remote metadata published; registry remains in preview | published |
-| Weekly recipe probes | all six recipes manually verified on 2026-07-24 | passing at last review |
+| Weekly recipe probes | all six recipes manually verified on 2026-07-25 | passing at last review |
 | Client compatibility matrix | [published](./compatibility.md); local stdio and public HTTP Inspector rows passing; 2 external hosts pending | partial |
 | Agent evaluation set | 9 checked-in scenarios cover all 6 recipes and required failure behaviors; independent runs pending | published |
-| Probe investigation time | [log created](./maintenance-log.md); historical time was not measured | unknown |
+| Probe investigation time | first reviewed post-release run required 0 investigation minutes; historical time remains unknown | recording |
 
 Technical readiness is not a substitute for independent activation or demand.
 
