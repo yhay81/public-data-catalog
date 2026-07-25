@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
-  <title>PDC — Public Data Catalog</title>
-  <rect width="64" height="64" rx="10" fill="#0b0d0d"/>
-  <circle cx="16" cy="32" r="5" fill="#b8ff3d"/>
-  <circle cx="32" cy="32" r="5" fill="#b8ff3d"/>
-  <circle cx="48" cy="32" r="5" fill="#b8ff3d"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 64 64"><title>PDC — Public Data Catalog</title><rect width="64" height="64" fill="#0b0d0d" rx="10"/><circle cx="16" cy="32" r="5" fill="#b8ff3d"/><circle cx="32" cy="32" r="5" fill="#b8ff3d"/><circle cx="48" cy="32" r="5" fill="#b8ff3d"/></svg>
