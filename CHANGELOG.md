@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+### Added
+
+- A PDC brand system and public landing page explaining the trust model, MCP connection, production stack, and Hayate compatibility path.
+
 ## 0.4.0 - 2026-07-24
 
 ### Added

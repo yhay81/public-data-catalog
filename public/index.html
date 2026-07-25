@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PDCは、公的データの発見・実行・検証を、出典とライセンス付きの再現可能な経路にするオープンソース基盤です。"
+    />
+    <meta name="theme-color" content="#0b0d0d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:title" content="PDC — Public Data Catalog" />
+    <meta property="og:description" content="公的データに、検証済みの経路を。" />
+    <meta
+      property="og:url"
+      content="https://public-data-catalog-mcp.yusuke8h.workers.dev/"
+    />
+    <meta
+      property="og:image"
+      content="https://public-data-catalog-mcp.yusuke8h.workers.dev/og.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PDC — Public Data Catalog" />
+    <meta name="twitter:description" content="公的データに、検証済みの経路を。" />
+    <meta
+      name="twitter:image"
+      content="https://public-data-catalog-mcp.yusuke8h.workers.dev/og.png"
+    />
+    <link rel="canonical" href="https://public-data-catalog-mcp.yusuke8h.workers.dev/" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "PDC — Public Data Catalog",
+        "description": "Verified, source-attributed public-data retrieval contracts for people and AI agents.",
+        "codeRepository": "https://github.com/yhay81/public-data-catalog",
+        "license": "https://opensource.org/license/mit",
+        "programmingLanguage": ["TypeScript", "Python"],
+        "runtimePlatform": "Cloudflare Workers",
+        "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/"
+      }
+    </script>
+    <title>PDC — Public Data Catalog</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="PDC ホーム">
+        <span class="wordmark-mark" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+        <span>PDC</span>
+      </a>
+      <nav aria-label="メインナビゲーション">
+        <a href="#method">Method</a>
+        <a href="#connect">Connect</a>
+        <a href="#runtime">Runtime</a>
+        <a
+          class="nav-source"
+          href="https://github.com/yhay81/public-data-catalog"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub <span aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <canvas id="route-field" aria-hidden="true"></canvas>
+        <div class="hero-grid" aria-hidden="true"></div>
+        <p class="hero-kicker reveal-now">OPEN SOURCE · MCP · JAPANESE-FIRST</p>
+        <div class="hero-brand reveal-now" aria-label="PDC">PDC</div>
+        <div class="hero-copy reveal-now">
+          <p class="hero-product">PUBLIC DATA CATALOG</p>
+          <h1 id="hero-title">公的データに、<br />検証済みの経路を。</h1>
+          <p class="hero-summary">
+            AIエージェントが公式データを探し、小さく実行し、
+            出典・ライセンス・整合性を保ったまま答えへ進むためのOSS。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#connect">
+              エージェントに接続 <span aria-hidden="true">→</span>
+            </a>
+            <a
+              class="text-action"
+              href="https://github.com/yhay81/public-data-catalog"
+              target="_blank"
+              rel="noreferrer"
+            >
+              ソースを見る <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+        <div class="live-indicator reveal-now" aria-live="polite">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="live-status">Checking public MCP</span>
+        </div>
+        <p class="hero-route-label" aria-hidden="true">
+          SOURCE → CONTRACT → RECEIPT
+        </p>
+      </section>
+
+      <section class="method section-shell" id="method" aria-labelledby="method-title">
+        <div class="section-index reveal">01 / METHOD</div>
+        <div class="section-heading reveal">
+          <p class="eyebrow">THREE OPERATIONS. ONE TRUST BOUNDARY.</p>
+          <h2 id="method-title">探す。実行する。<br />確かめる。</h2>
+        </div>
+        <div class="method-list">
+          <article class="method-item reveal">
+            <p class="method-number">01</p>
+            <div>
+              <h3>SEARCH</h3>
+              <p>
+                公式ソースと検証済み契約を、ネットワーク取得なしで発見する。
+                データ件数ではなく、答えられる問いから探します。
+              </p>
+            </div>
+            <code>search_data</code>
+          </article>
+          <article class="method-item reveal">
+            <p class="method-number">02</p>
+            <div>
+              <h3>EXECUTE</h3>
+              <p>
+                許可済みHTTPS GETだけを、型・範囲・最大サイズの境界内で実行する。
+                任意URL、SQL、コードは受け取りません。
+              </p>
+            </div>
+            <code>execute</code>
+          </article>
+          <article class="method-item reveal">
+            <p class="method-number">03</p>
+            <div>
+              <h3>VERIFY</h3>
+              <p>
+                契約版、パラメータ、応答、抽出結果、出典を束ねたレシートの
+                整合性をネットワークなしで確認する。
+              </p>
+            </div>
+            <code>verify</code>
+          </article>
+        </div>
+      </section>
+
+      <section class="proof" aria-labelledby="proof-title">
+        <div class="proof-copy section-shell">
+          <div class="section-index reveal">02 / PROOF</div>
+          <div class="proof-title-wrap reveal">
+            <p class="eyebrow">ONE RESULT, WITH ITS EVIDENCE ATTACHED.</p>
+            <h2 id="proof-title">値だけを、<br />置き去りにしない。</h2>
+          </div>
+          <div class="result-sample reveal">
+            <div class="result-value">
+              <span>14,246,219</span>
+              <small>人</small>
+            </div>
+            <p>東京都の総人口 · 2025年</p>
+            <dl>
+              <div>
+                <dt>CONTRACT</dt>
+                <dd>tokyo-population-by-year@1.0.0</dd>
+              </div>
+              <div>
+                <dt>PARAMETER</dt>
+                <dd>year = 2025</dd>
+              </div>
+              <div>
+                <dt>PROVENANCE</dt>
+                <dd>Statistics Dashboard Web API</dd>
+              </div>
+              <div>
+                <dt>RECEIPT</dt>
+                <dd>SHA-256 · cross-runtime verified</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <figure class="brand-image reveal">
+          <img
+            src="/og.png"
+            width="1200"
+            height="630"
+            loading="lazy"
+            alt="複数の公的データ源が検証点を通り、一本の経路へ収束するPDCのブランドビジュアル"
+          />
+          <figcaption>
+            FROM MANY SOURCES TO ONE REVIEWED ROUTE
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="connect section-shell" id="connect" aria-labelledby="connect-title">
+        <div class="section-index reveal">03 / CONNECT</div>
+        <div class="connect-intro reveal">
+          <p class="eyebrow">STREAMABLE HTTP · NO ACCOUNT REQUIRED</p>
+          <h2 id="connect-title">URLをひとつ。<br />道具をみっつ。</h2>
+          <p>
+            MCP対応クライアントへ公開URLを登録すると、
+            検索・実行・検証の3ツールが利用できます。
+          </p>
+        </div>
+        <div class="connection-block reveal">
+          <div class="connection-toolbar">
+            <span>MCP CLIENT CONFIG</span>
+            <button type="button" id="copy-config">COPY</button>
+          </div>
+          <pre><code id="config-code">{
+  "mcpServers": {
+    "public-data-catalog": {
+      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
+    }
+  }
+}</code></pre>
+          <p id="copy-result" aria-live="polite"></p>
+        </div>
+        <div class="connect-links reveal">
+          <a
+            href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
+            target="_blank"
+            rel="noreferrer"
+          >
+            MCP Registry <span aria-hidden="true">↗</span>
+          </a>
+          <a
+            href="https://github.com/yhay81/public-data-catalog#aiエージェントから使う"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Local stdio <span aria-hidden="true">↗</span>
+          </a>
+          <a href="/health">Health JSON <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="runtime section-shell" id="runtime" aria-labelledby="runtime-title">
+        <div class="section-index reveal">04 / RUNTIME</div>
+        <div class="runtime-heading reveal">
+          <p class="eyebrow">PORTABLE CORE. EDGE DELIVERY.</p>
+          <h2 id="runtime-title">Cloudflareで届ける。<br />契約は閉じ込めない。</h2>
+        </div>
+        <div class="runtime-grid">
+          <div class="runtime-current reveal">
+            <p class="runtime-label">PRODUCTION / NOW</p>
+            <h3>TypeScript MCP<br />on Cloudflare Workers</h3>
+            <ul>
+              <li><span>Protocol</span>MCP Streamable HTTP</li>
+              <li><span>Server</span>Model Context Protocol TypeScript SDK</li>
+              <li><span>Edge adapter</span>Cloudflare Agents SDK</li>
+              <li><span>Portable runner</span>Python 3.11 standard library</li>
+              <li><span>Interop</span>JSON Schema · DCAT 3 · MCP Registry</li>
+            </ul>
+          </div>
+          <div class="runtime-hayate reveal">
+            <p class="runtime-label">PYTHON EDGE / READY PATH</p>
+            <h3>Hayate can use<br />the same contracts.</h3>
+            <p>
+              Hayate 0.10はCloudflare Python Workersへ直接接続でき、
+              stateless Streamable HTTPのMCP transportをルートとして実装できます。
+              PDCの契約・レシート・適合テストはランタイム非依存なので、
+              Hayate版を並行検証できます。
+            </p>
+            <p class="runtime-note">
+              稼働中のTypeScript版は維持し、同じテストを通過してから切り替える方針です。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <canvas id="closing-field" aria-hidden="true"></canvas>
+        <div class="closing-inner reveal">
+          <p>PDC / PUBLIC DATA CATALOG</p>
+          <h2 id="closing-title">答えに、<br />帰り道を残す。</h2>
+          <div>
+            <a class="primary-action dark" href="#connect">
+              MCPを接続する <span aria-hidden="true">→</span>
+            </a>
+            <a
+              class="text-action dark"
+              href="https://github.com/yhay81/public-data-catalog"
+              target="_blank"
+              rel="noreferrer"
+            >
+              CONTRIBUTE ON GITHUB <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>PDC · MIT LICENSE · JAPAN · 2026</p>
+      <p>OFFICIAL DATA REMAINS SUBJECT TO EACH SOURCE’S TERMS.</p>
+    </footer>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
