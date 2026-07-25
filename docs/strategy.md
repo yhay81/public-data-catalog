@@ -2,6 +2,12 @@
 
 Date: 2026-07-24
 
+The [active roadmap](./roadmap.md) is authoritative for current phase names,
+entry gates, exit evidence, and infrastructure triggers. The activation and
+demand gates below are retained as the original adoption rationale; together
+they form Roadmap Gate 1. The distribution spike described as Gate C is now
+complete, but distribution does not bypass activation or demand evidence.
+
 ## Position
 
 Public Data Catalog should become the **Japanese-first collection of tested, source-specific retrieval contracts for official data**.

@@ -29,4 +29,4 @@ This file records reviewed verification, not a real-time uptime guarantee.
 
 Independent onboarding validation is still pending. Run it with the [external execution test protocol](./external-test-protocol.md) and submit one report per session.
 
-The reference MCP deployment at `https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp` passed a remote tool-list, `execute`, and `verify` smoke test on 2026-07-24. This is a point-in-time deployment check, not an uptime commitment.
+The reference MCP deployment at `https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp` passed a remote tool-list, `execute`, and `verify` smoke test on 2026-07-25. This is a point-in-time deployment check, not an uptime commitment.
