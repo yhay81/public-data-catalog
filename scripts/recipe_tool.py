@@ -7,11 +7,13 @@ import argparse
 import hashlib
 import ipaddress
 import json
+import math
 import re
 import socket
 import sys
 import time
 from datetime import UTC, date, datetime
+from itertools import product
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -27,6 +29,15 @@ ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
 VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 BINDING_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 BINDING_FORMAT_RE = re.compile(r"^[A-Za-z0-9._~-]*\{value\}[A-Za-z0-9._~-]*$")
+INTEGER_RE = re.compile(r"^-?(?:0|[1-9][0-9]*)$")
+NUMBER_RE = re.compile(r"^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$")
+SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+RECEIPT_SCHEMA = (
+    "https://raw.githubusercontent.com/yhay81/public-data-catalog/"
+    "main/receipt.schema.json"
+)
+RECEIPT_VERSION = "1.1.0"
+MAX_PROBE_CASES = 64
 SECRET_KEYS = {
     "access_token",
     "api_key",
@@ -139,6 +150,126 @@ def _validate_reference_url(url: object, path: str) -> None:
     leaked = sorted(query_keys & SECRET_KEYS)
     if leaked:
         raise RecipeError(f"{path} contains secret-like query field(s): {', '.join(leaked)}")
+
+
+def _require_sha256(value: object, path: str) -> str:
+    text = _require_string(value, path)
+    if not SHA256_RE.fullmatch(text):
+        raise RecipeError(f"{path} must be a sha256: digest")
+    return text
+
+
+def _require_datetime(value: object, path: str) -> str:
+    text = _require_string(value, path)
+    if "T" not in text or not (text.endswith("Z") or re.search(r"[+-][0-9]{2}:[0-9]{2}$", text)):
+        raise RecipeError(f"{path} must be an ISO 8601 date-time with a timezone")
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise RecipeError(f"{path} must be a valid ISO 8601 date-time: {exc}") from exc
+    if parsed.tzinfo is None:
+        raise RecipeError(f"{path} must include a timezone")
+    return text
+
+
+def _validate_receipt_document(receipt: object) -> dict[str, Any]:
+    if not isinstance(receipt, dict):
+        raise RecipeError("receipt must be an object")
+    receipt_keys = {
+        "$schema",
+        "receipt_version",
+        "receipt_id",
+        "contract",
+        "parameters",
+        "request",
+        "verification",
+        "provenance",
+        "results_sha256",
+    }
+    _require_exact_keys(receipt, receipt_keys, receipt_keys, "receipt")
+    if receipt["$schema"] != RECEIPT_SCHEMA:
+        raise RecipeError("receipt.$schema is not the supported receipt schema")
+    if receipt["receipt_version"] != RECEIPT_VERSION:
+        raise RecipeError(f"receipt.receipt_version must be {RECEIPT_VERSION}")
+    _require_sha256(receipt["receipt_id"], "receipt.receipt_id")
+    _require_sha256(receipt["results_sha256"], "receipt.results_sha256")
+
+    contract = receipt["contract"]
+    if not isinstance(contract, dict):
+        raise RecipeError("receipt.contract must be an object")
+    contract_keys = {"id", "version", "last_verified"}
+    _require_exact_keys(contract, contract_keys, contract_keys, "receipt.contract")
+    if not ID_RE.fullmatch(_require_string(contract["id"], "receipt.contract.id")):
+        raise RecipeError("receipt.contract.id is not a valid identifier")
+    if not VERSION_RE.fullmatch(_require_string(contract["version"], "receipt.contract.version")):
+        raise RecipeError("receipt.contract.version must use semantic version format X.Y.Z")
+    _parse_date(contract["last_verified"], "receipt.contract.last_verified")
+
+    parameters = receipt["parameters"]
+    if not isinstance(parameters, dict):
+        raise RecipeError("receipt.parameters must be an object")
+    for name, value in parameters.items():
+        if not isinstance(name, str) or not ID_RE.fullmatch(name):
+            raise RecipeError("receipt.parameters contains an invalid parameter name")
+        if not isinstance(value, (str, int, float, bool)) or (
+            isinstance(value, float) and not math.isfinite(value)
+        ):
+            raise RecipeError(f"receipt.parameters.{name} must be a scalar")
+
+    request = receipt["request"]
+    if not isinstance(request, dict):
+        raise RecipeError("receipt.request must be an object")
+    request_keys = {
+        "method",
+        "requested_url",
+        "url",
+        "retrieved_at",
+        "elapsed_ms",
+        "response_sha256",
+    }
+    _require_exact_keys(request, request_keys, request_keys, "receipt.request")
+    if request["method"] != "GET":
+        raise RecipeError("receipt.request.method must be GET")
+    _validate_reference_url(request["requested_url"], "receipt.request.requested_url")
+    _validate_reference_url(request["url"], "receipt.request.url")
+    _require_datetime(request["retrieved_at"], "receipt.request.retrieved_at")
+    if (
+        isinstance(request["elapsed_ms"], bool)
+        or not isinstance(request["elapsed_ms"], int)
+        or request["elapsed_ms"] < 0
+    ):
+        raise RecipeError("receipt.request.elapsed_ms must be a non-negative integer")
+    _require_sha256(request["response_sha256"], "receipt.request.response_sha256")
+
+    verification = receipt["verification"]
+    if not isinstance(verification, dict):
+        raise RecipeError("receipt.verification must be an object")
+    verification_keys = {"assertions_passed", "runner"}
+    _require_exact_keys(
+        verification,
+        verification_keys,
+        verification_keys,
+        "receipt.verification",
+    )
+    if (
+        isinstance(verification["assertions_passed"], bool)
+        or not isinstance(verification["assertions_passed"], int)
+        or verification["assertions_passed"] < 1
+    ):
+        raise RecipeError("receipt.verification.assertions_passed must be a positive integer")
+    _require_string(verification["runner"], "receipt.verification.runner")
+
+    provenance = receipt["provenance"]
+    if not isinstance(provenance, dict):
+        raise RecipeError("receipt.provenance must be an object")
+    provenance_keys = {"source_id", "source_url", "license_url", "credit"}
+    _require_exact_keys(provenance, provenance_keys, provenance_keys, "receipt.provenance")
+    if not ID_RE.fullmatch(_require_string(provenance["source_id"], "receipt.provenance.source_id")):
+        raise RecipeError("receipt.provenance.source_id is not a valid identifier")
+    _validate_reference_url(provenance["source_url"], "receipt.provenance.source_url")
+    _validate_reference_url(provenance["license_url"], "receipt.provenance.license_url")
+    _require_string(provenance["credit"], "receipt.provenance.credit")
+    return receipt
 
 
 def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, Any]:
@@ -300,7 +431,7 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
         assertion_path = f"{path}.expect.assertions[{index}]"
         if not isinstance(assertion, dict):
             raise RecipeError(f"{assertion_path} must be an object")
-        allowed = {"pointer", "equals", "minimum", "min_length"}
+        allowed = {"pointer", "equals", "equals_parameter", "minimum", "min_length"}
         _require_exact_keys(assertion, {"pointer"}, allowed, assertion_path)
         _require_string(assertion["pointer"], f"{assertion_path}.pointer")
         checks = set(assertion) - {"pointer"}
@@ -315,6 +446,34 @@ def validate_recipe_document(recipe: object, path: str = "recipe") -> dict[str, 
             not isinstance(assertion["min_length"], int) or assertion["min_length"] < 0
         ):
             raise RecipeError(f"{assertion_path}.min_length must be a non-negative integer")
+        if "equals_parameter" in assertion:
+            parameter_assertion = assertion["equals_parameter"]
+            if not isinstance(parameter_assertion, dict):
+                raise RecipeError(f"{assertion_path}.equals_parameter must be an object")
+            parameter_assertion_keys = {"parameter", "format"}
+            _require_exact_keys(
+                parameter_assertion,
+                parameter_assertion_keys,
+                parameter_assertion_keys,
+                f"{assertion_path}.equals_parameter",
+            )
+            parameter_name = _require_string(
+                parameter_assertion["parameter"],
+                f"{assertion_path}.equals_parameter.parameter",
+            )
+            if parameter_name not in parameters:
+                raise RecipeError(
+                    f"{assertion_path}.equals_parameter.parameter references an unknown parameter"
+                )
+            assertion_format = _require_string(
+                parameter_assertion["format"],
+                f"{assertion_path}.equals_parameter.format",
+            )
+            if not BINDING_FORMAT_RE.fullmatch(assertion_format):
+                raise RecipeError(
+                    f"{assertion_path}.equals_parameter.format must contain exactly one "
+                    "safe {value} placeholder"
+                )
 
     result = recipe["result"]
     if not isinstance(result, dict):
@@ -600,12 +759,33 @@ def _fetch_json(recipe: dict[str, Any], url: str) -> tuple[Any, str, int, str]:
     return document, final_url, elapsed_ms, response_sha256
 
 
-def _check_assertions(recipe: dict[str, Any], document: Any) -> None:
+def _check_assertions(
+    recipe: dict[str, Any],
+    document: Any,
+    parameters: dict[str, int] | None = None,
+) -> None:
+    resolved_parameters = parameters or {}
     for assertion in recipe["expect"]["assertions"]:
         pointer = assertion["pointer"]
         value = resolve_json_pointer(document, pointer)
         if "equals" in assertion and value != assertion["equals"]:
             raise RecipeError(f"assertion failed at {pointer}: expected {assertion['equals']!r}, got {value!r}")
+        if "equals_parameter" in assertion:
+            parameter_assertion = assertion["equals_parameter"]
+            parameter_name = parameter_assertion["parameter"]
+            if parameter_name not in resolved_parameters:
+                raise RecipeError(
+                    f"assertion at {pointer} requires unresolved parameter {parameter_name!r}"
+                )
+            expected = parameter_assertion["format"].replace(
+                "{value}",
+                str(resolved_parameters[parameter_name]),
+            )
+            if value != expected:
+                raise RecipeError(
+                    f"assertion failed at {pointer}: expected {expected!r} from "
+                    f"parameter {parameter_name!r}, got {value!r}"
+                )
         if "minimum" in assertion:
             if (
                 isinstance(value, bool)
@@ -623,20 +803,47 @@ def _check_assertions(recipe: dict[str, Any], document: Any) -> None:
                 )
 
 
+def _coerce_number(value: Any) -> int | float:
+    if isinstance(value, bool):
+        raise ValueError("booleans are not numbers")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("number must be finite")
+        return int(value) if value.is_integer() else value
+    if isinstance(value, str) and NUMBER_RE.fullmatch(value):
+        parsed = float(value)
+        if not math.isfinite(parsed):
+            raise ValueError("number must be finite")
+        return int(parsed) if parsed.is_integer() else parsed
+    raise ValueError("value is not a JSON number")
+
+
 def _transform_value(value: Any, transform: str | None) -> Any:
     if transform is None:
         return value
     try:
         if transform == "string":
-            return str(value)
+            if not isinstance(value, str):
+                raise ValueError("value is not a string")
+            return value
         if transform == "integer":
-            return int(value)
+            if isinstance(value, bool):
+                raise ValueError("booleans are not integers")
+            if isinstance(value, int):
+                return value
+            if isinstance(value, float) and math.isfinite(value) and value.is_integer():
+                return int(value)
+            if isinstance(value, str) and INTEGER_RE.fullmatch(value):
+                return int(value)
+            raise ValueError("value is not an integer")
         if transform == "number":
-            return float(value)
+            return _coerce_number(value)
         if transform == "unix_milliseconds_to_iso8601":
             return (
-                datetime.fromtimestamp(float(value) / 1000, tz=UTC)
-                .isoformat()
+                datetime.fromtimestamp(_coerce_number(value) / 1000, tz=UTC)
+                .isoformat(timespec="milliseconds")
                 .replace("+00:00", "Z")
             )
     except (OverflowError, TypeError, ValueError) as exc:
@@ -651,7 +858,7 @@ def execute_recipe(
     resolved_parameters = resolve_parameters(recipe, parameters)
     request_url = render_request_url(recipe, resolved_parameters)
     document, final_url, elapsed_ms, response_sha256 = _fetch_json(recipe, request_url)
-    _check_assertions(recipe, document)
+    _check_assertions(recipe, document, resolved_parameters)
     values: dict[str, dict[str, Any]] = {}
     for field in recipe["result"]["fields"]:
         item: dict[str, Any] = {
@@ -668,11 +875,8 @@ def execute_recipe(
 
     retrieved_at = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     receipt_body = {
-        "$schema": (
-            "https://raw.githubusercontent.com/yhay81/public-data-catalog/"
-            "main/receipt.schema.json"
-        ),
-        "receipt_version": "1.0.0",
+        "$schema": RECEIPT_SCHEMA,
+        "receipt_version": RECEIPT_VERSION,
         "contract": {
             "id": recipe["id"],
             "version": recipe["contract_version"],
@@ -681,6 +885,7 @@ def execute_recipe(
         "parameters": resolved_parameters,
         "request": {
             "method": "GET",
+            "requested_url": request_url,
             "url": final_url,
             "retrieved_at": retrieved_at,
             "elapsed_ms": elapsed_ms,
@@ -728,15 +933,15 @@ def verify_execution_result(result: object) -> dict[str, Any]:
     results = result.get("results")
     if not isinstance(receipt, dict) or not isinstance(results, dict):
         raise RecipeError("execution result must contain receipt and results objects")
-    receipt_id = receipt.get("receipt_id")
-    if not isinstance(receipt_id, str):
-        raise RecipeError("receipt.receipt_id must be a string")
+    _validate_receipt_document(receipt)
+    receipt_id = receipt["receipt_id"]
     receipt_body = {key: value for key, value in receipt.items() if key != "receipt_id"}
     expected_receipt_id = _canonical_json_sha256(receipt_body)
     expected_results_hash = _canonical_json_sha256(results)
     contract = receipt.get("contract")
     request = receipt.get("request")
     provenance = receipt.get("provenance")
+    verification = receipt.get("verification")
     contract_binding = (
         isinstance(contract, dict)
         and result.get("recipe_id") == contract.get("id")
@@ -772,6 +977,13 @@ def verify_execution_result(result: object) -> dict[str, Any]:
                 if not isinstance(receipt_parameters, dict):
                     raise RecipeError("receipt.parameters must be an object")
                 resolved_parameters = resolve_parameters(recipe, receipt_parameters)
+                expected_requested_url = render_request_url(recipe, resolved_parameters)
+                requested_url = str(request.get("requested_url"))
+                _validate_url_syntax(
+                    requested_url,
+                    recipe["request"]["allowed_hosts"],
+                    "receipt.request.requested_url",
+                )
                 _validate_url_syntax(
                     str(request.get("url")),
                     recipe["request"]["allowed_hosts"],
@@ -792,7 +1004,11 @@ def verify_execution_result(result: object) -> dict[str, Any]:
                     and result.get("question") == recipe["question"]
                     and result.get("interpretation") == recipe["interpretation"]
                     and request.get("method") == recipe["request"]["method"]
+                    and requested_url == expected_requested_url
                     and receipt_parameters == resolved_parameters
+                    and isinstance(verification, dict)
+                    and verification.get("assertions_passed")
+                    == len(recipe["expect"]["assertions"])
                 )
             except (RecipeError, TypeError, ValueError):
                 catalog_binding = False
@@ -811,6 +1027,24 @@ def verify_execution_result(result: object) -> dict[str, Any]:
         "receipt_id": receipt_id,
         "checks": checks,
     }
+
+
+def _probe_parameter_sets(recipe: dict[str, Any]) -> list[dict[str, int]]:
+    definitions = recipe.get("parameters", {})
+    if not definitions:
+        return [{}]
+    names = list(definitions)
+    value_sets = [
+        range(definitions[name]["minimum"], definitions[name]["maximum"] + 1)
+        for name in names
+    ]
+    case_count = math.prod(len(values) for values in value_sets)
+    if case_count > MAX_PROBE_CASES:
+        raise RecipeError(
+            f"recipe {recipe['id']!r} defines {case_count} probe combinations; "
+            f"maximum is {MAX_PROBE_CASES}"
+        )
+    return [dict(zip(names, values, strict=True)) for values in product(*value_sets)]
 
 
 def _display_text_value(value: Any) -> str:
@@ -975,13 +1209,18 @@ def main(argv: list[str] | None = None) -> int:
             )
             failures = 0
             for recipe in selected:
-                try:
-                    result = execute_recipe(recipe)
-                except RecipeError as exc:
-                    failures += 1
-                    print(f"[failed] {recipe['id']}: {exc}", file=sys.stderr)
-                else:
-                    print(f"[ok] {recipe['id']} ({result['elapsed_ms']} ms)")
+                for parameters in _probe_parameter_sets(recipe):
+                    parameter_text = " ".join(
+                        f"{name}={value}" for name, value in parameters.items()
+                    )
+                    label = f"{recipe['id']} {parameter_text}".rstrip()
+                    try:
+                        result = execute_recipe(recipe, parameters)
+                    except RecipeError as exc:
+                        failures += 1
+                        print(f"[failed] {label}: {exc}", file=sys.stderr)
+                    else:
+                        print(f"[ok] {label} ({result['elapsed_ms']} ms)")
             return 1 if failures else 0
     except RecipeError as exc:
         print(f"error: {exc}", file=sys.stderr)

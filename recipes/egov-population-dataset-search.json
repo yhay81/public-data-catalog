@@ -1,19 +1,19 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "egov-population-dataset-search",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "title": {
-    "ja": "e-Govで人口データセットを探す",
-    "en": "Find population datasets in e-Gov"
+    "ja": "e-Govで人口データセットを特定する",
+    "en": "Locate a population dataset in e-Gov"
   },
   "question": {
-    "ja": "e-Govデータポータルで人口に関する公開データセットを探せるか。",
-    "en": "Can we find public datasets about population in the e-Gov Data Portal?"
+    "ja": "e-Govデータポータルで人口に関する公開データセットを特定できるか。",
+    "en": "Can we locate a public dataset about population in the e-Gov Data Portal?"
   },
   "source_id": "egov-data-portal",
   "request": {
     "method": "GET",
-    "url": "https://data.e-gov.go.jp/data/api/action/package_search?q=%E4%BA%BA%E5%8F%A3&rows=2&start=0",
+    "url": "https://data.e-gov.go.jp/data/api/action/package_search?fq=name%3Asoumu_20140909_0581&rows=1&start=0",
     "allowed_hosts": ["data.e-gov.go.jp"],
     "headers": {
       "Accept": "application/json"
@@ -30,11 +30,19 @@
       },
       {
         "pointer": "/result/count",
-        "minimum": 1
+        "equals": 1
       },
       {
         "pointer": "/result/results",
-        "min_length": 2
+        "min_length": 1
+      },
+      {
+        "pointer": "/result/results/0/id",
+        "equals": "64d9dbbe-640a-4d83-b647-242842870761"
+      },
+      {
+        "pointer": "/result/results/0/resources",
+        "min_length": 1
       }
     ]
   },
@@ -50,40 +58,72 @@
         "unit": "件"
       },
       {
-        "name": "first-title",
+        "name": "dataset-id",
         "label": {
-          "ja": "先頭のデータセット",
-          "en": "First dataset"
+          "ja": "データセットID",
+          "en": "Dataset ID"
+        },
+        "pointer": "/result/results/0/id"
+      },
+      {
+        "name": "dataset-name",
+        "label": {
+          "ja": "データセット名",
+          "en": "Dataset name"
         },
         "pointer": "/result/results/0/title"
       },
       {
-        "name": "first-publisher",
+        "name": "publisher",
         "label": {
-          "ja": "先頭データセットの提供者",
-          "en": "First dataset publisher"
+          "ja": "提供者",
+          "en": "Publisher"
         },
         "pointer": "/result/results/0/publisher"
       },
       {
-        "name": "second-title",
+        "name": "metadata-modified",
         "label": {
-          "ja": "2件目のデータセット",
-          "en": "Second dataset"
+          "ja": "メタデータ更新日時",
+          "en": "Metadata modified"
         },
-        "pointer": "/result/results/1/title"
+        "pointer": "/result/results/0/metadata_modified"
+      },
+      {
+        "name": "resource-format",
+        "label": {
+          "ja": "先頭リソース形式",
+          "en": "First resource format"
+        },
+        "pointer": "/result/results/0/resources/0/format"
+      },
+      {
+        "name": "resource-url",
+        "label": {
+          "ja": "先頭リソースURL",
+          "en": "First resource URL"
+        },
+        "pointer": "/result/results/0/resources/0/url"
+      },
+      {
+        "name": "resource-license-id",
+        "label": {
+          "ja": "先頭リソースのライセンスID",
+          "en": "First resource license ID"
+        },
+        "pointer": "/result/results/0/resources/0/license_id"
       }
     ]
   },
   "interpretation": [
-    "これはデータカタログの検索結果であり、個別データの値そのものではありません。",
-    "検索結果の各resourceについて、形式、更新日、URL、個別ライセンスを追加確認してください。",
-    "検索順位と一致件数は、ポータルの収録内容や検索索引の更新によって変わります。"
+    "これはe-Govデータポータル上の安定したデータセット名で絞り込んだカタログ結果であり、個別データの値そのものではありません。",
+    "返されたリソースURLへ進む前に、形式、更新日、リソース単位のライセンスと提供元の条件を確認してください。",
+    "データセットやリソースは更新、移動、公開終了になる場合があり、その場合はこのレシピの識別子assertionが失敗します。"
   ],
   "attribution": {
     "source_url": "https://data.e-gov.go.jp/data/ja/api_guide",
     "license_url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
     "credit": "出典：e-Govデータポータル（https://data.e-gov.go.jp/）"
   },
-  "last_verified": "2026-07-24"
+  "last_verified": "2026-08-02"
 }

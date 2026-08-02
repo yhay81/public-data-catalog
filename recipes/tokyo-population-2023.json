@@ -1,7 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "tokyo-population-2023",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "title": {
     "ja": "2023年の東京都の総人口",
     "en": "Tokyo total population in 2023"
@@ -35,6 +35,18 @@
       {
         "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ",
         "min_length": 1
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@indicator",
+        "equals": "0201010000000010000"
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@regionCode",
+        "equals": "13000"
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@time",
+        "equals": "2023CY00"
       }
     ]
   },
@@ -87,5 +99,5 @@
     "license_url": "https://dashboard.e-stat.go.jp/static/terms",
     "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）"
   },
-  "last_verified": "2026-07-24"
+  "last_verified": "2026-08-02"
 }

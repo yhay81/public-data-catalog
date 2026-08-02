@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/catalog.schema.json",
-  "catalog_version": "0.4.0",
-  "last_updated": "2026-07-24",
+  "catalog_version": "0.4.1",
+  "last_updated": "2026-08-02",
   "entries": [
     {
       "id": "estat-api",

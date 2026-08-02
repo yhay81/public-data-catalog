@@ -19,7 +19,7 @@
     "$schema": {
       "const": "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/receipt.schema.json"
     },
-    "receipt_version": {"const": "1.0.0"},
+    "receipt_version": {"const": "1.1.0"},
     "receipt_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "contract": {
       "type": "object",
@@ -42,6 +42,7 @@
       "additionalProperties": false,
       "required": [
         "method",
+        "requested_url",
         "url",
         "retrieved_at",
         "elapsed_ms",
@@ -49,6 +50,7 @@
       ],
       "properties": {
         "method": {"const": "GET"},
+        "requested_url": {"type": "string", "format": "uri"},
         "url": {"type": "string", "format": "uri"},
         "retrieved_at": {"type": "string", "format": "date-time"},
         "elapsed_ms": {"type": "integer", "minimum": 0},

@@ -2,6 +2,28 @@
 
 This log keeps the research direction visible and records why entries were added or deferred. The structured details remain in `catalog.json`.
 
+## Request-binding and cross-runtime hardening: 2026-08-02
+
+An adversarial review found that a rehashed receipt could replace the request
+with an unreviewed path on an otherwise allowlisted host, and that a
+parameterized Tokyo request could accept a response carrying a different year
+code. Receipt 1.1 now records the exact reviewed `requested_url` separately from
+the final allowlisted URL, validates every receipt field before verification,
+and checks the recorded assertion count against the current contract.
+
+The assertion language now supports a bounded parameter-derived equality check.
+Tokyo population responses bind `@time` to the requested year and also assert
+the indicator and region identifiers. Fixed population, unemployment, and World
+Bank contracts gained equivalent identifier checks. The weekly probe command
+now executes all eleven reviewed Tokyo year values instead of only the default.
+
+Python and TypeScript transforms were narrowed to the same input types and ISO
+millisecond precision. A live USGS result produced the identical timestamp and
+`results_sha256` in both runtimes. The e-Gov discovery contract now selects one
+stable population dataset and returns its dataset ID, resource URL, format,
+metadata update time, and resource licence ID. All sixteen live probe cases
+passed after the changes.
+
 ## Full-envelope trust audit: 2026-07-25
 
 The original offline verifier recomputed the receipt and extracted-result

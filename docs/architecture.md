@@ -41,7 +41,7 @@ The first parameterized family is deliberately narrow: Tokyo's annual population
 Every successful execution returns the extracted result and a receipt containing:
 
 - contract ID, version, and verification date;
-- resolved parameters and final request URL;
+- resolved parameters, exact reviewed request URL, and final allowlisted request URL;
 - retrieval time, elapsed time, and raw-response SHA-256;
 - passed assertion count and runner version;
 - source, license, and required credit;
