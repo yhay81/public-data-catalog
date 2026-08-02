@@ -1,7 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "usgs-noto-earthquake-2024",
-  "contract_version": "1.0.0",
+  "contract_version": "1.0.1",
   "title": {
     "ja": "USGSカタログの2024年能登半島地震",
     "en": "2024 Noto Peninsula earthquake in the USGS catalog"
@@ -94,5 +94,5 @@
     "license_url": "https://www.usgs.gov/data-management/data-licensing",
     "credit": "Source: U.S. Geological Survey Earthquake Hazards Program."
   },
-  "last_verified": "2026-07-24"
+  "last_verified": "2026-08-02"
 }

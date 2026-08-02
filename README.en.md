@@ -57,7 +57,7 @@ The [client setup guide](./docs/client-setup.md) covers UI setup, a one-minute c
 | `tokyo-population-by-year` | What was Tokyo's population in a selected year from 2015–2025? | Statistics Dashboard | None |
 | `tokyo-population-2023` | What was Tokyo's total population in 2023? | Statistics Dashboard | None |
 | `japan-unemployment-rate-2023` | What was Japan's unemployment rate in 2023? | Statistics Dashboard | None |
-| `egov-population-dataset-search` | Can e-Gov find datasets about population? | e-Gov Data Portal | None |
+| `egov-population-dataset-search` | Can e-Gov locate a population dataset and its resource? | e-Gov Data Portal | None |
 | `world-bank-japan-population-2023` | What was Japan's 2023 population according to the World Bank? | World Bank | None |
 | `usgs-noto-earthquake-2024` | How does USGS record the 2024 Noto Peninsula earthquake? | USGS | None |
 

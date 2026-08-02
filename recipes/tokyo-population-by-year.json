@@ -1,7 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "tokyo-population-by-year",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "title": {
     "ja": "東京都の年次総人口",
     "en": "Tokyo annual total population"
@@ -55,6 +55,21 @@
       {
         "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ",
         "min_length": 1
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@indicator",
+        "equals": "0201010000000010000"
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@regionCode",
+        "equals": "13000"
+      },
+      {
+        "pointer": "/GET_STATS/STATISTICAL_DATA/DATA_INF/DATA_OBJ/0/VALUE/@time",
+        "equals_parameter": {
+          "parameter": "year",
+          "format": "{value}CY00"
+        }
       }
     ]
   },
@@ -107,5 +122,5 @@
     "license_url": "https://dashboard.e-stat.go.jp/static/terms",
     "credit": "出典：統計ダッシュボード（https://dashboard.e-stat.go.jp/）"
   },
-  "last_verified": "2026-07-24"
+  "last_verified": "2026-08-02"
 }

@@ -69,11 +69,11 @@ A parameterized recipe retains a canonical URL rendered from the defaults:
 }
 ```
 
-Each parameter must have exactly one binding, each binding must name a query field already present in the canonical URL, and formatting may contain exactly one `{value}` placeholder. Changing a parameter range or meaning requires review and an appropriate `contract_version` change.
+Each parameter must have exactly one binding, each binding must name a query field already present in the canonical URL, and formatting may contain exactly one `{value}` placeholder. Changing a parameter range or meaning requires review and an appropriate `contract_version` change. The live `check` command probes every combination in the reviewed bounded-integer range, up to the safety cap enforced by the runner.
 
 ## Execution receipts
 
-Successful executions include a receipt conforming to [`receipt.schema.json`](../receipt.schema.json). Its hashes bind the contract, resolved parameters, request, response body, extracted results, and provenance. `verify` also checks that those receipt fields match the displayed execution envelope and that the question and interpretation match the reviewed recipe version in the bundled catalog. It therefore detects later changes to results, contract identity, parameters, request metadata, attribution, licence, question, or interpretation while the receipt itself remains trusted. The receipt is not a publisher signature, cannot prove authenticity on its own, and does not replace freshness probes.
+Successful executions include a receipt conforming to [`receipt.schema.json`](../receipt.schema.json). Receipt 1.1 records both `requested_url`, rendered exactly from the reviewed recipe and resolved parameters, and `url`, the final allowlisted URL after redirects. Its hashes bind the contract, resolved parameters, request, response body, extracted results, and provenance. `verify` validates the complete receipt shape, binds `requested_url` to the reviewed recipe, checks the final URL trust boundary and assertion count, and compares the receipt with the displayed execution envelope. It therefore detects later changes to results, contract identity, parameters, request metadata, attribution, licence, question, or interpretation while the receipt itself remains trusted. The receipt is not a publisher signature, cannot prove authenticity on its own, and does not replace freshness probes.
 
 The response hash covers the exact received bytes. Result and receipt IDs hash compact UTF-8 JSON with object keys sorted recursively; `receipt_id` itself is excluded when calculating the receipt ID.
 
@@ -91,10 +91,23 @@ Assertions use RFC 6901 JSON Pointers and exactly one check:
 Supported checks are:
 
 - `equals`
+- `equals_parameter`, with a reviewed parameter name and safe `{value}` format
 - `minimum`
 - `min_length`
 
 Assertions should test the upstream contract, identifiers, and expected result cardinality. Avoid asserting a published numeric value when the source can legitimately revise it.
+
+For a parameterized response dimension, bind the returned value directly to the resolved parameter:
+
+```json
+{
+  "pointer": "/data/0/time",
+  "equals_parameter": {
+    "parameter": "year",
+    "format": "{value}CY00"
+  }
+}
+```
 
 ## Result extraction
 

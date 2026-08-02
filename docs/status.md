@@ -1,6 +1,6 @@
 # Recipe Status
 
-Last complete manual verification: **2026-07-25**
+Last complete manual verification: **2026-08-02**
 
 | Recipe | Result |
 | --- | --- |

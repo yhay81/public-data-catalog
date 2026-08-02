@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
 
@@ -27,6 +28,7 @@ function tokyoResponse() {
             {
               VALUE: {
                 $: "14246219",
+                "@indicator": "0201010000000010000",
                 "@regionCode": "13000",
                 "@time": "2025CY00",
                 "@isProvisional": "1",
@@ -37,6 +39,22 @@ function tokyoResponse() {
       },
     },
   };
+}
+
+function sortedJson(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortedJson);
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, child]) => [key, sortedJson(child)]),
+    );
+  }
+  return value;
+}
+
+function sha256Json(value: unknown): string {
+  return `sha256:${createHash("sha256").update(JSON.stringify(sortedJson(value))).digest("hex")}`;
 }
 
 async function createTestClient(fetchImpl?: typeof fetch) {
@@ -151,6 +169,35 @@ test("execute binds a reviewed parameter and verify covers the full evidence env
       catalog_binding: true,
     });
 
+    const unreviewedUrl = structuredClone(execution);
+    const unreviewedReceipt = unreviewedUrl.receipt as Record<string, unknown>;
+    (unreviewedReceipt.request as Record<string, unknown>).requested_url =
+      "https://dashboard.e-stat.go.jp/api/unreviewed?Time=2025CY00";
+    const { receipt_id: _oldReceiptId, ...unreviewedReceiptBody } = unreviewedReceipt;
+    unreviewedReceipt.receipt_id = sha256Json(unreviewedReceiptBody);
+    const unreviewedVerification = await client.callTool({
+      name: "verify",
+      arguments: { execution: unreviewedUrl },
+    });
+    const unreviewedPayload = unreviewedVerification.structuredContent as {
+      valid: boolean;
+      checks: Record<string, boolean>;
+    };
+    assert.equal(unreviewedPayload.valid, false);
+    assert.equal(unreviewedPayload.checks.receipt_integrity, true);
+    assert.equal(unreviewedPayload.checks.catalog_binding, false);
+
+    const invalidReceipt = structuredClone(execution);
+    const invalidReceiptRecord = invalidReceipt.receipt as Record<string, unknown>;
+    (invalidReceiptRecord.request as Record<string, unknown>).response_sha256 = "not-a-digest";
+    const { receipt_id: _invalidReceiptId, ...invalidReceiptBody } = invalidReceiptRecord;
+    invalidReceiptRecord.receipt_id = sha256Json(invalidReceiptBody);
+    const invalidVerification = await client.callTool({
+      name: "verify",
+      arguments: { execution: invalidReceipt },
+    });
+    assert.equal(invalidVerification.isError, true);
+
     const tamperCases: Array<[string, (candidate: Record<string, unknown>) => void]> = [
       [
         "results",
@@ -186,6 +233,69 @@ test("execute binds a reviewed parameter and verify covers the full evidence env
         `${label} tampering should be detected`,
       );
     }
+  } finally {
+    await client.close();
+    await server.close();
+  }
+});
+
+test("execute rejects a response whose time code does not match the requested year", async () => {
+  const wrongYear = tokyoResponse();
+  wrongYear.GET_STATS.STATISTICAL_DATA.DATA_INF.DATA_OBJ[0]!.VALUE["@time"] = "2015CY00";
+  const fakeFetch: typeof fetch = async () =>
+    new Response(JSON.stringify(wrongYear), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  const { client, server } = await createTestClient(fakeFetch);
+  try {
+    const response = await client.callTool({
+      name: "execute",
+      arguments: {
+        recipeId: "tokyo-population-by-year",
+        parameters: { year: 2025 },
+      },
+    });
+    assert.equal(response.isError, true);
+    const content = response.content as Array<{ type: string; text?: string }>;
+    assert.match(content[0]?.text ?? "", /2025CY00/u);
+  } finally {
+    await client.close();
+    await server.close();
+  }
+});
+
+test("timestamp transforms use the same millisecond precision as the Python runner", async () => {
+  const document = {
+    type: "FeatureCollection",
+    features: [
+      {
+        id: "us6000m0xl",
+        properties: {
+          mag: 7.5,
+          magType: "mww",
+          time: 1_704_093_009_476,
+          place: "2024 Noto Peninsula, Japan Earthquake",
+        },
+      },
+    ],
+  };
+  const fakeFetch: typeof fetch = async () =>
+    new Response(JSON.stringify(document), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  const { client, server } = await createTestClient(fakeFetch);
+  try {
+    const response = await client.callTool({
+      name: "execute",
+      arguments: { recipeId: "usgs-noto-earthquake-2024" },
+    });
+    assert.equal(response.isError, undefined);
+    const execution = response.structuredContent as {
+      results: Record<string, { value: unknown }>;
+    };
+    assert.equal(execution.results["occurred-at"]?.value, "2024-01-01T07:10:09.476Z");
   } finally {
     await client.close();
     await server.close();

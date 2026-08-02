@@ -95,7 +95,7 @@ python3 scripts/recipe_tool.py verify result.json
 | `tokyo-population-by-year` | 2015–2025年から指定した年の東京都の総人口は何人か | 統計ダッシュボード | 不要 |
 | `tokyo-population-2023` | 2023年の東京都の総人口は何人か | 統計ダッシュボード | 不要 |
 | `japan-unemployment-rate-2023` | 2023年の日本の完全失業率は何%か | 統計ダッシュボード | 不要 |
-| `egov-population-dataset-search` | e-Govで人口データセットを探せるか | e-Govデータポータル | 不要 |
+| `egov-population-dataset-search` | e-Govで人口データセットと取得先を特定できるか | e-Govデータポータル | 不要 |
 | `world-bank-japan-population-2023` | 世界銀行による2023年の日本の総人口は何人か | World Bank | 不要 |
 | `usgs-noto-earthquake-2024` | USGSは能登半島地震をどう記録しているか | USGS | 不要 |
 

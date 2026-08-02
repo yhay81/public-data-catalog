@@ -25,6 +25,7 @@ type Binding = {
 type Assertion = {
   pointer: string;
   equals?: JsonValue;
+  equals_parameter?: { parameter: string; format: string };
   minimum?: number;
   min_length?: number;
 };
@@ -128,6 +129,12 @@ const SECRET_KEYS = new Set([
 const RUNNER = "public-data-catalog-mcp/0.4.0";
 const RECEIPT_SCHEMA =
   "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/receipt.schema.json";
+const RECEIPT_VERSION = "1.1.0";
+const ID_PATTERN = /^[a-z0-9][a-z0-9-]+$/u;
+const VERSION_PATTERN = /^[0-9]+\.[0-9]+\.[0-9]+$/u;
+const INTEGER_PATTERN = /^-?(?:0|[1-9][0-9]*)$/u;
+const NUMBER_PATTERN = /^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$/u;
+const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/u;
 
 export class ContractError extends Error {
   constructor(message: string) {
@@ -291,11 +298,32 @@ function resolvePointer(document: JsonValue, pointer: string): JsonValue {
   return current;
 }
 
-function checkAssertions(recipe: Recipe, document: JsonValue): void {
+function checkAssertions(
+  recipe: Recipe,
+  document: JsonValue,
+  parameters: Record<string, number>,
+): void {
   for (const assertion of recipe.expect.assertions) {
     const value = resolvePointer(document, assertion.pointer);
     if ("equals" in assertion && JSON.stringify(value) !== JSON.stringify(assertion.equals)) {
       throw new ContractError(`Assertion failed at ${assertion.pointer}: unexpected value`);
+    }
+    if (assertion.equals_parameter) {
+      const parameterName = assertion.equals_parameter.parameter;
+      if (!(parameterName in parameters)) {
+        throw new ContractError(
+          `Assertion at ${assertion.pointer} requires unresolved parameter ${JSON.stringify(parameterName)}`,
+        );
+      }
+      const expected = assertion.equals_parameter.format.replace(
+        "{value}",
+        String(parameters[parameterName]),
+      );
+      if (value !== expected) {
+        throw new ContractError(
+          `Assertion failed at ${assertion.pointer}: expected ${JSON.stringify(expected)} from parameter ${JSON.stringify(parameterName)}`,
+        );
+      }
     }
     if (
       assertion.minimum !== undefined &&
@@ -319,22 +347,42 @@ function checkAssertions(recipe: Recipe, document: JsonValue): void {
 
 function transform(value: JsonValue, name?: ResultField["transform"]): JsonValue {
   if (!name) return value;
-  if (name === "string") return String(value);
+  if (name === "string") {
+    if (typeof value !== "string") throw new ContractError(`Cannot transform ${value} to string`);
+    return value;
+  }
   if (name === "integer") {
-    const transformed = Number(String(value));
+    const transformed =
+      typeof value === "number"
+        ? value
+        : typeof value === "string" && INTEGER_PATTERN.test(value)
+          ? Number(value)
+          : Number.NaN;
     if (!Number.isSafeInteger(transformed)) {
       throw new ContractError(`Cannot transform ${value} to integer`);
     }
     return transformed;
   }
   if (name === "number") {
-    const transformed = Number(String(value));
+    const transformed =
+      typeof value === "number"
+        ? value
+        : typeof value === "string" && NUMBER_PATTERN.test(value)
+          ? Number(value)
+          : Number.NaN;
     if (!Number.isFinite(transformed)) throw new ContractError(`Cannot transform ${value} to number`);
     return transformed;
   }
-  const milliseconds = Number(value);
+  const milliseconds =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && NUMBER_PATTERN.test(value)
+        ? Number(value)
+        : Number.NaN;
   if (!Number.isFinite(milliseconds)) throw new ContractError(`Cannot transform ${value} to time`);
-  return new Date(milliseconds).toISOString();
+  const timestamp = new Date(milliseconds);
+  if (Number.isNaN(timestamp.getTime())) throw new ContractError(`Cannot transform ${value} to time`);
+  return timestamp.toISOString();
 }
 
 async function readBounded(response: Response, maxBytes: number): Promise<Uint8Array> {
@@ -393,6 +441,154 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
     : undefined;
 }
 
+function requireRecord(value: unknown, path: string): Record<string, unknown> {
+  const record = asRecord(value);
+  if (!record) throw new ContractError(`${path} must be an object`);
+  return record;
+}
+
+function requireExactKeys(record: Record<string, unknown>, expected: string[], path: string): void {
+  const actual = Object.keys(record).sort();
+  const wanted = [...expected].sort();
+  if (!jsonEqual(actual, wanted)) {
+    throw new ContractError(`${path} must contain exactly: ${wanted.join(", ")}`);
+  }
+}
+
+function requireString(value: unknown, path: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new ContractError(`${path} must be a non-empty string`);
+  }
+  return value;
+}
+
+function requirePattern(value: unknown, pattern: RegExp, path: string): string {
+  const text = requireString(value, path);
+  if (!pattern.test(text)) throw new ContractError(`${path} has an invalid format`);
+  return text;
+}
+
+function requireDate(value: unknown, path: string): string {
+  const text = requirePattern(value, /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u, path);
+  if (new Date(`${text}T00:00:00Z`).toISOString().slice(0, 10) !== text) {
+    throw new ContractError(`${path} must be a valid date`);
+  }
+  return text;
+}
+
+function requireDateTime(value: unknown, path: string): string {
+  const text = requireString(value, path);
+  if (
+    !text.includes("T") ||
+    !/(?:Z|[+-][0-9]{2}:[0-9]{2})$/u.test(text) ||
+    Number.isNaN(Date.parse(text))
+  ) {
+    throw new ContractError(`${path} must be an ISO 8601 date-time with a timezone`);
+  }
+  return text;
+}
+
+function requireReferenceUrl(value: unknown, path: string): string {
+  const text = requireString(value, path);
+  let url: URL;
+  try {
+    url = new URL(text);
+  } catch {
+    throw new ContractError(`${path} must be an absolute HTTPS URL`);
+  }
+  if (
+    url.protocol !== "https:" ||
+    url.username ||
+    url.password ||
+    (url.port && url.port !== "443") ||
+    url.hash
+  ) {
+    throw new ContractError(`${path} must be a credential-free HTTPS URL`);
+  }
+  return text;
+}
+
+function validateReceiptDocument(value: unknown): Record<string, unknown> {
+  const receipt = requireRecord(value, "Receipt");
+  requireExactKeys(
+    receipt,
+    [
+      "$schema",
+      "receipt_version",
+      "receipt_id",
+      "contract",
+      "parameters",
+      "request",
+      "verification",
+      "provenance",
+      "results_sha256",
+    ],
+    "Receipt",
+  );
+  if (receipt.$schema !== RECEIPT_SCHEMA) {
+    throw new ContractError("Receipt $schema is not supported");
+  }
+  if (receipt.receipt_version !== RECEIPT_VERSION) {
+    throw new ContractError(`Receipt version must be ${RECEIPT_VERSION}`);
+  }
+  requirePattern(receipt.receipt_id, SHA256_PATTERN, "Receipt receipt_id");
+  requirePattern(receipt.results_sha256, SHA256_PATTERN, "Receipt results_sha256");
+
+  const contract = requireRecord(receipt.contract, "Receipt contract");
+  requireExactKeys(contract, ["id", "version", "last_verified"], "Receipt contract");
+  requirePattern(contract.id, ID_PATTERN, "Receipt contract id");
+  requirePattern(contract.version, VERSION_PATTERN, "Receipt contract version");
+  requireDate(contract.last_verified, "Receipt contract last_verified");
+
+  const parameters = requireRecord(receipt.parameters, "Receipt parameters");
+  for (const [name, parameter] of Object.entries(parameters)) {
+    if (!ID_PATTERN.test(name)) throw new ContractError("Receipt contains an invalid parameter name");
+    if (
+      !["string", "number", "boolean"].includes(typeof parameter) ||
+      (typeof parameter === "number" && !Number.isFinite(parameter))
+    ) {
+      throw new ContractError(`Receipt parameter ${JSON.stringify(name)} must be a scalar`);
+    }
+  }
+
+  const request = requireRecord(receipt.request, "Receipt request");
+  requireExactKeys(
+    request,
+    ["method", "requested_url", "url", "retrieved_at", "elapsed_ms", "response_sha256"],
+    "Receipt request",
+  );
+  if (request.method !== "GET") throw new ContractError("Receipt request method must be GET");
+  requireReferenceUrl(request.requested_url, "Receipt request requested_url");
+  requireReferenceUrl(request.url, "Receipt request url");
+  requireDateTime(request.retrieved_at, "Receipt request retrieved_at");
+  if (!Number.isSafeInteger(request.elapsed_ms) || (request.elapsed_ms as number) < 0) {
+    throw new ContractError("Receipt request elapsed_ms must be a non-negative integer");
+  }
+  requirePattern(request.response_sha256, SHA256_PATTERN, "Receipt request response_sha256");
+
+  const verification = requireRecord(receipt.verification, "Receipt verification");
+  requireExactKeys(verification, ["assertions_passed", "runner"], "Receipt verification");
+  if (
+    !Number.isSafeInteger(verification.assertions_passed) ||
+    (verification.assertions_passed as number) < 1
+  ) {
+    throw new ContractError("Receipt verification assertions_passed must be a positive integer");
+  }
+  requireString(verification.runner, "Receipt verification runner");
+
+  const provenance = requireRecord(receipt.provenance, "Receipt provenance");
+  requireExactKeys(
+    provenance,
+    ["source_id", "source_url", "license_url", "credit"],
+    "Receipt provenance",
+  );
+  requirePattern(provenance.source_id, ID_PATTERN, "Receipt provenance source_id");
+  requireReferenceUrl(provenance.source_url, "Receipt provenance source_url");
+  requireReferenceUrl(provenance.license_url, "Receipt provenance license_url");
+  requireString(provenance.credit, "Receipt provenance credit");
+  return receipt;
+}
+
 export async function executeContract(
   input: ExecuteInput,
   fetchImpl: typeof fetch = fetch,
@@ -437,7 +633,7 @@ export async function executeContract(
   } catch (error) {
     throw new ContractError(`Response was not valid JSON: ${String(error)}`);
   }
-  checkAssertions(recipe, document);
+  checkAssertions(recipe, document, parameters);
   const results = Object.fromEntries(
     recipe.result.fields.map((field) => [
       field.name,
@@ -452,7 +648,7 @@ export async function executeContract(
   const retrievedAt = new Date().toISOString();
   const receiptBody = {
     $schema: RECEIPT_SCHEMA,
-    receipt_version: "1.0.0",
+    receipt_version: RECEIPT_VERSION,
     contract: {
       id: recipe.id,
       version: recipe.contract_version,
@@ -461,6 +657,7 @@ export async function executeContract(
     parameters,
     request: {
       method: "GET",
+      requested_url: initialUrl,
       url,
       retrieved_at: retrievedAt,
       elapsed_ms: Date.now() - started,
@@ -503,19 +700,11 @@ export async function verifyExecution(execution: unknown) {
   }
   const candidate = execution as Record<string, unknown>;
   const receipt = candidate.receipt;
-  const results = candidate.results;
-  if (
-    receipt === null ||
-    typeof receipt !== "object" ||
-    results === null ||
-    typeof results !== "object"
-  ) {
+  const results = asRecord(candidate.results);
+  if (receipt === null || typeof receipt !== "object" || !results) {
     throw new ContractError("Execution must contain receipt and results objects");
   }
-  const receiptRecord = receipt as Record<string, unknown>;
-  if (typeof receiptRecord.receipt_id !== "string") {
-    throw new ContractError("Receipt must contain a receipt_id");
-  }
+  const receiptRecord = validateReceiptDocument(receipt);
   const { receipt_id: receiptId, ...receiptBody } = receiptRecord;
   const expectedReceiptId = await sha256Json(receiptBody);
   const expectedResultsHash = await sha256Json(results);
@@ -524,6 +713,7 @@ export async function verifyExecution(execution: unknown) {
   const contract = asRecord(receiptRecord.contract);
   const request = asRecord(receiptRecord.request);
   const provenance = asRecord(receiptRecord.provenance);
+  const verification = asRecord(receiptRecord.verification);
   const contractBinding =
     contract !== undefined &&
     candidate.recipe_id === contract.id &&
@@ -566,12 +756,22 @@ export async function verifyExecution(execution: unknown) {
       const receiptParameters = asRecord(receiptRecord.parameters);
       if (receiptParameters) {
         const resolvedParameters = resolveParameters(recipe, receiptParameters);
+        const expectedRequestedUrl = renderRequestUrl(recipe, resolvedParameters);
+        const requestedUrl = new URL(String(request.requested_url));
         const requestUrl = new URL(String(request.url));
+        validateUrl(
+          requestedUrl,
+          recipe.request.allowed_hosts.map((host) => host.toLocaleLowerCase()),
+        );
         validateUrl(
           requestUrl,
           recipe.request.allowed_hosts.map((host) => host.toLocaleLowerCase()),
         );
-        catalogBinding = jsonEqual(receiptParameters, resolvedParameters);
+        catalogBinding =
+          jsonEqual(receiptParameters, resolvedParameters) &&
+          requestedUrl.toString() === expectedRequestedUrl &&
+          verification !== undefined &&
+          verification.assertions_passed === recipe.expect.assertions.length;
       }
     } catch {
       catalogBinding = false;

@@ -8,6 +8,19 @@ All notable changes to this project are documented here.
 
 - A PDC brand system and public landing page explaining the trust model, MCP connection, production stack, and Hayate compatibility path.
 - An evidence-gated product roadmap from independent activation through repeat use, operational trust, interoperability, and optional federation.
+- Parameter-bound response assertions and complete bounded-integer range probes.
+- Strict receipt 1.1 validation with separate reviewed and final request URLs.
+
+### Changed
+
+- Normalized transforms across Python and TypeScript so equivalent results produce the same result hash.
+- Made the e-Gov population recipe deterministic and actionable with dataset and resource identifiers, metadata, URL, format, and licence ID.
+
+### Fixed
+
+- Rejected rehashed receipts that substitute an unreviewed same-host request URL or contain schema-invalid evidence fields.
+- Rejected upstream responses whose returned time code does not match the requested year.
+- Repaired the landing-page link to the catalog and recipe inventory.
 
 ## 0.4.0 - 2026-07-24
 

@@ -75,11 +75,13 @@
             "properties": {
               "pointer": {"type": "string"},
               "equals": {},
+              "equals_parameter": {"$ref": "#/$defs/parameterAssertion"},
               "minimum": {"type": "number"},
               "min_length": {"type": "integer", "minimum": 0}
             },
             "oneOf": [
               {"required": ["equals"]},
+              {"required": ["equals_parameter"]},
               {"required": ["minimum"]},
               {"required": ["min_length"]}
             ]
@@ -146,6 +148,18 @@
         "parameter": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
         "location": {"const": "query"},
         "name": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+        "format": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._~-]*\\{value\\}[A-Za-z0-9._~-]*$"
+        }
+      }
+    },
+    "parameterAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parameter", "format"],
+      "properties": {
+        "parameter": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
         "format": {
           "type": "string",
           "pattern": "^[A-Za-z0-9._~-]*\\{value\\}[A-Za-z0-9._~-]*$"

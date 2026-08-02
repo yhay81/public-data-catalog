@@ -1,7 +1,7 @@
 {
   "$schema": "../recipe.schema.json",
   "id": "world-bank-japan-population-2023",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "title": {
     "ja": "世界銀行による2023年の日本の総人口",
     "en": "Japan population in 2023 from the World Bank"
@@ -35,6 +35,10 @@
       {
         "pointer": "/1/0/date",
         "equals": "2023"
+      },
+      {
+        "pointer": "/1/0/indicator/id",
+        "equals": "SP.POP.TOTL"
       }
     ]
   },
@@ -78,5 +82,5 @@
     "license_url": "https://datacatalog.worldbank.org/public-licenses",
     "credit": "Source: World Bank, Population total (SP.POP.TOTL), Japan, 2023."
   },
-  "last_verified": "2026-07-24"
+  "last_verified": "2026-08-02"
 }

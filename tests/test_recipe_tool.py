@@ -129,6 +129,16 @@ class RecipeDocumentTests(unittest.TestCase):
         with self.assertRaisesRegex(recipe_tool.RecipeError, "safe"):
             recipe_tool.validate_recipe_document(recipe)
 
+    def test_dynamic_assertion_must_reference_a_reviewed_parameter(self) -> None:
+        recipe = copy.deepcopy(self.recipes["tokyo-population-by-year"])
+        recipe["expect"]["assertions"][-1]["equals_parameter"]["parameter"] = "month"
+        with self.assertRaisesRegex(recipe_tool.RecipeError, "unknown parameter"):
+            recipe_tool.validate_recipe_document(recipe)
+
+    def test_probe_cases_cover_the_complete_reviewed_integer_range(self) -> None:
+        cases = recipe_tool._probe_parameter_sets(self.recipes["tokyo-population-by-year"])
+        self.assertEqual(cases, [{"year": year} for year in range(2015, 2026)])
+
 
 class JsonPointerTests(unittest.TestCase):
     def test_resolves_objects_arrays_and_escaped_tokens(self) -> None:
@@ -155,8 +165,12 @@ class ResultTests(unittest.TestCase):
         self.assertEqual(recipe_tool._transform_value("2.6", "number"), 2.6)
         self.assertEqual(
             recipe_tool._transform_value(1704093009476, "unix_milliseconds_to_iso8601"),
-            "2024-01-01T07:10:09.476000Z",
+            "2024-01-01T07:10:09.476Z",
         )
+        with self.assertRaises(recipe_tool.RecipeError):
+            recipe_tool._transform_value(True, "integer")
+        with self.assertRaises(recipe_tool.RecipeError):
+            recipe_tool._transform_value(True, "string")
 
     def test_assertion_failure_is_descriptive(self) -> None:
         recipe = {
@@ -171,6 +185,30 @@ class ResultTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(recipe_tool.RecipeError, "expected 'ok'"):
             recipe_tool._check_assertions(recipe, {"status": "failed"})
+
+    def test_dynamic_assertion_binds_the_response_to_the_requested_parameter(self) -> None:
+        recipe = recipe_tool.load_recipes()["tokyo-population-by-year"]
+        document = {
+            "GET_STATS": {
+                "RESULT": {"status": "0"},
+                "STATISTICAL_DATA": {
+                    "RESULT_INF": {"TOTAL_NUMBER": "1"},
+                    "DATA_INF": {
+                        "DATA_OBJ": [
+                            {
+                                "VALUE": {
+                                    "@indicator": "0201010000000010000",
+                                    "@regionCode": "13000",
+                                    "@time": "2015CY00",
+                                }
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+        with self.assertRaisesRegex(recipe_tool.RecipeError, "parameter 'year'"):
+            recipe_tool._check_assertions(recipe, document, {"year": 2025})
 
     def test_invalid_transform_value_is_descriptive(self) -> None:
         with self.assertRaisesRegex(recipe_tool.RecipeError, "could not apply 'integer'"):
@@ -216,6 +254,7 @@ class ResultTests(unittest.TestCase):
                             {
                                 "VALUE": {
                                     "$": "14246219",
+                                    "@indicator": "0201010000000010000",
                                     "@regionCode": "13000",
                                     "@time": "2025CY00",
                                     "@isProvisional": "1",
@@ -288,6 +327,30 @@ class ResultTests(unittest.TestCase):
                 candidate = copy.deepcopy(baseline)
                 tamper(candidate)
                 self.assertFalse(recipe_tool.verify_execution_result(candidate)["valid"])
+
+    def test_rehashed_unreviewed_request_url_fails_catalog_binding(self) -> None:
+        candidate = copy.deepcopy(self._execution_result())
+        candidate["receipt"]["request"]["requested_url"] = (
+            "https://dashboard.e-stat.go.jp/api/unreviewed?Time=2025CY00"
+        )
+        receipt_body = {
+            key: value for key, value in candidate["receipt"].items() if key != "receipt_id"
+        }
+        candidate["receipt"]["receipt_id"] = recipe_tool._canonical_json_sha256(receipt_body)
+        verification = recipe_tool.verify_execution_result(candidate)
+        self.assertFalse(verification["valid"])
+        self.assertTrue(verification["checks"]["receipt_integrity"])
+        self.assertFalse(verification["checks"]["catalog_binding"])
+
+    def test_schema_invalid_receipt_is_rejected_even_when_rehashed(self) -> None:
+        candidate = copy.deepcopy(self._execution_result())
+        candidate["receipt"]["request"]["response_sha256"] = "not-a-digest"
+        receipt_body = {
+            key: value for key, value in candidate["receipt"].items() if key != "receipt_id"
+        }
+        candidate["receipt"]["receipt_id"] = recipe_tool._canonical_json_sha256(receipt_body)
+        with self.assertRaisesRegex(recipe_tool.RecipeError, "response_sha256"):
+            recipe_tool.verify_execution_result(candidate)
 
 
 class CommandLineTests(unittest.TestCase):
