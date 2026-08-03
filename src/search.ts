@@ -36,6 +36,14 @@ type SourceStatus = {
   label: string;
   status: "ok" | "error";
   matched: number;
+  examined: number;
+};
+
+type SourceSearchOutcome = {
+  source: "egov" | "dashboard";
+  results: PublicDataSearchResult[];
+  matched: number;
+  examined: number;
 };
 
 type EgDataResource = {
@@ -92,6 +100,7 @@ const DASHBOARD_SEARCH_URL =
   "https://dashboard.e-stat.go.jp/api/1.0/Json/getIndicatorInfo";
 const DASHBOARD_SOURCE_URL = "https://dashboard.e-stat.go.jp/";
 const DASHBOARD_TERMS_URL = "https://dashboard.e-stat.go.jp/static/terms";
+const EGOV_STRUCTURED_FILTER = "res_format:(CSV OR XLS OR XLSX OR JSON OR XML OR ZIP)";
 const STRUCTURED_FORMATS = new Set([
   "API",
   "CSV",
@@ -137,6 +146,14 @@ const INDICATOR_KEYWORDS: Array<[RegExp, string]> = [
   [/住宅/u, "住宅"],
   [/出生/u, "出生"],
   [/死亡/u, "死亡"],
+];
+const OFFICIAL_QUERY_ALIASES: Array<[RegExp, string[]]> = [
+  [/観光客|旅行客|宿泊客/u, ["延べ宿泊者数"]],
+  [/犯罪(?:件数|率)?|刑法犯/u, ["刑法犯認知件数"]],
+  [/市区町村.*所得|地域.*所得/u, ["課税対象所得"]],
+  [/(?:CO2|ＣＯ２|二酸化炭素).*排出/iu, ["二酸化炭素排出量", "温室効果ガス排出"]],
+  [/病院数/u, ["病院数"]],
+  [/学校数/u, ["学校数"]],
 ];
 
 export class PublicDataSearchInputError extends Error {
@@ -196,6 +213,25 @@ function indicatorKeyword(query: string, terms: string[]): string {
     if (pattern.test(query)) return replacement;
   }
   return [...terms].sort((left, right) => right.length - left.length)[0] ?? query;
+}
+
+function createQueryPlan(query: string, terms: string[]) {
+  const interpretedAs = OFFICIAL_QUERY_ALIASES.flatMap(([pattern, aliases]) =>
+    pattern.test(query) ? aliases : [],
+  );
+  const baseKeyword = indicatorKeyword(query, terms);
+  const keywords = uniqueStrings([...interpretedAs, baseKeyword]).slice(0, 2);
+  const scoreTerms = uniqueStrings([
+    ...terms,
+    ...keywords.flatMap((keyword) => extractTerms(keyword)),
+  ]);
+  return {
+    keywords,
+    scoreTerms,
+    interpretedAs: interpretedAs.filter(
+      (alias) => normalized(alias) !== normalized(query),
+    ),
+  };
 }
 
 function validateInput(input: PublicDataSearchInput) {
@@ -282,7 +318,7 @@ function datasetScore(dataset: EgDataset, terms: string[], formats: string[]): n
     else if (notes.includes(term)) score += 8;
     else if (groups.includes(term)) score += 5;
   }
-  if (terms.every((term) => all.includes(normalized(term)))) score += 24;
+  if (terms.some((term) => all.includes(normalized(term)))) score += 12;
   if (formats.some((format) => STRUCTURED_FORMATS.has(format))) score += 16;
   if (formats.length === 0) score -= 24;
   if (formats.length > 0 && formats.every((format) => DOCUMENT_FORMATS.has(format))) score -= 12;
@@ -329,7 +365,7 @@ function normalizeEgovResults(payload: unknown, terms: string[]): PublicDataSear
       ];
       const normalizedTitle = normalized(title);
       if (terms.some((term) => normalizedTitle.includes(normalized(term)))) {
-        reasons.unshift("検索語がタイトルに含まれています");
+        reasons.unshift("検索語または対応する公式用語がタイトルに含まれています");
       }
       const temporal = text(dataset.temporal);
       const spatial = text(dataset.spatial);
@@ -366,6 +402,13 @@ function normalizeEgovResults(payload: unknown, terms: string[]): PublicDataSear
     })
     .filter((result): result is PublicDataSearchResult => result !== undefined)
     .sort((left, right) => right.score - left.score || left.title.localeCompare(right.title, "ja"));
+}
+
+function egovMatchedCount(payload: unknown): number {
+  const root = asObject(payload);
+  const result = asObject(root?.result);
+  const count = Number(result?.count);
+  return Number.isSafeInteger(count) && count >= 0 ? count : 0;
 }
 
 function indicatorDetails(indicator: IndicatorObject): string {
@@ -430,9 +473,35 @@ function indicatorScore(
   if (/物価|インフレ/u.test(query)) {
     if (/消費者物価指数（総合）/u.test(text(indicator["@name"]))) score += 32;
     if (/生鮮食品|エネルギーを除く/u.test(text(indicator["@name"]))) score -= 12;
+    if (
+      !/前年|前月|前年比|変化率|上昇率/u.test(query) &&
+      /^[（(](?:前年|前月)/u.test(text(indicator["@name"]))
+    ) {
+      score -= 45;
+    }
   }
   if (/失業/u.test(query) && /^完全失業率（男女計）/u.test(text(indicator["@name"]))) {
     score += 38;
+  }
+  if (/病院数/u.test(query)) {
+    if (/^病院数(?:（総数）)?$/u.test(text(indicator["@name"]))) score += 60;
+    else if (/^一般病院数(?:（総数）)?$/u.test(text(indicator["@name"]))) score += 36;
+    if (/公立|公的医療機関|人口.*当たり/u.test(text(indicator["@name"]))) score -= 22;
+  }
+  if (/学校数/u.test(query)) {
+    if (/^(?:小学校数|中学校数|高等学校数|学校数)$/u.test(text(indicator["@name"]))) score += 34;
+    if (/各種学校|義務教育学校|専修学校|人口.*当たり/u.test(text(indicator["@name"]))) {
+      score -= 18;
+    }
+  }
+  if (/観光客|旅行客|宿泊客/u.test(query) && /^延べ宿泊者数（総数）/u.test(text(indicator["@name"]))) {
+    score += 48;
+  }
+  if (/犯罪/u.test(query) && /^刑法犯認知件数$/u.test(text(indicator["@name"]))) {
+    score += 48;
+  }
+  if (/市区町村.*所得|地域.*所得/u.test(query) && /^課税対象所得$/u.test(text(indicator["@name"]))) {
+    score += 48;
   }
   return score;
 }
@@ -531,6 +600,98 @@ function deduplicate(results: PublicDataSearchResult[]): PublicDataSearchResult[
   });
 }
 
+function deduplicateById(results: PublicDataSearchResult[]): PublicDataSearchResult[] {
+  const seen = new Set<string>();
+  return results.filter((result) => {
+    if (seen.has(result.id)) return false;
+    seen.add(result.id);
+    return true;
+  });
+}
+
+function validateEgovPayload(payload: unknown) {
+  if (asObject(payload)?.success !== true) {
+    throw new Error("e-Gov Data Portal returned an unsuccessful response");
+  }
+  return payload;
+}
+
+function validateDashboardPayload(payload: unknown) {
+  const root = asObject(payload);
+  const response = asObject(root?.GET_META_INDICATOR_INF);
+  const result = asObject(response?.RESULT);
+  if (text(result?.status) !== "0") {
+    throw new Error("Statistics Dashboard returned an unsuccessful response");
+  }
+  return payload;
+}
+
+async function searchEgov(
+  keywords: string[],
+  scoreTerms: string[],
+  fetchImpl: typeof fetch,
+): Promise<SourceSearchOutcome> {
+  const firstKeyword = keywords[0]!;
+  const lastKeyword = keywords[keywords.length - 1]!;
+  const specifications = [
+    { keyword: firstKeyword, structured: true },
+    { keyword: lastKeyword, structured: false },
+  ];
+  const settled = await Promise.allSettled(
+    specifications.map(async ({ keyword, structured }) => {
+      const url = new URL(EGOV_SEARCH_URL);
+      url.searchParams.set("q", keyword);
+      url.searchParams.set("rows", "30");
+      url.searchParams.set("start", "0");
+      url.searchParams.set("sort", "score desc, metadata_modified desc");
+      if (structured) url.searchParams.set("fq", EGOV_STRUCTURED_FILTER);
+      return validateEgovPayload(await fetchJson(url, fetchImpl, 6_000_000));
+    }),
+  );
+  const payloads = settled.flatMap((outcome) =>
+    outcome.status === "fulfilled" ? [outcome.value] : [],
+  );
+  if (payloads.length === 0) throw new Error("e-Gov Data Portal search failed");
+  const results = deduplicateById(
+    payloads.flatMap((payload) => normalizeEgovResults(payload, scoreTerms)),
+  );
+  return {
+    source: "egov",
+    results,
+    matched: Math.max(...payloads.map(egovMatchedCount)),
+    examined: results.length,
+  };
+}
+
+async function searchDashboard(
+  keywords: string[],
+  scoreTerms: string[],
+  query: string,
+  fetchImpl: typeof fetch,
+): Promise<SourceSearchOutcome> {
+  const settled = await Promise.allSettled(
+    keywords.map(async (keyword) => {
+      const url = new URL(DASHBOARD_SEARCH_URL);
+      url.searchParams.set("Lang", "JP");
+      url.searchParams.set("SearchIndicatorWord", keyword);
+      return validateDashboardPayload(await fetchJson(url, fetchImpl, 12_000_000));
+    }),
+  );
+  const payloads = settled.flatMap((outcome) =>
+    outcome.status === "fulfilled" ? [outcome.value] : [],
+  );
+  if (payloads.length === 0) throw new Error("Statistics Dashboard search failed");
+  const results = deduplicateById(
+    payloads.flatMap((payload) => normalizeIndicatorResults(payload, scoreTerms, query)),
+  );
+  return {
+    source: "dashboard",
+    results,
+    matched: results.length,
+    examined: results.length,
+  };
+}
+
 function chooseResults(
   datasets: PublicDataSearchResult[],
   statistics: PublicDataSearchResult[],
@@ -561,33 +722,17 @@ export async function searchPublicData(
   fetchImpl: typeof fetch = fetch,
 ) {
   const { query, kind, limit, terms } = validateInput(input);
-  const tasks: Array<Promise<{
-    source: "egov" | "dashboard";
-    results: PublicDataSearchResult[];
-  }>> = [];
+  const plan = createQueryPlan(query, terms);
+  const tasks: Array<Promise<SourceSearchOutcome>> = [];
+  const requestedSources: Array<"egov" | "dashboard"> = [];
 
   if (kind !== "statistics") {
-    const url = new URL(EGOV_SEARCH_URL);
-    url.searchParams.set("q", indicatorKeyword(query, terms));
-    url.searchParams.set("rows", "50");
-    url.searchParams.set("start", "0");
-    tasks.push(
-      fetchJson(url, fetchImpl, 6_000_000).then((payload) => ({
-        source: "egov" as const,
-        results: normalizeEgovResults(payload, terms),
-      })),
-    );
+    requestedSources.push("egov");
+    tasks.push(searchEgov(plan.keywords, plan.scoreTerms, fetchImpl));
   }
   if (kind !== "dataset") {
-    const url = new URL(DASHBOARD_SEARCH_URL);
-    url.searchParams.set("Lang", "JP");
-    url.searchParams.set("SearchIndicatorWord", indicatorKeyword(query, terms));
-    tasks.push(
-      fetchJson(url, fetchImpl, 12_000_000).then((payload) => ({
-        source: "dashboard" as const,
-        results: normalizeIndicatorResults(payload, terms, query),
-      })),
-    );
+    requestedSources.push("dashboard");
+    tasks.push(searchDashboard(plan.keywords, plan.scoreTerms, query, fetchImpl));
   }
 
   const settled = await Promise.allSettled(tasks);
@@ -602,14 +747,11 @@ export async function searchPublicData(
         id: outcome.value.source === "egov" ? "egov-data-portal" : "statistics-dashboard-api",
         label: outcome.value.source === "egov" ? "e-Govデータポータル" : "統計ダッシュボード",
         status: "ok",
-        matched: outcome.value.results.length,
+        matched: outcome.value.matched,
+        examined: outcome.value.examined,
       });
     }
   }
-  const requestedSources: Array<"egov" | "dashboard"> = [
-    ...(kind !== "statistics" ? (["egov"] as const) : []),
-    ...(kind !== "dataset" ? (["dashboard"] as const) : []),
-  ];
   for (let index = 0; index < settled.length; index += 1) {
     if (settled[index]?.status === "rejected") {
       const source = requestedSources[index]!;
@@ -618,6 +760,7 @@ export async function searchPublicData(
         label: source === "egov" ? "e-Govデータポータル" : "統計ダッシュボード",
         status: "error",
         matched: 0,
+        examined: 0,
       });
     }
   }
@@ -632,12 +775,13 @@ export async function searchPublicData(
   return {
     status: "ok" as const,
     query,
+    interpreted_as: plan.interpretedAs,
     searched_at: new Date().toISOString(),
     results: publicResults,
     total: publicResults.length,
     available: {
-      dataset: datasets.length,
-      statistics: statistics.length,
+      dataset: statuses.get("egov")?.matched ?? 0,
+      statistics: statuses.get("dashboard")?.matched ?? 0,
     },
     sources: requestedSources.map((source) => statuses.get(source)!),
     note:

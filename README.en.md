@@ -10,7 +10,7 @@ PDC turns a plain-language question into a short list of Japanese public dataset
 
 Public service: [PDC — Public Dataset Search](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
 
-The browser is the primary service and requires no registration. It searches live metadata from e-Gov Data Portal and Statistics Dashboard. The same search is available through MCP; the earlier retrieval and verification contracts remain available as compatibility features.
+The browser is the primary service and requires no registration. It searches live metadata from e-Gov Data Portal and Statistics Dashboard, expanding plain-language queries into official statistical terms when needed. The same search is available through MCP; the earlier retrieval and verification contracts remain available as compatibility features.
 
 ## Search in the browser
 

@@ -16,6 +16,16 @@ interface Env {
   ASSETS: Fetcher;
 }
 
+function searchCacheKey(url: URL): Request {
+  const cacheUrl = new URL(url.origin);
+  cacheUrl.pathname = "/api/search";
+  cacheUrl.searchParams.set("q", (url.searchParams.get("q") ?? "").trim().normalize("NFKC"));
+  cacheUrl.searchParams.set("kind", url.searchParams.get("kind") ?? "all");
+  cacheUrl.searchParams.set("limit", url.searchParams.get("limit") ?? "10");
+  cacheUrl.searchParams.set("_search_version", "3");
+  return new Request(cacheUrl.toString(), { method: "GET" });
+}
+
 export default {
   async fetch(
     request: Request,
@@ -41,15 +51,28 @@ export default {
       }
       const rawLimit = url.searchParams.get("limit");
       const kind = url.searchParams.get("kind") ?? "all";
+      const cacheKey = searchCacheKey(url);
+      const cache = (caches as unknown as { default: Cache }).default;
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        const response = new Response(cached.body, cached);
+        response.headers.set("X-PDC-Cache", "HIT");
+        return response;
+      }
       try {
         const result = await searchPublicData({
           query: url.searchParams.get("q") ?? "",
           kind: kind as "all" | "dataset" | "statistics",
           ...(rawLimit !== null ? { limit: Number(rawLimit) } : {}),
         });
-        return Response.json(result, {
-          headers: { "Cache-Control": "public, max-age=300" },
+        const response = Response.json(result, {
+          headers: {
+            "Cache-Control": "public, max-age=60, s-maxage=300",
+            "X-PDC-Cache": "MISS",
+          },
         });
+        context.waitUntil(cache.put(cacheKey, response.clone()));
+        return response;
       } catch (error) {
         const inputError = error instanceof PublicDataSearchInputError;
         return Response.json(

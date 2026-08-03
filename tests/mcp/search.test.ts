@@ -10,6 +10,7 @@ function egovPayload() {
   return {
     success: true,
     result: {
+      count: 248,
       results: [
         {
           name: "paper",
@@ -112,8 +113,21 @@ test("search ranks reusable data above document-only results and combines offici
   const datasetResults = result.results.filter((candidate) => candidate.kind === "dataset");
   assert.equal(datasetResults[0]?.id, "egov:population");
   assert.deepEqual(datasetResults[0]?.formats, ["XLSX", "PDF"]);
-  assert.equal(requested[0]?.searchParams.get("q"), "人口");
-  assert.equal(requested[1]?.searchParams.get("SearchIndicatorWord"), "人口");
+  assert.equal(result.available.dataset, 248);
+  assert.equal(
+    result.sources.find((source) => source.id === "egov-data-portal")?.examined,
+    2,
+  );
+  const egovRequests = requested.filter((url) => url.hostname === "data.e-gov.go.jp");
+  const dashboardRequests = requested.filter(
+    (url) => url.hostname === "dashboard.e-stat.go.jp",
+  );
+  assert.equal(egovRequests.every((url) => url.searchParams.get("q") === "人口"), true);
+  assert.equal(
+    egovRequests.some((url) => url.searchParams.has("fq")),
+    true,
+  );
+  assert.equal(dashboardRequests[0]?.searchParams.get("SearchIndicatorWord"), "人口");
 });
 
 test("search still returns results when one official source is temporarily unavailable", async () => {
