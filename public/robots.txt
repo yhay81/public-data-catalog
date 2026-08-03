@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://d.yhay81.com/sitemap.xml
+Sitemap: https://pdc.yhay81.com/sitemap.xml

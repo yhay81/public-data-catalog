@@ -10,7 +10,7 @@
 
 日本の公共データを中心に、AIや開発者が**具体的な問いから、根拠付きで再現可能な最初の取得まで**進むための、テスト済みレシピ集です。
 
-ブランドサイト: [PDC — 公的データに、検証済みの経路を。](https://d.yhay81.com/) · [ブランドガイド](./docs/brand.md)
+ブランドサイト: [PDC — 公的データに、検証済みの経路を。](https://pdc.yhay81.com/) · [ブランドガイド](./docs/brand.md)
 
 単なるリンク集ではありません。実行可能な小さなリクエスト、期待する応答、単位・コード・改訂上の注意、出典、ライセンス、確認日を一緒に管理します。
 
@@ -50,11 +50,11 @@ python3 scripts/recipe_tool.py run tokyo-population-2023 --format text
 ```sh
 # Codex
 codex mcp add public-data-catalog \
-  --url https://d.yhay81.com/mcp
+  --url https://pdc.yhay81.com/mcp
 
 # Claude Code
 claude mcp add --transport http public-data-catalog \
-  https://d.yhay81.com/mcp
+  https://pdc.yhay81.com/mcp
 ```
 
 公開するツールは、情報源と契約を探す `search_data`、レビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。

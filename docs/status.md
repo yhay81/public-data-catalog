@@ -30,7 +30,7 @@ This file records reviewed verification, not a real-time uptime guarantee.
 Independent onboarding validation is still pending. Run it with the [external execution test protocol](./external-test-protocol.md) and submit one report per session.
 
 The reference MCP deployment at
-`https://d.yhay81.com/mcp` passed MCP Inspector
+`https://pdc.yhay81.com/mcp` passed MCP Inspector
 tool discovery, a live parameterized `execute`, all eight cross-runtime
 verification checks, and provenance-only tamper rejection on 2026-07-25.
 Cloudflare version `6c007686-203e-41f1-848c-dc223a8d049d` was also checked for
