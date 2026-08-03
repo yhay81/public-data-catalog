@@ -4,9 +4,9 @@ import { z } from "zod";
 import {
   ContractError,
   executeContract,
-  searchData,
   verifyExecution,
 } from "./core.ts";
+import { searchPublicData } from "./search.ts";
 
 const jsonObject = z.record(z.string(), z.unknown());
 
@@ -33,40 +33,52 @@ function toolError(error: unknown) {
 export function createPublicDataServer(options: { fetchImpl?: typeof fetch } = {}) {
   const server = new McpServer({
     name: "public-data-catalog",
-    version: "0.5.0",
+    version: "0.6.0",
   });
 
   server.registerTool(
     "search_data",
     {
-      title: "Search reviewed public data",
+      title: "Search Japanese public datasets",
       description:
-        "Search source profiles and discover reviewed execution contracts. Returns metadata only and does not call an upstream API.",
+        "Search current metadata from e-Gov Data Portal and Statistics Dashboard, then return a short ranked list with publisher, formats, coverage, usage terms, and official links.",
       inputSchema: {
         query: z
           .string()
           .trim()
-          .min(1)
-          .max(200)
-          .optional()
-          .describe("Words in Japanese or English"),
-        sourceId: z.string().trim().min(1).max(100).optional(),
-        domain: z.string().trim().min(1).max(100).optional(),
-        limit: z.number().int().min(1).max(50).default(10),
+          .min(2)
+          .max(80)
+          .describe("What data to find, preferably in Japanese"),
+        kind: z
+          .enum(["all", "dataset", "statistics"])
+          .default("all")
+          .describe("Search all sources, downloadable datasets, or statistical series"),
+        limit: z.number().int().min(1).max(20).default(10),
       },
       outputSchema: {
-        matches: z.array(z.unknown()),
+        status: z.literal("ok"),
+        query: z.string(),
+        searched_at: z.string(),
+        results: z.array(z.unknown()),
         total: z.number().int().nonnegative(),
-        catalog_version: z.string(),
+        available: jsonObject,
+        sources: z.array(z.unknown()),
+        note: z.string(),
       },
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: false,
+        openWorldHint: true,
       },
     },
-    async (input) => toolResult(searchData(input)),
+    async (input) => {
+      try {
+        return toolResult(await searchPublicData(input, options.fetchImpl));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
   );
 
   server.registerTool(

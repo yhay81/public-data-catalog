@@ -1,231 +1,247 @@
-const researchForm = document.querySelector("#research");
-const topicSelect = document.querySelector("#research-topic");
-const yearField = document.querySelector("#year-field");
-const yearSelect = document.querySelector("#research-year");
-const topicNote = document.querySelector("#topic-note");
-const researchSubmit = document.querySelector("#research-submit");
-const formMessage = document.querySelector("#form-message");
-const resultSection = document.querySelector("#research-result");
-const resultQuestion = document.querySelector("#result-question");
-const resultValues = document.querySelector("#result-values");
-const resultTime = document.querySelector("#result-time");
-const resultSource = document.querySelector("#result-source");
-const resultLicense = document.querySelector("#result-license");
-const resultChecks = document.querySelector("#result-checks");
-const resultMethod = document.querySelector("#result-method");
-const resultDetails = document.querySelector("#result-details");
-const resultNotes = document.querySelector("#result-notes");
-const resultRequest = document.querySelector("#result-request");
-const copyResearchButton = document.querySelector("#copy-research");
-const copyResearchStatus = document.querySelector("#copy-research-status");
+const searchForm = document.querySelector("#search");
+const searchInput = document.querySelector("#search-query");
+const searchSubmit = document.querySelector("#search-submit");
+const searchMessage = document.querySelector("#search-message");
+const resultsSection = document.querySelector("#results");
+const resultsTitle = document.querySelector("#results-title");
+const resultsSummary = document.querySelector("#results-summary");
+const sourceStatus = document.querySelector("#source-status");
+const resultList = document.querySelector("#result-list");
+const resultNote = document.querySelector("#result-note");
+const emptyResult = document.querySelector("#empty-result");
+const filterButtons = [...document.querySelectorAll("[data-kind]")];
 
-const topicInformation = {
-  "tokyo-population": {
-    hasYear: true,
-    note: "総務省統計局の統計ダッシュボードから、東京都の年次総人口を取得します。",
-  },
-  "japan-unemployment": {
-    hasYear: false,
-    note: "総務省統計局の統計ダッシュボードから、2023年の完全失業率（男女計）を取得します。",
-  },
-  "world-bank-japan-population": {
-    hasYear: false,
-    note: "世界銀行のIndicators APIから、2023年の日本の総人口を取得します。",
-  },
-  "noto-earthquake": {
-    hasYear: false,
-    note: "アメリカ地質調査所の地震カタログから、能登半島地震の記録を取得します。",
-  },
-  "egov-population-dataset": {
-    hasYear: false,
-    note: "e-Govデータポータルから、人口に関する公開データセットの情報を取得します。",
-  },
-};
+let latestSearch = null;
+let activeKind = "all";
 
-let latestResearch = null;
-
-function updateTopic() {
-  const information = topicInformation[topicSelect?.value];
-  if (!information) return;
-  yearField.hidden = !information.hasYear;
-  yearSelect.disabled = !information.hasYear;
-  topicNote.textContent = information.note;
-}
-
-function formatValue(value) {
-  if (typeof value === "number") {
-    return new Intl.NumberFormat("ja-JP", { maximumFractionDigits: 4 }).format(value);
-  }
-  if (value === null || value === undefined) return "—";
-  return String(value);
-}
-
-function formatFieldValue(field) {
-  if (field.id === "occurred-at" && typeof field.value === "string") {
-    const date = new Date(field.value);
-    if (!Number.isNaN(date.getTime())) {
-      return new Intl.DateTimeFormat("ja-JP", {
-        dateStyle: "medium",
-        timeStyle: "medium",
-        timeZone: "Asia/Tokyo",
-      }).format(date);
-    }
-  }
-  return formatValue(field.value);
-}
-
-function displayUnit(field) {
-  return field.id === "occurred-at" ? "日本時間" : field.unit;
-}
-
-function formatRetrievedAt(value) {
+function formatDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("ja-JP", {
-    dateStyle: "medium",
-    timeStyle: "medium",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
     timeZone: "Asia/Tokyo",
   }).format(date);
 }
 
-function appendValue(container, field, index) {
+function createMeta(label, value) {
   const item = document.createElement("div");
-  item.className = "result-value";
-  const formatted = formatFieldValue(field);
-  if (index === 0 && (typeof field.value === "number" || formatted.length <= 18)) {
-    item.classList.add("is-main");
-  }
-
-  const label = document.createElement("span");
-  label.textContent = field.label.ja;
-  const value = document.createElement("strong");
-  value.append(document.createTextNode(formatted));
-  const shownUnit = displayUnit(field);
-  if (shownUnit) {
-    const unit = document.createElement("small");
-    unit.textContent = shownUnit;
-    value.append(unit);
-  }
-  item.append(label, value);
-  container.append(item);
-}
-
-function appendDetail(container, field) {
-  const row = document.createElement("div");
   const term = document.createElement("dt");
   const definition = document.createElement("dd");
-  term.textContent = field.label.ja;
-
-  const formatted = formatFieldValue(field);
-  if (typeof field.value === "string" && /^https:\/\//u.test(field.value)) {
-    const link = document.createElement("a");
-    link.href = field.value;
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    link.textContent = "公式データを開く ↗";
-    definition.append(link);
-  } else {
-    const shownUnit = displayUnit(field);
-    definition.textContent = `${formatted}${shownUnit ? ` ${shownUnit}` : ""}`;
-  }
-  row.append(term, definition);
-  container.append(row);
+  term.textContent = label;
+  definition.textContent = value || "記載なし";
+  item.append(term, definition);
+  return item;
 }
 
-function renderResearch(research) {
-  latestResearch = research;
-  resultQuestion.textContent = research.question;
-  resultValues.replaceChildren();
-  research.primary.forEach((field, index) => appendValue(resultValues, field, index));
+function createResult(result, index) {
+  const item = document.createElement("li");
+  item.className = "result-item";
+  item.dataset.kind = result.kind;
+  item.style.setProperty("--result-index", index);
 
-  resultTime.textContent = `取得日時：${formatRetrievedAt(research.retrieved_at)}（日本時間）`;
-  resultSource.href = research.source.url;
-  resultSource.textContent = `${research.source.credit} ↗`;
-  resultLicense.href = research.source.license_url;
-  resultChecks.textContent = `取得内容 ${research.verification.source_checks}項目・記録 ${research.verification.integrity_checks}項目を確認済み`;
-  resultMethod.textContent = `${research.method.recipe_id} / v${research.method.contract_version}`;
-  resultRequest.href = research.source.request_url;
+  const side = document.createElement("div");
+  side.className = "result-side";
+  const number = document.createElement("span");
+  number.textContent = String(index + 1).padStart(2, "0");
+  const kind = document.createElement("strong");
+  kind.textContent = result.kind_label;
+  const source = document.createElement("small");
+  source.textContent = result.source.label;
+  side.append(number, kind, source);
 
-  resultDetails.replaceChildren();
-  if (research.details.length === 0) {
-    const empty = document.createElement("div");
-    const term = document.createElement("dt");
-    const definition = document.createElement("dd");
-    term.textContent = "追加情報";
-    definition.textContent = "ありません";
-    empty.append(term, definition);
-    resultDetails.append(empty);
-  } else {
-    research.details.forEach((field) => appendDetail(resultDetails, field));
+  const main = document.createElement("article");
+  const heading = document.createElement("div");
+  heading.className = "result-title-row";
+  const title = document.createElement("h3");
+  const titleLink = document.createElement("a");
+  titleLink.href = result.url;
+  titleLink.target = "_blank";
+  titleLink.rel = "noreferrer";
+  titleLink.textContent = result.title;
+  title.append(titleLink);
+  const arrow = document.createElement("span");
+  arrow.setAttribute("aria-hidden", "true");
+  arrow.textContent = "↗";
+  heading.append(title, arrow);
+
+  const description = document.createElement("p");
+  description.className = "result-description";
+  description.textContent = result.description;
+
+  const reasons = document.createElement("ul");
+  reasons.className = "result-reasons";
+  for (const reason of result.reasons ?? []) {
+    const reasonItem = document.createElement("li");
+    reasonItem.textContent = reason;
+    reasons.append(reasonItem);
   }
 
-  resultNotes.replaceChildren();
-  research.notes.forEach((note) => {
-    const item = document.createElement("li");
-    item.textContent = note;
-    resultNotes.append(item);
-  });
+  const metadata = document.createElement("dl");
+  metadata.className = "result-meta";
+  metadata.append(createMeta("提供元", result.publisher));
+  metadata.append(
+    createMeta("形式", result.formats?.length ? result.formats.join(" / ") : "公式ページで確認"),
+  );
+  if (result.coverage) metadata.append(createMeta("対象", result.coverage));
+  if (result.metadata_updated) {
+    metadata.append(createMeta("メタデータ更新", formatDate(result.metadata_updated)));
+  }
 
-  resultSection.hidden = false;
-  copyResearchStatus.textContent = "";
-  requestAnimationFrame(() => {
-    resultQuestion.focus({ preventScroll: true });
-    resultSection.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "start",
-    });
-  });
+  const actions = document.createElement("div");
+  actions.className = "result-actions";
+  const detailLink = document.createElement("a");
+  detailLink.href = result.url;
+  detailLink.target = "_blank";
+  detailLink.rel = "noreferrer";
+  detailLink.textContent = "公式の詳細を見る ↗";
+  actions.append(detailLink);
+  if (result.resource_url && result.resource_url !== result.url) {
+    const resourceLink = document.createElement("a");
+    resourceLink.href = result.resource_url;
+    resourceLink.target = "_blank";
+    resourceLink.rel = "noreferrer";
+    resourceLink.textContent = "データを開く ↗";
+    actions.append(resourceLink);
+  }
+  const licenseLink = document.createElement("a");
+  licenseLink.href = result.license.url;
+  licenseLink.target = "_blank";
+  licenseLink.rel = "noreferrer";
+  licenseLink.textContent = "利用条件 ↗";
+  actions.append(licenseLink);
+
+  main.append(heading, description, reasons, metadata, actions);
+  item.append(side, main);
+  return item;
 }
 
-async function runResearch(event) {
-  event.preventDefault();
-  const information = topicInformation[topicSelect.value];
-  if (!information) return;
+function filteredResults() {
+  if (!latestSearch) return [];
+  if (activeKind === "all") return latestSearch.results;
+  return latestSearch.results.filter((result) => result.kind === activeKind);
+}
 
-  researchSubmit.disabled = true;
-  researchSubmit.classList.add("is-loading");
-  researchSubmit.querySelector("span").textContent = "公式データを確認中";
-  formMessage.classList.remove("is-error");
-  formMessage.textContent = "公式サイトから取得し、答えと根拠を確認しています。";
+function renderResultList() {
+  const results = filteredResults();
+  resultList.replaceChildren(...results.map(createResult));
+  emptyResult.hidden = results.length > 0;
+}
 
-  const request = { topic: topicSelect.value };
-  if (information.hasYear) request.year = Number(yearSelect.value);
+function renderSourceStatus(sources) {
+  const successful = sources.filter((source) => source.status === "ok");
+  const failed = sources.filter((source) => source.status === "error");
+  const checked = successful.map((source) => source.label).join("、");
+  sourceStatus.textContent = failed.length
+    ? `${checked}を検索しました。${failed.map((source) => source.label).join("、")}は一時的に検索できませんでした。`
+    : `${checked}の公式メタデータを検索しました。`;
+  sourceStatus.classList.toggle("has-warning", failed.length > 0);
+}
+
+function renderSearch(payload) {
+  latestSearch = payload;
+  activeKind = "all";
+  for (const button of filterButtons) {
+    const kindCount =
+      button.dataset.kind === "all"
+        ? payload.results.length
+        : payload.results.filter((result) => result.kind === button.dataset.kind).length;
+    button.disabled = kindCount === 0;
+    button.setAttribute("aria-pressed", String(button.dataset.kind === "all"));
+  }
+  resultsTitle.textContent = `「${payload.query}」の候補`;
+  resultsSummary.textContent = payload.total
+    ? `内容と形式を比べやすい順に、${payload.total}件を表示しています。`
+    : "公式サイトを検索しましたが、表示できる候補はありませんでした。";
+  renderSourceStatus(payload.sources);
+  resultNote.textContent = payload.note;
+  resultsSection.hidden = false;
+  renderResultList();
+}
+
+function setSearching(searching) {
+  searchSubmit.disabled = searching;
+  searchInput.disabled = searching;
+  searchSubmit.classList.toggle("is-loading", searching);
+  searchSubmit.querySelector("span").textContent = searching ? "検索中" : "データを探す";
+}
+
+async function runSearch(event, options = {}) {
+  event?.preventDefault();
+  const query = searchInput.value.trim();
+  if (query.length < 2) {
+    searchMessage.classList.add("is-error");
+    searchMessage.textContent = "検索する言葉を2文字以上入力してください。";
+    searchInput.focus();
+    return;
+  }
+
+  setSearching(true);
+  searchMessage.classList.remove("is-error");
+  searchMessage.textContent = "2つの公式サイトを検索し、候補を整理しています。";
 
   try {
-    const response = await fetch("/api/research", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+    const parameters = new URLSearchParams({ q: query, limit: "6" });
+    const response = await fetch(`/api/search?${parameters.toString()}`, {
+      headers: { Accept: "application/json" },
     });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.message ?? "調査に失敗しました。");
-    renderResearch(payload);
-    formMessage.textContent = "調査が完了しました。結果と根拠を表示しています。";
+    if (!response.ok) throw new Error(payload.message ?? "検索できませんでした。");
+    renderSearch(payload);
+    searchMessage.textContent = "検索が完了しました。候補を比べて、公式ページで内容を確認してください。";
+    const pageUrl = new URL(window.location.href);
+    pageUrl.searchParams.set("q", query);
+    pageUrl.hash = "results";
+    window.history.replaceState(null, "", pageUrl);
+    if (!options.skipScroll) {
+      requestAnimationFrame(() => {
+        resultsTitle.focus({ preventScroll: true });
+        resultsSection.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+          block: "start",
+        });
+      });
+    }
   } catch (error) {
-    formMessage.classList.add("is-error");
-    formMessage.textContent =
+    searchMessage.classList.add("is-error");
+    searchMessage.textContent =
       error instanceof Error
         ? error.message
-        : "公式データを取得できませんでした。時間をおいて再度お試しください。";
+        : "公式サイトを検索できませんでした。時間をおいて再度お試しください。";
   } finally {
-    researchSubmit.disabled = false;
-    researchSubmit.classList.remove("is-loading");
-    researchSubmit.querySelector("span").textContent = "公式データを調べる";
+    setSearching(false);
   }
 }
 
-async function copyText(text) {
+searchForm?.addEventListener("submit", runSearch);
+
+document.querySelectorAll("[data-query]").forEach((button) => {
+  button.addEventListener("click", () => {
+    searchInput.value = button.dataset.query;
+    searchForm.requestSubmit();
+  });
+});
+
+for (const button of filterButtons) {
+  button.addEventListener("click", () => {
+    activeKind = button.dataset.kind;
+    for (const candidate of filterButtons) {
+      candidate.setAttribute("aria-pressed", String(candidate === button));
+    }
+    renderResultList();
+  });
+}
+
+async function copyText(value) {
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(value);
     return true;
   } catch {
     const textarea = document.createElement("textarea");
-    textarea.value = text;
+    textarea.value = value;
     textarea.style.position = "fixed";
     textarea.style.opacity = "0";
     document.body.append(textarea);
@@ -236,63 +252,20 @@ async function copyText(text) {
   }
 }
 
-function researchMemo(research) {
-  const values = [...research.primary, ...research.details]
-    .map(
-      (field) =>
-        `- ${field.label.ja}: ${formatFieldValue(field)}${displayUnit(field) ? ` ${displayUnit(field)}` : ""}`,
-    )
-    .join("\n");
-  const notes = research.notes.map((note) => `- ${note}`).join("\n");
-  return `${research.question}\n\n結果\n${values}\n\n出典\n${research.source.credit}\n${research.source.url}\n\n利用条件\n${research.source.license_url}\n\n取得日時\n${formatRetrievedAt(research.retrieved_at)}（日本時間）\n\n確認結果\n取得内容 ${research.verification.source_checks}項目・記録 ${research.verification.integrity_checks}項目を確認済み\n\n読むときの注意\n${notes}\n\nPDC 根拠付き公的統計リサーチ\nhttps://pdc.yhay81.com/`;
-}
-
-copyResearchButton?.addEventListener("click", async () => {
-  if (!latestResearch) return;
-  const copied = await copyText(researchMemo(latestResearch));
-  copyResearchStatus.textContent = copied ? "コピーしました ✓" : "コピーできませんでした";
-});
-
-topicSelect?.addEventListener("change", updateTopic);
-researchForm?.addEventListener("submit", runResearch);
-updateTopic();
-
-document.querySelectorAll("[data-topic]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const topic = button.dataset.topic;
-    if (!topic || !topicInformation[topic]) return;
-    topicSelect.value = topic;
-    updateTopic();
-    researchForm.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "center",
-    });
-    topicSelect.focus({ preventScroll: true });
-  });
-});
-
 const copyButton = document.querySelector("#copy-config");
 const copyResult = document.querySelector("#copy-result");
 const endpointText = document.querySelector("#config-code")?.textContent?.trim() ?? "";
 
 copyButton?.addEventListener("click", async () => {
   const copied = await copyText(endpointText);
-  copyButton.removeAttribute("data-copied");
-  copyButton.removeAttribute("data-failed");
-  if (copied) {
-    copyButton.setAttribute("data-copied", "true");
-    copyButton.textContent = "コピー済み ✓";
-    copyResult.textContent = "コピーしました。AIツールのMCP設定へ追加してください。";
-  } else {
-    copyButton.setAttribute("data-failed", "true");
-    copyButton.textContent = "コピーできません";
-    copyResult.textContent = "URLを選択して手動でコピーしてください。";
-  }
+  copyButton.textContent = copied ? "コピー済み ✓" : "コピーできません";
+  copyButton.dataset.state = copied ? "copied" : "failed";
+  copyResult.textContent = copied
+    ? "コピーしました。AIツールのMCP設定に追加してください。"
+    : "URLを選択して手動でコピーしてください。";
 });
 
-const serviceStatus = document.querySelector(".service-status");
+const serviceLine = document.querySelector(".service-line");
 const liveStatus = document.querySelector("#live-status");
 
 fetch("/health", { headers: { Accept: "application/json" } })
@@ -301,9 +274,15 @@ fetch("/health", { headers: { Accept: "application/json" } })
     return response.json();
   })
   .then((health) => {
-    liveStatus.textContent = `稼働中 · ${health.research_topics}種類の調査`;
+    liveStatus.textContent = `稼働中・${health.search_sources ?? 2}つの公式サイトを検索`;
   })
   .catch(() => {
-    serviceStatus?.classList.add("is-offline");
-    liveStatus.textContent = "状態を確認できません";
+    serviceLine?.classList.add("is-offline");
+    liveStatus.textContent = "接続状態を確認できません";
   });
+
+const initialQuery = new URL(window.location.href).searchParams.get("q")?.trim();
+if (initialQuery && initialQuery.length >= 2) {
+  searchInput.value = initialQuery;
+  runSearch(undefined, { skipScroll: true });
+}

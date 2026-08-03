@@ -93,24 +93,51 @@ test("all committed recipes satisfy the published JSON Schema", () => {
   }
 });
 
-test("search_data discovers source profiles and their contracts without network access", async () => {
-  const { client, server } = await createTestClient();
+test("search_data returns ranked live public-data candidates", async () => {
+  const fakeFetch: typeof fetch = async (input) => {
+    const url = new URL(String(input));
+    if (url.hostname === "data.e-gov.go.jp") {
+      return Response.json({
+        success: true,
+        result: {
+          results: [
+            {
+              name: "population-table",
+              title: "都道府県別の人口推移",
+              notes: "都道府県別の人口を時系列で確認できるデータです。",
+              organization: { title: "総務省" },
+              tags: [{ name: "人口" }],
+              groups: [{ display_name: "人口・世帯" }],
+              resources: [
+                { format: "XLSX", url: "https://example.go.jp/population.xlsx" },
+              ],
+              metadata_modified: "2026-07-01T00:00:00Z",
+            },
+          ],
+        },
+      });
+    }
+    return Response.json({
+      GET_META_INDICATOR_INF: {
+        RESULT: { status: "0" },
+        METADATA_INF: { CLASS_INF: { CLASS_OBJ: [] } },
+      },
+    });
+  };
+  const { client, server } = await createTestClient(fakeFetch);
   try {
     const response = await client.callTool({
       name: "search_data",
-      arguments: { query: "Tokyo population" },
+      arguments: { query: "都道府県別の人口推移" },
     });
     assert.equal(response.isError, undefined);
     const payload = response.structuredContent as {
       total: number;
-      matches: Array<{ contracts: Array<{ id: string }> }>;
+      results: Array<{ id: string; publisher: string }>;
     };
     assert.equal(payload.total, 1);
-    assert.ok(
-      payload.matches[0]?.contracts.some(
-        (contract) => contract.id === "tokyo-population-by-year",
-      ),
-    );
+    assert.equal(payload.results[0]?.id, "egov:population-table");
+    assert.equal(payload.results[0]?.publisher, "総務省");
   } finally {
     await client.close();
     await server.close();

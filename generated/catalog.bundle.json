@@ -1,7 +1,7 @@
 {
   "bundle_version": "1.0.0",
-  "catalog_version": "0.4.1",
-  "last_updated": "2026-08-02",
+  "catalog_version": "0.5.0",
+  "last_updated": "2026-08-03",
   "sources": [
     {
       "id": "estat-api",
@@ -55,7 +55,7 @@
         "Statistics can be revised, and table IDs or classifications may change after methodological revisions.",
         "The meaning of a value depends on the table metadata, unit, reference period, and annotation fields."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://www.e-stat.go.jp/api/index.php/en",
@@ -178,7 +178,7 @@
         "The free API has no uptime guarantee and is restricted to non-commercial use.",
         "The underlying national weather data sources can have different attribution and terms."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://open-meteo.com/",
@@ -238,7 +238,7 @@
         "The API commonly returns a metadata object followed by an array of records.",
         "An indicator's apparent comparability does not remove differences in methodology or source quality."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries",
@@ -295,7 +295,7 @@
         "Sensitive species locations may be generalized or obscured.",
         "Download and bulk-use workflows have different authentication, citation, and rate-limit expectations."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://techdocs.gbif.org/en/openapi/",
@@ -353,7 +353,7 @@
         "A variable name can have different definitions across datasets or vintages.",
         "The Census Bureau requires a non-endorsement notice for services that use the API."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://www.census.gov/data/developers.html",
@@ -410,7 +410,7 @@
         "Coverage, abstracts, open-access status, and citation counts are not equally complete for every work.",
         "API keys belong in environment variables or a secret manager and must not be placed in URLs committed to Git."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://developers.openalex.org/api-reference/introduction",
@@ -532,7 +532,7 @@
         "Real-time records are preliminary and may be revised, deleted, or superseded.",
         "License and attribution conditions can differ for non-USGS contributor data and linked products."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://earthquake.usgs.gov/fdsnws/event/1/swagger.json",
@@ -592,7 +592,7 @@
         "Public Overpass endpoints are shared services operated by third parties and can change availability or limits.",
         "User and changeset metadata can contain personal data; do not collect or expose it unnecessarily."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://wiki.openstreetmap.org/wiki/Overpass_API",
@@ -653,7 +653,7 @@
         "The catalog contains products with different grids, latency, versions, and quality characteristics; do not compare them without reading metadata.",
         "An API token is a secret and must remain in a local credential file or secret manager, never in a URL or catalog entry."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://cds.climate.copernicus.eu/how-to-api",
@@ -713,7 +713,7 @@
         "Free access to an article does not mean that its full text, figures, or supplementary files can be freely redistributed.",
         "Search indexing, abstracts, annotations, and citation counts can be incomplete or revised."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://europepmc.org/RestfulWebService",
@@ -772,7 +772,7 @@
         "Nutrition values, ingredients, allergen flags, and computed scores should not be treated as medical advice or as a substitute for product labeling.",
         "Product images and database contents do not necessarily share the same license, and write access requires separate authentication."
       ],
-      "status": "active",
+      "status": "paused",
       "last_verified": "2026-07-13",
       "source_urls": [
         "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/",

@@ -6,14 +6,14 @@ records, and integrations stay stable.
 
 ## Brand promise
 
-**公的な数字を、根拠まで。**
+**知りたいことから、公的データを見つける。**
 
-English: **Official figures, with the evidence.**
+English: **Find public data from the question you have.**
 
-PDC is a simple public-statistics research service. A person chooses a concrete
-question and receives the answer together with its official source, usage
-terms, interpretation notes, and verification result. MCP remains available as
-an optional automation interface, not as the service's main explanation.
+PDC is a plain-language public-dataset search service. A person describes what
+they want to know and receives a short list with the dataset's purpose,
+publisher, formats, coverage, usage terms, and official link. The browser is the
+primary interface. MCP remains an optional automation interface.
 
 ## Mark
 
@@ -29,7 +29,7 @@ The points represent the three internal operations behind each answer:
 2. `EXECUTE` — run the bounded retrieval.
 3. `VERIFY` — check the evidence receipt.
 
-Use **PDC — 根拠付き公的統計リサーチ** on the public website. Use the repository
+Use **PDC — 公的データセット検索** on the public website. Use the repository
 name **Public Data Catalog** only when technical continuity or package identity
 matters. Do not expand PDC into a different phrase.
 
@@ -43,10 +43,10 @@ matters. Do not expand PDC into a different phrase.
 | Paper secondary | Cool gray | `#F6F7F9` |
 
 Research blue marks actions and links and remains an accent rather than a large
-background. Thin gray rules separate information. The research form is the
-only card-like element on the first screen because it is the primary action.
-Results use a dark field so the returned value and evidence are visibly distinct
-from explanatory content.
+background. Thin gray rules separate information. The search field is the only
+card-like element on the first screen because it is the primary action. Search
+results use open rows and dividers so titles, publishers, formats, and coverage
+can be compared without dashboard clutter.
 
 Use a neutral Japanese sans serif for both large display text and prose, and
 monospace only for contracts, endpoints, identifiers, and status labels. The

@@ -7,6 +7,10 @@ import {
   ResearchInputError,
   researchStatistic,
 } from "./research.ts";
+import {
+  PublicDataSearchInputError,
+  searchPublicData,
+} from "./search.ts";
 
 interface Env {
   ASSETS: Fetcher;
@@ -23,8 +27,41 @@ export default {
       return Response.json({
         status: "ok",
         ...serviceInfo(),
+        web_service: "public-data-search",
+        search_sources: 2,
         research_topics: listResearchTopics().length,
       });
+    }
+    if (url.pathname === "/api/search") {
+      if (request.method !== "GET") {
+        return Response.json(
+          { status: "error", message: "GETで検索してください。" },
+          { status: 405, headers: { Allow: "GET" } },
+        );
+      }
+      const rawLimit = url.searchParams.get("limit");
+      const kind = url.searchParams.get("kind") ?? "all";
+      try {
+        const result = await searchPublicData({
+          query: url.searchParams.get("q") ?? "",
+          kind: kind as "all" | "dataset" | "statistics",
+          ...(rawLimit !== null ? { limit: Number(rawLimit) } : {}),
+        });
+        return Response.json(result, {
+          headers: { "Cache-Control": "public, max-age=300" },
+        });
+      } catch (error) {
+        const inputError = error instanceof PublicDataSearchInputError;
+        return Response.json(
+          {
+            status: "error",
+            message: inputError
+              ? error.message
+              : "公式サイトを検索できませんでした。時間をおいて再度お試しください。",
+          },
+          { status: inputError ? 400 : 502 },
+        );
+      }
     }
     if (url.pathname === "/api/research") {
       if (request.method === "GET") {

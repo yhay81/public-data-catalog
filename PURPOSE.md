@@ -1,18 +1,20 @@
 # Purpose and Scope
 
-This repository provides a small, usable public-statistics research service that keeps an answer and its evidence together.
+This repository provides a plain-language search service for Japanese public datasets and official statistics.
 
 ## Ultimate outcome
 
-People should be able to select a concrete statistical question and receive a
-readable answer, official source, usage conditions, interpretation notes, and
-verification result without first learning an API or configuring an AI tool.
-The same research should remain reproducible through a versioned retrieval
-contract and callable by AI agents through MCP.
+People beginning a report or investigation should be able to describe what they
+want to know and receive a short list of relevant official datasets without
+first learning an API or configuring an AI tool. Each result should explain what
+the data contains, who publishes it, its formats and coverage, its usage terms,
+and where to inspect the official record. The same search remains callable by AI
+agents through MCP, but the public Web service is the primary interface.
 
-PDC does not try to own or mirror the underlying data. Its ultimate value is the
-open trust layer around selecting, retrieving, interpreting, citing, and
-rechecking official data. The project roadmap and evidence gates are defined in
+PDC does not try to own or mirror the underlying data. Its value is the plain,
+source-linked layer around finding, comparing, selecting, and rechecking official
+data. Bounded retrieval contracts remain available when a selected dataset has a
+reviewed execution path. The project roadmap and evidence gates are defined in
 [docs/roadmap.md](./docs/roadmap.md).
 
 The activity is not successful merely because the catalog contains many sources. It creates value when an AI or a person can use the maintained information to:
@@ -25,7 +27,7 @@ The primary audience is people preparing reports, checking figures, or beginning
 
 ## Unit of value
 
-A source profile is necessary, but it is not the final unit of value. The intended unit is a **verified retrieval recipe**: a source profile connected to at least one concrete question, a bounded retrieval method, the expected response shape, interpretation notes, and official evidence.
+A source profile is necessary, but it is not the final unit of value. The primary unit is now a **useful search result**: an official dataset or statistical series connected to a user's words, with a concise description, publisher, formats, coverage, usage terms, and official link. A **verified retrieval recipe** remains the higher-assurance unit for questions that proceed from discovery to execution.
 
 The existing `catalog.json` is the source-profile layer. Files under `recipes/` add executable recipes and lightweight response checks without turning this repository into a mirror of the underlying data.
 
@@ -77,13 +79,11 @@ The catalog is an inventory of data access points, not a mirror of the underlyin
 
 The catalog should grow when a verified recipe makes a meaningful question easier to answer, not simply when another link can be added.
 
-## Current proof set
+## Current search scope
 
-The proof set contains six bounded, registration-free recipes:
+The public search currently uses two registration-free official metadata sources:
 
-- two fixed Japanese official-statistics questions and one bounded year family through Statistics Dashboard;
-- one Japanese government data-catalog discovery question;
-- one international comparison through the World Bank;
-- one Japan-related earthquake record through the USGS catalog.
+- e-Gov Data Portal for downloadable government datasets and resources;
+- Statistics Dashboard for searchable official statistical series.
 
-This set and its MCP adapter are implementation milestones, not proof of demand. The next gate is independent execution by at least five people or AI-agent sessions.
+The six earlier bounded retrieval recipes remain as compatibility and regression assets; they are not the public product's navigation. Search quality must be validated with representative queries and independent Web users before adding another source.

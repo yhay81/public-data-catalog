@@ -126,7 +126,7 @@ const SECRET_KEYS = new Set([
   "client_secret",
   "token",
 ]);
-const RUNNER = "public-data-catalog-mcp/0.5.0";
+const RUNNER = "public-data-catalog-mcp/0.6.0";
 const RECEIPT_SCHEMA =
   "https://raw.githubusercontent.com/yhay81/public-data-catalog/main/receipt.schema.json";
 const RECEIPT_VERSION = "1.1.0";
@@ -797,7 +797,7 @@ export async function verifyExecution(execution: unknown) {
 export function serviceInfo() {
   return {
     name: "public-data-catalog-mcp",
-    version: "0.5.0",
+    version: "0.6.0",
     catalog_version: bundle.catalog_version,
     tools: ["search_data", "execute", "verify"],
     transport: "MCP Streamable HTTP",

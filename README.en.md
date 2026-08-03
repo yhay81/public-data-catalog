@@ -1,4 +1,4 @@
-# PDC — Evidence-backed Public Statistics Research
+# PDC — Public Dataset Search
 
 [日本語](./README.md)
 
@@ -6,17 +6,17 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-PDC retrieves public statistics from official sources and keeps the answer, provenance, usage conditions, interpretation notes, and verification result together.
+PDC turns a plain-language question into a short list of Japanese public datasets, with a clear description, publisher, formats, coverage, usage terms, and official links.
 
-Public service: [PDC — Evidence-backed Public Statistics Research](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
+Public service: [PDC — Public Dataset Search](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
 
-The browser service runs five concrete research tasks without registration. The same retrieval and verification layer is available through MCP and Python for automation.
+The browser is the primary service and requires no registration. It searches live metadata from e-Gov Data Portal and Statistics Dashboard. The same search is available through MCP; the earlier retrieval and verification contracts remain available as compatibility features.
 
-## Research in the browser
+## Search in the browser
 
-Open [pdc.yhay81.com](https://pdc.yhay81.com/), select a supported question, and run the research. PDC currently covers Tokyo population for 2015–2025, Japan's 2023 unemployment rate, Japan's 2023 World Bank population, the USGS record of the 2024 Noto Peninsula earthquake, and an e-Gov population dataset.
+Open [pdc.yhay81.com](https://pdc.yhay81.com/) and enter a question such as “population by prefecture,” “consumer price index,” or “vacant homes.” PDC ranks useful candidates and shows what each dataset contains, who publishes it, its formats and coverage, its usage terms, and official links.
 
-Each result includes the retrieved value, retrieval time, official source, usage terms, supporting fields, interpretation notes, and verification counts. Integrations can list the supported topics with `GET /api/research` and submit a request to `POST /api/research`.
+Integrations can use `GET /api/search?q=population`. Search results are candidates; users must confirm content, coverage, and terms on the official page before use.
 
 ## Try it in one minute
 
@@ -50,7 +50,7 @@ claude mcp add --transport http public-data-catalog \
   https://pdc.yhay81.com/mcp
 ```
 
-It exposes only three tools: `search_data` discovers sources and contracts, `execute` runs a reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.
+It exposes only three tools: `search_data` searches e-Gov and Statistics Dashboard, `execute` runs a legacy reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.
 
 The [client setup guide](./docs/client-setup.md) covers UI setup, a one-minute connection check, removal, and troubleshooting. For local stdio use with Node.js 24 or newer, run `npm ci && npm run mcp`. See the [architecture](./docs/architecture.md) for trust boundaries, the [compatibility matrix](./docs/compatibility.md) for proven surfaces, and [`server.json`](./server.json) for MCP Registry metadata.
 
