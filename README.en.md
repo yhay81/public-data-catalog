@@ -10,7 +10,7 @@
 
 Japanese-first, tested retrieval recipes that help developers and AI agents move from a concrete public-data question to a small, reproducible, attributable result.
 
-Brand site: [PDC — Verified routes to official public data](https://d.yhay81.com/) · [Brand guide](./docs/brand.md)
+Brand site: [PDC — Verified routes to official public data](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
 
 This is not another exhaustive link list or a mirror of government data. Each recipe keeps a bounded request, response assertions, extracted values, interpretation notes, provenance, license, and verification date together.
 
@@ -39,11 +39,11 @@ The public server uses the current MCP Streamable HTTP transport:
 ```sh
 # Codex
 codex mcp add public-data-catalog \
-  --url https://d.yhay81.com/mcp
+  --url https://pdc.yhay81.com/mcp
 
 # Claude Code
 claude mcp add --transport http public-data-catalog \
-  https://d.yhay81.com/mcp
+  https://pdc.yhay81.com/mcp
 ```
 
 It exposes only three tools: `search_data` discovers sources and contracts, `execute` runs a reviewed contract, and `verify` checks execution-receipt integrity. It does not accept arbitrary URLs, SQL, or code. The Cloudflare Workers deployment is a reference service without an availability guarantee.

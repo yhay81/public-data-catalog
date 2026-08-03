@@ -6,7 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "routes": [
     {
-      "pattern": "d.yhay81.com",
+      "pattern": "pdc.yhay81.com",
       "custom_domain": true
     }
   ],

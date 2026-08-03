@@ -38,7 +38,7 @@ Reproduce public discovery with:
 
 ```sh
 npx -y @modelcontextprotocol/inspector@0.21.2 \
-  --cli https://d.yhay81.com/mcp \
+  --cli https://pdc.yhay81.com/mcp \
   --transport http \
   --method tools/list
 ```
