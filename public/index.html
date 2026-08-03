@@ -5,48 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="PDCは、人口や失業率などの公的データをAIが公式サイトから調べ、出典と確認結果を付けて返すオープンソースのサービスです。"
+      content="PDCは、公的な統計を公式サイトから取得し、答え・出典・利用条件・確認結果をひとつの調査メモにまとめる無料サービスです。"
     />
     <meta name="theme-color" content="#f6f7f9" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ja_JP" />
-    <meta property="og:title" content="PDC — 公的データを、AIで使う" />
+    <meta property="og:title" content="PDC — 根拠付き公的統計リサーチ" />
     <meta
       property="og:description"
-      content="AIから公式の公的データを調べ、答え・出典・確認結果をまとめて受け取れます。"
+      content="公的な数字を、根拠まで調べる。答え・出典・利用条件・確認結果をまとめて受け取れます。"
     />
     <meta property="og:url" content="https://pdc.yhay81.com/" />
-    <meta
-      property="og:image"
-      content="https://pdc.yhay81.com/og.png?v=audit-circuit"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PDC — 公的データを、AIで使う" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="PDC — 根拠付き公的統計リサーチ" />
     <meta
       name="twitter:description"
-      content="AIから公式の公的データを調べ、答え・出典・確認結果をまとめて受け取れます。"
-    />
-    <meta
-      name="twitter:image"
-      content="https://pdc.yhay81.com/og.png?v=audit-circuit"
+      content="公的な数字を、根拠まで調べる。答え・出典・利用条件・確認結果をまとめて受け取れます。"
     />
     <link rel="canonical" href="https://pdc.yhay81.com/" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/styles.css?v=simple-guide-1" />
+    <link rel="stylesheet" href="/styles.css?v=research-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareSourceCode",
-        "name": "PDC — Public Data Catalog",
-        "description": "Open-source MCP and Python tools for searching, retrieving, and verifying Japanese public data with provenance, licensing, caveats, and integrity receipts.",
-        "codeRepository": "https://github.com/yhay81/public-data-catalog",
-        "license": "https://opensource.org/license/mit",
-        "programmingLanguage": ["TypeScript", "Python"],
-        "runtimePlatform": "Cloudflare Workers",
-        "url": "https://pdc.yhay81.com/"
+        "@type": "WebApplication",
+        "name": "PDC — 根拠付き公的統計リサーチ",
+        "description": "公的統計を公式APIから取得し、答え・出典・利用条件・確認結果をまとめる無料の調査サービス。",
+        "applicationCategory": "ResearchApplication",
+        "operatingSystem": "Web",
+        "isAccessibleForFree": true,
+        "url": "https://pdc.yhay81.com/",
+        "codeRepository": "https://github.com/yhay81/public-data-catalog"
       }
     </script>
-    <title>PDC — 公的データを、AIで使う</title>
+    <title>PDC — 根拠付き公的統計リサーチ</title>
   </head>
   <body>
     <header class="site-header">
@@ -54,271 +46,257 @@
         <span class="brand-mark" aria-hidden="true">P</span>
         <span>
           <strong>PDC</strong>
-          <small>Public Data Catalog</small>
+          <small>根拠付き公的統計リサーチ</small>
         </span>
       </a>
       <nav aria-label="メインナビゲーション">
-        <a href="#about">PDCとは</a>
-        <a href="#setup">接続方法</a>
-        <a href="#example">出力例</a>
+        <a href="#research">調べる</a>
+        <a href="#coverage">対応範囲</a>
+        <a href="#method">仕組み</a>
+        <a href="#automation">MCP</a>
         <a
           href="https://github.com/yhay81/public-data-catalog"
           target="_blank"
           rel="noreferrer"
-        >
-          GitHub ↗
-        </a>
+        >GitHub ↗</a>
       </nav>
     </header>
 
     <main>
-      <section class="start" id="top" aria-labelledby="start-title">
-        <div class="start-copy">
-          <p class="product-label">PUBLIC DATA CATALOG</p>
-          <h1 id="start-title">公的データを、<br />AIで使う。</h1>
-          <p class="start-summary">
-            人口や失業率などの公的データを、AIが公式サイトから調べます。答えには出典と確認結果が付くので、元の情報までたどれます。
+      <section class="research-hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="product-label">PUBLIC STATISTICS RESEARCH</p>
+          <h1 id="hero-title">公的な数字を、<br />根拠まで。</h1>
+          <p class="hero-summary">
+            調べたい項目を選ぶと、公式サイトから最新の値を取得します。答えだけでなく、出典・利用条件・確認結果までひとつにまとめます。
           </p>
           <div class="service-status" aria-live="polite">
             <span class="status-dot" aria-hidden="true"></span>
             <span id="live-status">接続確認中</span>
-            <span class="status-note">アカウント不要</span>
+            <span class="status-note">無料・登録不要</span>
           </div>
         </div>
 
-        <div class="start-action" aria-labelledby="endpoint-title">
-          <div class="action-heading">
+        <form class="research-form" id="research" aria-labelledby="research-title">
+          <div class="form-heading">
             <div>
-              <span class="step-number">最初にすること</span>
-              <h2 id="endpoint-title">接続URLをコピー</h2>
+              <span>今すぐ試す</span>
+              <h2 id="research-title">何を調べますか？</h2>
             </div>
-            <span class="action-time">約10秒</span>
+            <small>公式APIへ直接照会</small>
           </div>
-          <div class="endpoint-control">
-            <code id="config-code">https://pdc.yhay81.com/mcp</code>
-            <button type="button" id="copy-config">URLをコピー</button>
-          </div>
-          <div class="action-next">
-            <p id="copy-result" aria-live="polite">
-              コピー後、AIツールのMCP設定へ追加します。
-            </p>
-            <a
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              接続手順を開く <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </section>
 
-      <section class="about page-shell" id="about" aria-labelledby="about-title">
-        <header class="section-heading">
-          <p>PDCとは</p>
-          <div>
-            <h2 id="about-title">AIのための、<br />公的データ案内役です。</h2>
-            <p class="about-intro">
-              PDCは、データを自分でため込むサービスではありません。質問を受けると、あらかじめ動作を確認した手順で、官公庁などの公式API（データを受け取るための窓口）に問い合わせます。
-            </p>
-          </div>
-        </header>
+          <label class="form-field" for="research-topic">
+            <span>調べる内容</span>
+            <select id="research-topic" name="topic">
+              <option value="tokyo-population">東京都の人口</option>
+              <option value="japan-unemployment">日本の完全失業率</option>
+              <option value="world-bank-japan-population">世界銀行による日本の人口</option>
+              <option value="noto-earthquake">2024年能登半島地震</option>
+              <option value="egov-population-dataset">e-Govの人口データセット</option>
+            </select>
+          </label>
 
-        <ol class="simple-flow" aria-label="質問から回答までの流れ">
-          <li>
-            <span>1</span>
-            <div><strong>あなたが質問する</strong><small>例：2025年の東京都の人口は？</small></div>
-          </li>
-          <li>
-            <span>2</span>
-            <div><strong>PDCが調べ方を選ぶ</strong><small>動作を確認済みの手順だけを使います</small></div>
-          </li>
-          <li>
-            <span>3</span>
-            <div><strong>公式サイトから取得する</strong><small>データは官公庁などの提供元から受け取ります</small></div>
-          </li>
-          <li>
-            <span>4</span>
-            <div><strong>根拠と一緒に返す</strong><small>答え・出典・利用条件・確認結果が届きます</small></div>
-          </li>
-        </ol>
+          <label class="form-field" id="year-field" for="research-year">
+            <span>調べる年</span>
+            <select id="research-year" name="year">
+              <option value="2025">2025年</option>
+              <option value="2024">2024年</option>
+              <option value="2023">2023年</option>
+              <option value="2022">2022年</option>
+              <option value="2021">2021年</option>
+              <option value="2020">2020年</option>
+              <option value="2019">2019年</option>
+              <option value="2018">2018年</option>
+              <option value="2017">2017年</option>
+              <option value="2016">2016年</option>
+              <option value="2015">2015年</option>
+            </select>
+          </label>
 
-        <div class="available-data">
-          <h3>いま調べられる主なデータ</h3>
-          <dl>
-            <div>
-              <dt>日本の人口・失業率</dt>
-              <dd>統計ダッシュボード Web API ／ 総務省統計局</dd>
-            </div>
-            <div>
-              <dt>日本の公開データセット</dt>
-              <dd>e-Govデータポータル ／ デジタル庁</dd>
-            </div>
-            <div>
-              <dt>世界各国の人口</dt>
-              <dd>World Bank Indicators API ／ 世界銀行</dd>
-            </div>
-            <div>
-              <dt>世界の地震記録</dt>
-              <dd>Earthquake Catalog API ／ アメリカ地質調査所</dd>
-            </div>
-          </dl>
-          <p>
-            現在の公開版で、質問からデータ取得までできるのは上の4種類です。ほかの情報源は、まだ候補としての案内だけです。
+          <p class="topic-note" id="topic-note">
+            総務省統計局の統計ダッシュボードから、東京都の年次総人口を取得します。
           </p>
+
+          <button class="research-submit" id="research-submit" type="submit">
+            <span>公式データを調べる</span>
+            <i aria-hidden="true">→</i>
+          </button>
+          <p class="form-message" id="form-message" aria-live="polite">
+            データを保存せず、選んだ時点で公式サイトへ問い合わせます。
+          </p>
+        </form>
+      </section>
+
+      <section
+        class="research-result"
+        id="research-result"
+        aria-labelledby="result-question"
+        aria-live="polite"
+        hidden
+      >
+        <div class="page-shell">
+          <header class="result-heading">
+            <div>
+              <p>調査結果</p>
+              <h2 id="result-question" tabindex="-1"></h2>
+            </div>
+            <span class="verified-badge"><i aria-hidden="true">✓</i> 確認済み</span>
+          </header>
+
+          <div class="result-layout">
+            <div class="result-main">
+              <div class="result-values" id="result-values"></div>
+              <p class="result-time" id="result-time"></p>
+            </div>
+
+            <dl class="result-evidence">
+              <div>
+                <dt>出典</dt>
+                <dd><a id="result-source" target="_blank" rel="noreferrer"></a></dd>
+              </div>
+              <div>
+                <dt>利用条件</dt>
+                <dd><a id="result-license" target="_blank" rel="noreferrer">公式の利用条件 ↗</a></dd>
+              </div>
+              <div>
+                <dt>確認結果</dt>
+                <dd id="result-checks"></dd>
+              </div>
+              <div>
+                <dt>取得手順</dt>
+                <dd><code id="result-method"></code></dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="result-details">
+            <div>
+              <h3>補足情報</h3>
+              <dl id="result-details"></dl>
+            </div>
+            <div>
+              <h3>読むときの注意</h3>
+              <ul id="result-notes"></ul>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button type="button" id="copy-research">調査メモをコピー</button>
+            <a id="result-request" target="_blank" rel="noreferrer">取得した公式データを見る ↗</a>
+            <span id="copy-research-status" aria-live="polite"></span>
+          </div>
         </div>
       </section>
 
-      <section class="setup page-shell" id="setup" aria-labelledby="setup-title">
+      <section class="coverage page-shell" id="coverage" aria-labelledby="coverage-title">
         <header class="section-heading">
-          <p>SETUP</p>
-          <h2 id="setup-title">3ステップで使い始める</h2>
+          <p>対応範囲</p>
+          <div>
+            <h2 id="coverage-title">現在できる5つの調査</h2>
+            <p>広く浅く探すのではなく、取得と確認まで動作を確かめた問いだけを扱います。</p>
+          </div>
         </header>
-        <ol class="setup-list">
+
+        <div class="coverage-list">
+          <button type="button" data-topic="tokyo-population">
+            <span>01</span>
+            <strong>東京都の人口</strong>
+            <small>2015–2025年</small>
+            <i>統計ダッシュボード →</i>
+          </button>
+          <button type="button" data-topic="japan-unemployment">
+            <span>02</span>
+            <strong>日本の完全失業率</strong>
+            <small>2023年・男女計</small>
+            <i>統計ダッシュボード →</i>
+          </button>
+          <button type="button" data-topic="world-bank-japan-population">
+            <span>03</span>
+            <strong>世界銀行による日本の人口</strong>
+            <small>2023年</small>
+            <i>World Bank →</i>
+          </button>
+          <button type="button" data-topic="noto-earthquake">
+            <span>04</span>
+            <strong>2024年能登半島地震</strong>
+            <small>規模・時刻・地点</small>
+            <i>USGS →</i>
+          </button>
+          <button type="button" data-topic="egov-population-dataset">
+            <span>05</span>
+            <strong>e-Govの人口データセット</strong>
+            <small>提供者・形式・更新日</small>
+            <i>e-Gov →</i>
+          </button>
+        </div>
+      </section>
+
+      <section class="method page-shell" id="method" aria-labelledby="method-title">
+        <header class="section-heading">
+          <p>仕組み</p>
+          <div>
+            <h2 id="method-title">答えだけにしない</h2>
+            <p>どこから、どう取得し、何を確認したかを、数字から切り離さずに返します。</p>
+          </div>
+        </header>
+        <ol class="method-list">
           <li>
             <span>1</span>
-            <div>
-              <h3>URLをコピー</h3>
-              <p>上のボタンでPDCの接続先をコピーします。</p>
-            </div>
-            <a href="#top">コピーする ↑</a>
+            <div><strong>問いを選ぶ</strong><small>現在対応している具体的な調査から選択します。</small></div>
           </li>
           <li>
             <span>2</span>
-            <div>
-              <h3>AIツールへ追加</h3>
-              <p>CodexやClaude CodeなどのMCP設定へ貼り付けます。</p>
-            </div>
-            <a
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              設定例を見る ↗
-            </a>
+            <div><strong>公式サイトから取得</strong><small>保存済みの値ではなく、その場で公式APIへ問い合わせます。</small></div>
           </li>
           <li>
             <span>3</span>
-            <div>
-              <h3>質問する</h3>
-              <p>調べたい内容を、いつもの言葉でAIに伝えます。</p>
-            </div>
-            <code>東京都の2025年の人口を、出典付きで教えて</code>
+            <div><strong>根拠まで確認</strong><small>値・出典・利用条件・取得手順の整合性を確認します。</small></div>
           </li>
         </ol>
       </section>
 
-      <section class="example page-shell" id="example" aria-labelledby="example-title">
-        <header class="section-heading">
-          <p>OUTPUT</p>
-          <h2 id="example-title">答えと根拠が返ってくる</h2>
-        </header>
-        <div class="answer">
-          <div class="answer-main">
-            <p class="answer-question">2025年の東京都の総人口は？</p>
-            <p class="answer-value">14,246,219 <span>人</span></p>
+      <section class="automation" id="automation" aria-labelledby="automation-title">
+        <div class="page-shell automation-inner">
+          <div>
+            <p class="automation-label">MCP AUTOMATION</p>
+            <h2 id="automation-title">繰り返し調べるなら、<br />AIから自動化できます。</h2>
+            <p class="automation-summary">
+              MCPは、同じ調査をCodexやClaude Codeから呼び出すための接続方法です。このサイトを試すだけなら、設定は必要ありません。
+            </p>
           </div>
-          <dl class="answer-evidence">
-            <div>
-              <dt>出典</dt>
-              <dd>
-                <a
-                  href="https://dashboard.e-stat.go.jp/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  統計ダッシュボード Web API ↗
-                </a>
-              </dd>
+          <div class="endpoint-panel">
+            <label for="config-code">MCP接続URL</label>
+            <div class="endpoint-control">
+              <code id="config-code">https://pdc.yhay81.com/mcp</code>
+              <button type="button" id="copy-config">URLをコピー</button>
             </div>
-            <div>
-              <dt>利用条件</dt>
-              <dd>
-                <a
-                  href="https://dashboard.e-stat.go.jp/static/terms"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  公式利用規約 ↗
-                </a>
-              </dd>
+            <div class="endpoint-next">
+              <p id="copy-result" aria-live="polite">AIツールのMCP設定へ追加します。</p>
+              <a
+                href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
+                target="_blank"
+                rel="noreferrer"
+              >接続手順を見る ↗</a>
             </div>
-            <div>
-              <dt>確認結果</dt>
-              <dd><span class="pass-mark">✓</span> 8項目を確認済み</dd>
-            </div>
-            <div>
-              <dt>注意点</dt>
-              <dd>公式サイト側で値が更新される場合があります</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      <section class="more page-shell" aria-labelledby="more-title">
-        <header class="section-heading">
-          <p>MORE</p>
-          <h2 id="more-title">もっと詳しく見る</h2>
-        </header>
-        <div class="more-links">
-          <a
-            href="https://github.com/yhay81/public-data-catalog#aiエージェントから使う"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>自分のパソコンで使う</strong>
-              <small>Python / stdio</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
-          <a
-            href="https://github.com/yhay81/public-data-catalog#%E6%83%85%E5%A0%B1%E6%BA%90%E3%83%97%E3%83%AD%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>情報源と調べ方の一覧</strong>
-              <small>登録済みの情報源 13件 / 確認済みの手順 6件</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
-          <a
-            href="https://github.com/yhay81/public-data-catalog/blob/main/docs/external-test-protocol.md"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>動作確認に参加する</strong>
-              <small>約2分のテスト</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer page-shell">
-      <p>PDC · MIT License</p>
+      <p>PDC · 根拠付き公的統計リサーチ · MIT License</p>
       <div>
         <a href="/health">稼働状態</a>
-        <a
-          href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
-          target="_blank"
-          rel="noreferrer"
-        >
-          MCP Registry
-        </a>
+        <a href="/api/research">調査API</a>
         <a
           href="https://github.com/yhay81/public-data-catalog"
           target="_blank"
           rel="noreferrer"
-        >
-          GitHub
-        </a>
+        >GitHub</a>
       </div>
     </footer>
 
-    <script src="/app.js?v=simple-1" defer></script>
+    <script src="/app.js?v=research-1" defer></script>
   </body>
 </html>

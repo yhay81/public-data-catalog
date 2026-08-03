@@ -15,12 +15,26 @@ catalog.json + recipes/*.json  ← source of truth and review boundary
           ├── generated/catalog.bundle.json  ← small runtime/search index
           ├── generated/catalog.dcat.jsonld  ← catalog interoperability
           ├── Python reference runner        ← dependency-free execution
-          └── MCP server                     ← agent connection
-                    │
+          ├── browser research service       ← human-facing questions and answers
+          │         └── /api/research
+          └── MCP server                     ← optional agent automation
                     ├── search_data
                     ├── execute
                     └── verify
 ```
+
+## Human-facing research service
+
+The public website is the primary product surface. A visitor chooses one of the
+reviewed questions and, where supported, a bounded parameter such as year. The
+same execution and verification core then retrieves the official source and
+returns a plain-language research memo containing the value, source, usage
+terms, interpretation notes, request URL, and verification summary.
+
+`/api/research` deliberately maps a small set of understandable topics to
+reviewed recipe IDs. It is not an arbitrary query, URL-fetch, or proxy endpoint.
+This keeps the browser experience simple without weakening the contract
+boundary used by the MCP and local runners.
 
 ## Three planes
 
@@ -54,9 +68,10 @@ recipe version in the bundled catalog. It detects later modification across the
 full evidence envelope. It does not prove that an official publisher signed the
 source data or that a value remains current.
 
-## Agent connection
+## Optional agent connection
 
-The same server factory is used by:
+MCP is a secondary automation path for repeated research. The same server
+factory is used by:
 
 - local stdio transport for desktop agents and development;
 - stateless MCP Streamable HTTP on Cloudflare Workers;
@@ -111,7 +126,7 @@ This sequence avoids paying the complexity cost of a data lake before the projec
 
 ## Operational checks
 
-Pull-request CI validates schemas, deterministic artifacts, both runners, and MCP behavior without calling external data providers. Weekly probes run the bounded contracts against their official sources. The public Worker exposes `/health` and `/mcp`; deployment smoke tests must list the three tools and complete one live execute/verify round trip.
+Pull-request CI validates schemas, deterministic artifacts, both runners, and MCP behavior without calling external data providers. Weekly probes run the bounded contracts against their official sources. The public Worker exposes `/health`, `/api/research`, and `/mcp`; deployment smoke tests must complete one public research request, list the three MCP tools, and complete one live execute/verify round trip.
 
 Relevant current specifications and platform documentation:
 

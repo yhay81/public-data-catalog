@@ -33,7 +33,7 @@ function toolError(error: unknown) {
 export function createPublicDataServer(options: { fetchImpl?: typeof fetch } = {}) {
   const server = new McpServer({
     name: "public-data-catalog",
-    version: "0.4.0",
+    version: "0.5.0",
   });
 
   server.registerTool(

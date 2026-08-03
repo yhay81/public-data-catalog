@@ -4,15 +4,21 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.5.0 - 2026-08-03
+
 ### Added
 
-- A PDC brand system and public landing page explaining the trust model, MCP connection, production stack, and Hayate compatibility path.
+- A browser-based public-statistics research workflow for five reviewed questions.
+- A same-origin `/api/research` endpoint that returns readable answers, provenance, usage terms, interpretation notes, and verification summaries.
+- A PDC brand guide, trust-model documentation, and Hayate compatibility path.
 - An evidence-gated product roadmap from independent activation through repeat use, operational trust, interoperability, and optional federation.
 - Parameter-bound response assertions and complete bounded-integer range probes.
 - Strict receipt 1.1 validation with separate reviewed and final request URLs.
 
 ### Changed
 
+- Repositioned PDC from a catalog-first MCP demo to a concrete evidence-backed public-statistics research service.
+- Made the MCP endpoint a secondary automation path instead of the primary website action.
 - Normalized transforms across Python and TypeScript so equivalent results produce the same result hash.
 - Made the e-Gov population recipe deterministic and actionable with dataset and resource identifiers, metadata, URL, format, and licence ID.
 

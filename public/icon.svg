@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
-  <title>PDC — Public Data Catalog</title>
-  <rect width="64" height="64" rx="10" fill="#0b0d0d"/>
-  <circle cx="16" cy="32" r="5" fill="#b8ff3d"/>
-  <circle cx="32" cy="32" r="5" fill="#b8ff3d"/>
-  <circle cx="48" cy="32" r="5" fill="#b8ff3d"/>
+  <title>PDC — 根拠付き公的統計リサーチ</title>
+  <rect width="64" height="64" rx="12" fill="#185ce5"/>
+  <path d="M18 47V17h13.5c8.1 0 13.5 4.4 13.5 11.8S39.6 41 31.5 41H25v6h-7Zm7-13h6.2c4.4 0 6.8-1.8 6.8-5.2 0-3.2-2.4-4.8-6.8-4.8H25v10Z" fill="#fff"/>
 </svg>

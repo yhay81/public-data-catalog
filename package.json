@@ -1,9 +1,9 @@
 {
   "name": "public-data-catalog",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
-  "description": "Verified, source-attributed public-data retrieval contracts for people and AI agents.",
+  "description": "Evidence-backed public-statistics research for people and AI agents.",
   "scripts": {
     "artifacts": "python3 scripts/build_artifacts.py",
     "artifacts:check": "python3 scripts/build_artifacts.py --check",

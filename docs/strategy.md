@@ -10,9 +10,9 @@ complete, but distribution does not bypass activation or demand evidence.
 
 ## Position
 
-Public Data Catalog should become the **Japanese-first collection of tested, source-specific retrieval contracts for official data**.
+PDC should become a **Japanese-first, evidence-backed public-statistics research service** built on tested, source-specific retrieval contracts.
 
-Its job is not to maximize the number of discoverable datasets. It should make a smaller number of important questions reproducible while preserving the request, response contract, units, identifiers, interpretation, provenance, attribution, license, and freshness evidence.
+Its job is not to maximize the number of discoverable datasets. It should let a person answer a smaller number of important questions without technical setup while preserving the request, response contract, units, identifiers, interpretation, provenance, attribution, license, and freshness evidence. MCP exists when the same research needs to be repeated from an AI tool.
 
 ## Where it fits
 

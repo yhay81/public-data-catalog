@@ -1,10 +1,10 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.yhay81/public-data-catalog",
-  "title": "Public Data Catalog",
-  "description": "Reviewed public-data search and execution with provenance and verifiable integrity receipts.",
-  "version": "0.4.0",
-  "websiteUrl": "https://github.com/yhay81/public-data-catalog",
+  "title": "PDC Public Statistics Research",
+  "description": "Evidence-backed public-statistics research with official sources, usage terms, and verifiable integrity receipts.",
+  "version": "0.5.0",
+  "websiteUrl": "https://pdc.yhay81.com/",
   "repository": {
     "url": "https://github.com/yhay81/public-data-catalog",
     "source": "github"

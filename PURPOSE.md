@@ -1,12 +1,14 @@
 # Purpose and Scope
 
-This repository reduces the uncertainty between a data question and the first trustworthy, reproducible result from public data.
+This repository provides a small, usable public-statistics research service that keeps an answer and its evidence together.
 
 ## Ultimate outcome
 
-Public-data claims used by AI agents and people should remain traceable to an
-official source, reproducible under a versioned retrieval contract, and
-checkable by an independent implementation.
+People should be able to select a concrete statistical question and receive a
+readable answer, official source, usage conditions, interpretation notes, and
+verification result without first learning an API or configuring an AI tool.
+The same research should remain reproducible through a versioned retrieval
+contract and callable by AI agents through MCP.
 
 PDC does not try to own or mirror the underlying data. Its ultimate value is the
 open trust layer around selecting, retrieving, interpreting, citing, and
@@ -19,7 +21,7 @@ The activity is not successful merely because the catalog contains many sources.
 - run a small, valid first request without repeating basic documentation research;
 - interpret the result with its provenance, license, limitations, and verification date intact.
 
-The primary audience is people and AI agents building research, analysis, and data workflows. The catalog should help them move from an unfamiliar question to an attributable first result in a short, measurable time.
+The primary audience is people preparing reports, checking figures, or beginning public-data research. AI agents and developers are an automation audience, not a prerequisite for using the service.
 
 ## Unit of value
 
