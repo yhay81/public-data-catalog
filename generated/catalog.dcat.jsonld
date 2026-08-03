@@ -7,7 +7,7 @@
   "@type": "dcat:Catalog",
   "dct:title": "Public Data Catalog — Verified Recipes for Japan",
   "dct:description": "Japanese-first public-data source profiles with reviewed, executable retrieval contracts.",
-  "dct:modified": "2026-08-02",
+  "dct:modified": "2026-08-03",
   "dct:license": {
     "@id": "https://opensource.org/license/mit"
   },

@@ -1,4 +1,4 @@
-# PDC — 根拠付き公的統計リサーチ
+# PDC — 公的データセット検索
 
 [English](./README.en.md)
 
@@ -6,25 +6,26 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-公的な統計を公式サイトから取得し、**答え・出典・利用条件・確認結果をひとつの調査メモにまとめる**サービスです。
+知りたいことから日本の公的データを探し、**何が分かるか・誰が提供しているか・どの形式で使えるか・利用条件は何か**を分かりやすく比べるサービスです。
 
-公開サービス: [PDC — 根拠付き公的統計リサーチ](https://pdc.yhay81.com/) · [ブランドガイド](./docs/brand.md)
+公開サービス: [PDC — 公的データセット検索](https://pdc.yhay81.com/) · [ブランドガイド](./docs/brand.md)
 
-単なるリンク集ではありません。実行可能な小さなリクエスト、期待する応答、単位・コード・改訂上の注意、出典、ライセンス、確認日を一緒に管理します。
+e-Govデータポータルと統計ダッシュボードの公式メタデータをその場で検索し、タイトル一致、説明、形式、利用しやすさから候補を整理します。データを複製して検索しているわけではありません。
 
-ブラウザでは5つの具体的な調査を登録不要で実行できます。同じ取得・確認機能を、MCPまたはPythonから自動化することもできます。
+通常のWebサービスが主役です。ブラウザから無料・登録不要で検索でき、同じ検索をMCPから自動化することもできます。既存の検証済み取得レシピと実行レシートは互換機能として残しています。
 
 ## ブラウザで調べる
 
-[pdc.yhay81.com](https://pdc.yhay81.com/) を開き、調べる項目を選んで「公式データを調べる」を押します。現在は次の調査に対応しています。
+[pdc.yhay81.com](https://pdc.yhay81.com/) を開き、「都道府県別の人口推移」「消費者物価指数」「空き家」のように入力します。検索結果には次の情報が表示されます。
 
-- 2015–2025年の東京都の総人口
-- 2023年の日本の完全失業率
-- 世界銀行による2023年の日本の総人口
-- USGSによる2024年能登半島地震の記録
-- e-Govに登録された人口データセット
+- このデータで分かること
+- 提供している省庁・統計調査
+- 対象期間、地域、単位
+- CSV、Excel、JSON、PDFなどの形式
+- 公式の詳細ページ、元データ、利用条件
+- なぜ候補になったか
 
-結果には値だけでなく、取得日時、公式の出典、利用条件、補足情報、読み方の注意、確認済み項目数が表示されます。JSONで組み込む場合は `GET /api/research` で対応項目を確認し、`POST /api/research` へ調査内容を送信できます。
+JSONで組み込む場合は `GET /api/search?q=人口` を利用できます。検索結果は候補であり、利用前に公式ページで対象期間・内容・利用条件を確認してください。
 
 ## まず1分で試す
 
@@ -67,7 +68,7 @@ claude mcp add --transport http public-data-catalog \
   https://pdc.yhay81.com/mcp
 ```
 
-公開するツールは、情報源と契約を探す `search_data`、レビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。
+公開するツールは、e-Govと統計ダッシュボードを検索する `search_data`、従来のレビュー済み契約を実行する `execute`、実行レシートの整合性を確認する `verify` の3つです。任意URL、任意SQL、任意コードは実行しません。Cloudflare Workers上の参照サービスなので可用性保証はありません。
 
 [クライアント別接続ガイド](./docs/client-setup.md)には、画面からの設定、1分確認、切断、トラブルシューティングまでをまとめています。ローカルMCPとして使う場合はNode.js 24以上で `npm ci && npm run mcp` を実行します。実装と接続境界は [アーキテクチャ](./docs/architecture.md)、実証済み範囲は [互換性マトリクス](./docs/compatibility.md)、MCP Registry用の機械可読情報は [`server.json`](./server.json) にあります。
 
@@ -112,6 +113,8 @@ python3 scripts/recipe_tool.py verify result.json
 レシピの構造と安全上の制約は [docs/recipe-format.md](./docs/recipe-format.md)、現在の検証状況は [docs/status.md](./docs/status.md) にあります。初見での再現性を検証する場合は [外部実行テスト手順](./docs/external-test-protocol.md) を使い、[テスト結果フォーム](https://github.com/yhay81/public-data-catalog/issues/new?template=external-test.yml) から成功も失敗も共有してください。AIエージェントを評価する場合は、全6レシピを網羅した [9つの評価シナリオ](./evals/README.md) と採点器を利用できます。
 
 ## 情報源プロファイル
+
+公開検索の保守対象は `statistics-dashboard-api` と `egov-data-portal` の2件です。以下のうち、それ以外は過去の検証資産として `paused` にしており、現在のWeb検索には使用しません。
 
 | ID | 分野 | 地域 | 認証 | 主な形式 |
 | --- | --- | --- | --- | --- |
