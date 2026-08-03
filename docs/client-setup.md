@@ -9,7 +9,7 @@ documentation. They are not compatibility claims: a client is marked
 ## Public endpoint
 
 ```text
-https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
+https://d.yhay81.com/mcp
 ```
 
 - Transport: MCP Streamable HTTP
@@ -26,7 +26,7 @@ The fastest CLI setup is:
 
 ```sh
 codex mcp add public-data-catalog \
-  --url https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
+  --url https://d.yhay81.com/mcp
 codex mcp list
 ```
 
@@ -57,7 +57,7 @@ Run this from the project context where the server should be available:
 
 ```sh
 claude mcp add --transport http public-data-catalog \
-  https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp
+  https://d.yhay81.com/mcp
 claude mcp list
 ```
 

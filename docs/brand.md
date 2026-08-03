@@ -65,7 +65,7 @@ does not depend on a commercial font license or third-party font request.
 
 ## Assets
 
-- Public website: <https://public-data-catalog-mcp.yusuke8h.workers.dev/>
+- Public website: <https://d.yhay81.com/>
 - Social preview: [`public/og.png`](../public/og.png)
 - Browser icon: [`public/icon.svg`](../public/icon.svg)
 - Website source: [`public/index.html`](../public/index.html)

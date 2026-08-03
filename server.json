@@ -12,7 +12,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://public-data-catalog-mcp.yusuke8h.workers.dev/mcp"
+      "url": "https://d.yhay81.com/mcp"
     }
   ]
 }
