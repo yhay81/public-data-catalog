@@ -24,7 +24,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "catalog.json"
 RECIPES_DIR = ROOT / "recipes"
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
 VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 BINDING_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")

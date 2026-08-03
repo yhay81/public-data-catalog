@@ -1,4 +1,4 @@
-# Public Data Catalog — Verified Recipes for Japan
+# PDC — 根拠付き公的統計リサーチ
 
 [English](./README.en.md)
 
@@ -6,15 +6,25 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![検索・実行・検証を閉じた監査回路で表すPDCのブランドビジュアル](./public/og.png)
+公的な統計を公式サイトから取得し、**答え・出典・利用条件・確認結果をひとつの調査メモにまとめる**サービスです。
 
-日本の公共データを中心に、AIや開発者が**具体的な問いから、根拠付きで再現可能な最初の取得まで**進むための、テスト済みレシピ集です。
-
-ブランドサイト: [PDC — 公的データに、検証済みの経路を。](https://pdc.yhay81.com/) · [ブランドガイド](./docs/brand.md)
+公開サービス: [PDC — 根拠付き公的統計リサーチ](https://pdc.yhay81.com/) · [ブランドガイド](./docs/brand.md)
 
 単なるリンク集ではありません。実行可能な小さなリクエスト、期待する応答、単位・コード・改訂上の注意、出典、ライセンス、確認日を一緒に管理します。
 
-_Japanese-first, tested retrieval recipes for getting small, attributable results from official public data._
+ブラウザでは5つの具体的な調査を登録不要で実行できます。同じ取得・確認機能を、MCPまたはPythonから自動化することもできます。
+
+## ブラウザで調べる
+
+[pdc.yhay81.com](https://pdc.yhay81.com/) を開き、調べる項目を選んで「公式データを調べる」を押します。現在は次の調査に対応しています。
+
+- 2015–2025年の東京都の総人口
+- 2023年の日本の完全失業率
+- 世界銀行による2023年の日本の総人口
+- USGSによる2024年能登半島地震の記録
+- e-Govに登録された人口データセット
+
+結果には値だけでなく、取得日時、公式の出典、利用条件、補足情報、読み方の注意、確認済み項目数が表示されます。JSONで組み込む場合は `GET /api/research` で対応項目を確認し、`POST /api/research` へ調査内容を送信できます。
 
 ## まず1分で試す
 

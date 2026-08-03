@@ -1,4 +1,4 @@
-# Public Data Catalog — Verified Recipes for Japan
+# PDC — Evidence-backed Public Statistics Research
 
 [日本語](./README.md)
 
@@ -6,13 +6,17 @@
 [![Recipe probes](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml/badge.svg)](https://github.com/yhay81/public-data-catalog/actions/workflows/recipe-probes.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-![PDC brand visual showing three verification checkpoints inside a closed audit circuit](./public/og.png)
+PDC retrieves public statistics from official sources and keeps the answer, provenance, usage conditions, interpretation notes, and verification result together.
 
-Japanese-first, tested retrieval recipes that help developers and AI agents move from a concrete public-data question to a small, reproducible, attributable result.
+Public service: [PDC — Evidence-backed Public Statistics Research](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
 
-Brand site: [PDC — Verified routes to official public data](https://pdc.yhay81.com/) · [Brand guide](./docs/brand.md)
+The browser service runs five concrete research tasks without registration. The same retrieval and verification layer is available through MCP and Python for automation.
 
-This is not another exhaustive link list or a mirror of government data. Each recipe keeps a bounded request, response assertions, extracted values, interpretation notes, provenance, license, and verification date together.
+## Research in the browser
+
+Open [pdc.yhay81.com](https://pdc.yhay81.com/), select a supported question, and run the research. PDC currently covers Tokyo population for 2015–2025, Japan's 2023 unemployment rate, Japan's 2023 World Bank population, the USGS record of the 2024 Noto Peninsula earthquake, and an e-Gov population dataset.
+
+Each result includes the retrieved value, retrieval time, official source, usage terms, supporting fields, interpretation notes, and verification counts. Integrations can list the supported topics with `GET /api/research` and submit a request to `POST /api/research`.
 
 ## Try it in one minute
 
