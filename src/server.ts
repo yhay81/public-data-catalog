@@ -58,6 +58,7 @@ export function createPublicDataServer(options: { fetchImpl?: typeof fetch } = {
       outputSchema: {
         status: z.literal("ok"),
         query: z.string(),
+        interpreted_as: z.array(z.string()),
         searched_at: z.string(),
         results: z.array(z.unknown()),
         total: z.number().int().nonnegative(),

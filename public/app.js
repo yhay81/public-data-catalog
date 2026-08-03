@@ -129,13 +129,16 @@ function renderResultList() {
   emptyResult.hidden = results.length > 0;
 }
 
-function renderSourceStatus(sources) {
+function renderSourceStatus(sources, interpretedAs = []) {
   const successful = sources.filter((source) => source.status === "ok");
   const failed = sources.filter((source) => source.status === "error");
   const checked = successful.map((source) => source.label).join("、");
+  const interpretation = interpretedAs.length
+    ? `「${interpretedAs.slice(0, 2).join("」「")}」も含めて、`
+    : "";
   sourceStatus.textContent = failed.length
-    ? `${checked}を検索しました。${failed.map((source) => source.label).join("、")}は一時的に検索できませんでした。`
-    : `${checked}の公式メタデータを検索しました。`;
+    ? `${interpretation}${checked}を検索しました。${failed.map((source) => source.label).join("、")}は一時的に検索できませんでした。`
+    : `${interpretation}${checked}の公式メタデータを検索しました。`;
   sourceStatus.classList.toggle("has-warning", failed.length > 0);
 }
 
@@ -154,7 +157,7 @@ function renderSearch(payload) {
   resultsSummary.textContent = payload.total
     ? `内容と形式を比べやすい順に、${payload.total}件を表示しています。`
     : "公式サイトを検索しましたが、表示できる候補はありませんでした。";
-  renderSourceStatus(payload.sources);
+  renderSourceStatus(payload.sources, payload.interpreted_as);
   resultNote.textContent = payload.note;
   resultsSection.hidden = false;
   renderResultList();
