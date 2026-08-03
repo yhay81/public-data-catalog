@@ -41,7 +41,7 @@
     />
     <link rel="canonical" href="https://pdc.yhay81.com/" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/styles.css?v=functional-noto-1" />
+    <link rel="stylesheet" href="/styles.css?v=trust-route-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -67,210 +67,221 @@
         </span>
       </a>
       <nav aria-label="メインナビゲーション">
-        <a href="#setup">接続方法</a>
-        <a href="#example">出力例</a>
+        <a href="#concept">コンセプト</a>
+        <a href="#sources">データソース</a>
+        <a href="#flow">返却の仕組み</a>
+        <a href="#connect">接続</a>
         <a
           href="https://github.com/yhay81/public-data-catalog"
           target="_blank"
           rel="noreferrer"
-        >
-          GitHub ↗
-        </a>
+        >GitHub ↗</a>
       </nav>
     </header>
 
     <main>
-      <section class="start" id="top" aria-labelledby="start-title">
-        <div class="start-copy">
-          <p class="product-label">PUBLIC DATA CATALOG</p>
-          <h1 id="start-title">公的データを、<br />AIで使う。</h1>
-          <p class="start-summary">
-            公式APIのデータを、出典・ライセンス・検証結果と一緒に返すMCPサーバーです。
-          </p>
-          <div class="service-status" aria-live="polite">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span id="live-status">接続確認中</span>
-            <span class="status-note">アカウント不要</span>
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <div class="hero-copy hero-enter">
+            <p class="eyebrow">PUBLIC DATA CATALOG</p>
+            <h1 id="hero-title">公的データに、<br /><span>検証できる道筋を。</span></h1>
+            <p class="hero-summary">
+              PDCはデータを保存するデータベースではありません。AIの問いをレビュー済みの取得レシピで公式APIにつなぎ、出典・利用条件・注意点・検証レシートと一緒に結果を返すOSSです。
+            </p>
+            <div class="hero-actions">
+              <a class="button-primary" href="#flow">返却の仕組みを見る</a>
+              <a class="text-link" href="#connect">MCPへ接続する <span>↓</span></a>
+            </div>
+            <div class="service-status" aria-live="polite">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span id="live-status">接続確認中</span>
+              <span class="status-note">アカウント不要</span>
+            </div>
+          </div>
+
+          <div class="route-visual hero-enter" aria-label="問いから根拠付き回答までの経路">
+            <div class="route-caption">
+              <span>ONE REVIEWED ROUTE</span>
+              <span>LIVE</span>
+            </div>
+            <ol class="route-stack">
+              <li>
+                <span class="route-index">01</span>
+                <div><small>QUESTION</small><strong>2025年の東京都の人口は？</strong></div>
+              </li>
+              <li>
+                <span class="route-index">02</span>
+                <div><small>RECIPE</small><strong>tokyo-population-by-year</strong></div>
+              </li>
+              <li>
+                <span class="route-index">03</span>
+                <div><small>OFFICIAL API</small><strong>Statistics Dashboard</strong></div>
+              </li>
+            </ol>
+            <div class="route-result">
+              <div>
+                <small>VERIFIED RESULT</small>
+                <strong>14,246,219 <span>人</span></strong>
+              </div>
+              <ul aria-label="結果に付属する情報">
+                <li>出典</li>
+                <li>ライセンス</li>
+                <li>注意点</li>
+                <li>SHA-256</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div class="start-action" aria-labelledby="endpoint-title">
-          <div class="action-heading">
-            <div>
-              <span class="step-number">最初にすること</span>
-              <h2 id="endpoint-title">接続URLをコピー</h2>
-            </div>
-            <span class="action-time">約10秒</span>
-          </div>
-          <div class="endpoint-control">
-            <code id="config-code">https://pdc.yhay81.com/mcp</code>
-            <button type="button" id="copy-config">URLをコピー</button>
-          </div>
-          <div class="action-next">
-            <p id="copy-result" aria-live="polite">
-              コピー後、MCPクライアントの設定へ追加します。
+        <dl class="hero-metrics page-shell hero-enter">
+          <div><dt>Source profiles</dt><dd>13</dd></div>
+          <div><dt>Executable recipes</dt><dd>6</dd></div>
+          <div><dt>MCP tools</dt><dd id="metric-tools">3</dd></div>
+          <div><dt>Data mirrored</dt><dd>0</dd></div>
+        </dl>
+      </section>
+
+      <section class="concept page-shell reveal" id="concept" aria-labelledby="concept-title" data-reveal>
+        <header class="section-heading">
+          <p>CONCEPT</p>
+          <div>
+            <h2 id="concept-title">リンク集でも、<br />データ倉庫でもない。</h2>
+            <p class="section-lead">
+              価値の単位はデータソースの件数ではなく、具体的な問いを根拠付きの最初の取得まで進める「検証済み取得レシピ」です。
             </p>
-            <a
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              接続手順を開く <span aria-hidden="true">→</span>
-            </a>
+          </div>
+        </header>
+        <div class="concept-statement">
+          <p>公式データそのものは、公式機関から直接取得します。</p>
+          <strong>選び方・取り方・読み方・確かめ方を、PDCがバージョン管理する。</strong>
+        </div>
+        <dl class="concept-values">
+          <div><dt>01 · 選定</dt><dd>問いに合う情報源と、対象範囲・使い分けを示す。</dd></div>
+          <div><dt>02 · 実行</dt><dd>ホスト、パラメータ、応答形式を限定したレシピだけを動かす。</dd></div>
+          <div><dt>03 · 信頼</dt><dd>出典、権利、単位、注意点、取得時刻を結果から切り離さない。</dd></div>
+          <div><dt>04 · 鮮度</dt><dd>確認日と軽量probeで、入口や取得契約の変化を追う。</dd></div>
+        </dl>
+      </section>
+
+      <section class="sources" id="sources" aria-labelledby="sources-title">
+        <div class="page-shell">
+          <header class="section-heading reveal" data-reveal>
+            <p>SOURCES</p>
+            <div>
+              <h2 id="sources-title">13の公式・公開データ入口。</h2>
+              <p class="section-lead">
+                11のAPIと2つのポータルについて、提供者、認証、形式、ライセンス、注意点、最終確認日を管理しています。<b>●</b> は現在、実行レシピまで接続済みの情報源です。
+              </p>
+            </div>
+          </header>
+
+          <div class="source-groups">
+            <section class="source-group reveal" aria-labelledby="source-japan" data-reveal>
+              <header><span>01</span><div><h3 id="source-japan">日本の統計・行政</h3><p>3 sources · 4 recipes</p></div></header>
+              <ul>
+                <li><a href="https://www.e-stat.go.jp/api/index.php/en" target="_blank" rel="noreferrer"><span><strong>e-Stat API</strong><small>政府統計 · 登録が必要</small></span><i>↗</i></a></li>
+                <li class="is-runnable"><a href="https://dashboard.e-stat.go.jp/static/api?language=ja" target="_blank" rel="noreferrer"><span><strong>Statistics Dashboard Web API</strong><small>人口・労働・経済 · 認証不要</small></span><i>● ↗</i></a></li>
+                <li class="is-runnable"><a href="https://api-catalog.e-gov.go.jp/info/ja/apicatalog/view/41" target="_blank" rel="noreferrer"><span><strong>e-Gov Data Portal</strong><small>行政オープンデータ · カタログは認証不要</small></span><i>● ↗</i></a></li>
+              </ul>
+            </section>
+
+            <section class="source-group reveal" aria-labelledby="source-population" data-reveal>
+              <header><span>02</span><div><h3 id="source-population">人口・社会・経済</h3><p>2 sources · 1 recipe</p></div></header>
+              <ul>
+                <li class="is-runnable"><a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries" target="_blank" rel="noreferrer"><span><strong>World Bank Indicators API</strong><small>開発・人口・経済 · 認証不要</small></span><i>● ↗</i></a></li>
+                <li><a href="https://www.census.gov/data/developers/guidance/api-user-guide.html" target="_blank" rel="noreferrer"><span><strong>U.S. Census Data API</strong><small>人口・住宅・地理 · APIキー任意</small></span><i>↗</i></a></li>
+              </ul>
+            </section>
+
+            <section class="source-group reveal" aria-labelledby="source-earth" data-reveal>
+              <header><span>03</span><div><h3 id="source-earth">環境・地理・災害</h3><p>5 sources · 1 recipe</p></div></header>
+              <ul>
+                <li><a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer"><span><strong>Open-Meteo Weather API</strong><small>天気・気候・大気 · 認証不要</small></span><i>↗</i></a></li>
+                <li><a href="https://techdocs.gbif.org/en/openapi/" target="_blank" rel="noreferrer"><span><strong>GBIF API</strong><small>生物多様性・種・観測記録</small></span><i>↗</i></a></li>
+                <li class="is-runnable"><a href="https://earthquake.usgs.gov/fdsnws/event/1/swagger.json" target="_blank" rel="noreferrer"><span><strong>USGS Earthquake Catalog API</strong><small>地震・災害 · 認証不要</small></span><i>● ↗</i></a></li>
+                <li><a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank" rel="noreferrer"><span><strong>OpenStreetMap Overpass API</strong><small>地物・交通・建物</small></span><i>↗</i></a></li>
+                <li><a href="https://cds.climate.copernicus.eu/how-to-api" target="_blank" rel="noreferrer"><span><strong>Copernicus Climate Data Store</strong><small>気候・再解析 · アカウントが必要</small></span><i>↗</i></a></li>
+              </ul>
+            </section>
+
+            <section class="source-group reveal" aria-labelledby="source-research" data-reveal>
+              <header><span>04</span><div><h3 id="source-research">研究・生命・生活</h3><p>3 sources · catalog only</p></div></header>
+              <ul>
+                <li><a href="https://developers.openalex.org/api-reference/introduction" target="_blank" rel="noreferrer"><span><strong>OpenAlex API</strong><small>論文・研究者・機関 · APIキーが必要</small></span><i>↗</i></a></li>
+                <li><a href="https://europepmc.org/RestfulWebService" target="_blank" rel="noreferrer"><span><strong>Europe PMC RESTful Web Service</strong><small>生命科学・文献 · 公開APIは認証不要</small></span><i>↗</i></a></li>
+                <li><a href="https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/" target="_blank" rel="noreferrer"><span><strong>Open Food Facts API</strong><small>食品・栄養・原材料</small></span><i>↗</i></a></li>
+              </ul>
+            </section>
+          </div>
+          <p class="source-note">Catalog profile は「利用判断のための情報」、recipe は「安全に実行できる取得契約」です。未接続の情報源へ任意のクエリを送ることはありません。</p>
+        </div>
+      </section>
+
+      <section class="flow" id="flow" aria-labelledby="flow-title">
+        <div class="page-shell">
+          <header class="section-heading reveal" data-reveal>
+            <p>HOW IT RETURNS</p>
+            <div>
+              <h2 id="flow-title">問いから、根拠付きの結果まで。</h2>
+              <p class="section-lead">検索は手元のカタログ、取得は公式API、検証はレシート。PDCは任意URLを呼ぶプロキシにはなりません。</p>
+            </div>
+          </header>
+
+          <ol class="flow-steps reveal" data-reveal>
+            <li><span>01</span><div><small>search_data</small><h3>候補を選ぶ</h3><p>静的カタログから、問い・地域・分野に合う情報源と取得契約を探します。この段階では外部APIを呼びません。</p></div></li>
+            <li><span>02</span><div><small>execute</small><h3>レシピを固定する</h3><p>許可されたホスト、HTTPメソッド、パラメータ型と範囲、期待する応答形を確定します。</p></div></li>
+            <li><span>03</span><div><small>official source</small><h3>直接取得する</h3><p>Cloudflare WorkerまたはPython runnerが公式APIへ最小リクエストを送り、生データをミラーせず取得します。</p></div></li>
+            <li><span>04</span><div><small>assert + extract</small><h3>形を確かめる</h3><p>status、content type、主要フィールドをassertし、必要な値と単位・注記を抽出します。</p></div></li>
+            <li><span>05</span><div><small>verify</small><h3>証拠を添える</h3><p>出典、利用条件、取得時刻、requestと結果のSHA-256をレシートにまとめ、改変をオフライン検証できます。</p></div></li>
+          </ol>
+
+          <div class="flow-example reveal" data-reveal>
+            <div class="example-query"><small>QUESTION</small><p>2025年の東京都の総人口は？</p></div>
+            <div class="example-request"><small>UPSTREAM</small><p>dashboard.e-stat.go.jp</p><code>IndicatorCode=020101…&amp;RegionCode=13000&amp;Time=2025CY00</code></div>
+            <div class="example-answer"><small>ANSWER + RECEIPT</small><strong>14,246,219 <span>人</span></strong><p><b>✓ 8 checks</b> · official source · PDL 1.0 · retrieved_at · SHA-256</p></div>
           </div>
         </div>
       </section>
 
-      <section class="setup page-shell" id="setup" aria-labelledby="setup-title">
+      <section class="connect page-shell reveal" id="connect" aria-labelledby="connect-title" data-reveal>
         <header class="section-heading">
-          <p>SETUP</p>
-          <h2 id="setup-title">3ステップで使い始める</h2>
+          <p>CONNECT</p>
+          <div><h2 id="connect-title">AIから、約10秒で接続。</h2><p class="section-lead">公開MCP URLをクライアントへ追加すると、3つのツールから検索・取得・検証を使えます。</p></div>
         </header>
-        <ol class="setup-list">
-          <li>
-            <span>1</span>
-            <div>
-              <h3>URLをコピー</h3>
-              <p>上のボタンで公開MCPの接続先をコピーします。</p>
-            </div>
-            <a href="#top">コピーする ↑</a>
-          </li>
-          <li>
-            <span>2</span>
-            <div>
-              <h3>クライアントへ追加</h3>
-              <p>Codex、Claude CodeなどのMCP設定へ貼り付けます。</p>
-            </div>
-            <a
-              href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              設定例を見る ↗
-            </a>
-          </li>
-          <li>
-            <span>3</span>
-            <div>
-              <h3>質問する</h3>
-              <p>利用できるデータを探し、そのまま取得と検証を実行できます。</p>
-            </div>
-            <code>東京都の人口データを探して</code>
-          </li>
+        <div class="endpoint-panel">
+          <div><small>STREAMABLE HTTP ENDPOINT</small><code id="config-code">https://pdc.yhay81.com/mcp</code></div>
+          <button type="button" id="copy-config">URLをコピー</button>
+        </div>
+        <p class="copy-result" id="copy-result" aria-live="polite">コピー後、CodexやClaude CodeなどのMCP設定へ追加します。</p>
+        <ol class="connect-steps">
+          <li><span>1</span><p><b>URLをコピー</b>上の公開エンドポイントをコピーします。</p></li>
+          <li><span>2</span><p><b>クライアントへ追加</b><a href="https://github.com/yhay81/public-data-catalog/blob/main/docs/client-setup.md" target="_blank" rel="noreferrer">設定例を見る ↗</a></p></li>
+          <li><span>3</span><p><b>問いを渡す</b><code>東京都の人口データを探して</code></p></li>
         </ol>
       </section>
 
-      <section class="example page-shell" id="example" aria-labelledby="example-title">
+      <section class="more page-shell reveal" aria-labelledby="more-title" data-reveal>
         <header class="section-heading">
-          <p>OUTPUT</p>
-          <h2 id="example-title">返ってくるもの</h2>
-        </header>
-        <div class="answer">
-          <div class="answer-main">
-            <p class="answer-question">2025年の東京都の総人口は？</p>
-            <p class="answer-value">14,246,219 <span>人</span></p>
-          </div>
-          <dl class="answer-evidence">
-            <div>
-              <dt>出典</dt>
-              <dd>
-                <a
-                  href="https://dashboard.e-stat.go.jp/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  統計ダッシュボード Web API ↗
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt>ライセンス</dt>
-              <dd>
-                <a
-                  href="https://dashboard.e-stat.go.jp/static/terms"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  公式利用規約 ↗
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt>検証</dt>
-              <dd><span class="pass-mark">✓</span> 8 checks passed</dd>
-            </div>
-            <div>
-              <dt>注意点</dt>
-              <dd>公式ソース側で値が改訂される可能性があります</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      <section class="more page-shell" aria-labelledby="more-title">
-        <header class="section-heading">
-          <p>MORE</p>
-          <h2 id="more-title">ほかの使い方</h2>
+          <p>OPEN SOURCE</p>
+          <div><h2 id="more-title">中身まで、追跡できます。</h2></div>
         </header>
         <div class="more-links">
-          <a
-            href="https://github.com/yhay81/public-data-catalog#aiエージェントから使う"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>ローカルで実行</strong>
-              <small>Python / stdio</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
-          <a
-            href="https://github.com/yhay81/public-data-catalog#%E6%83%85%E5%A0%B1%E6%BA%90%E3%83%97%E3%83%AD%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>データとレシピを見る</strong>
-              <small>13 sources / 6 recipes</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
-          <a
-            href="https://github.com/yhay81/public-data-catalog/blob/main/docs/external-test-protocol.md"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
-              <strong>検証に参加</strong>
-              <small>2分の独立テスト</small>
-            </span>
-            <i aria-hidden="true">↗</i>
-          </a>
+          <a href="https://github.com/yhay81/public-data-catalog/blob/main/catalog.json" target="_blank" rel="noreferrer"><span><strong>13の情報源プロファイル</strong><small>publisher / access / license / caveats / last_verified</small></span><i>↗</i></a>
+          <a href="https://github.com/yhay81/public-data-catalog/tree/main/recipes" target="_blank" rel="noreferrer"><span><strong>6つの取得レシピ</strong><small>question / request / assertions / extraction / provenance</small></span><i>↗</i></a>
+          <a href="https://github.com/yhay81/public-data-catalog/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><span><strong>設計と信頼境界</strong><small>Discovery / Execution / Evidence</small></span><i>↗</i></a>
         </div>
       </section>
     </main>
 
     <footer class="site-footer page-shell">
-      <p>PDC · MIT License</p>
+      <p>PDC · Public Data Catalog · MIT License</p>
       <div>
         <a href="/health">稼働状態</a>
-        <a
-          href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog"
-          target="_blank"
-          rel="noreferrer"
-        >
-          MCP Registry
-        </a>
-        <a
-          href="https://github.com/yhay81/public-data-catalog"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub
-        </a>
+        <a href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yhay81%2Fpublic-data-catalog" target="_blank" rel="noreferrer">MCP Registry</a>
+        <a href="https://github.com/yhay81/public-data-catalog" target="_blank" rel="noreferrer">GitHub</a>
       </div>
     </footer>
 
-    <script src="/app.js?v=functional-1" defer></script>
+    <script src="/app.js?v=trust-route-1" defer></script>
   </body>
 </html>

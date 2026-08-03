@@ -1,3 +1,5 @@
+document.documentElement.classList.add("js-ready");
+
 const copyButton = document.querySelector("#copy-config");
 const copyResult = document.querySelector("#copy-result");
 const endpointText = document.querySelector("#config-code")?.textContent?.trim() ?? "";
@@ -39,6 +41,7 @@ copyButton?.addEventListener("click", copyEndpoint);
 
 const serviceStatus = document.querySelector(".service-status");
 const liveStatus = document.querySelector("#live-status");
+const metricTools = document.querySelector("#metric-tools");
 
 fetch("/health", { headers: { Accept: "application/json" } })
   .then((response) => {
@@ -47,8 +50,28 @@ fetch("/health", { headers: { Accept: "application/json" } })
   })
   .then((health) => {
     liveStatus.textContent = `稼働中 · ${health.tools.length} tools · v${health.version}`;
+    metricTools.textContent = String(health.tools.length);
   })
   .catch(() => {
     serviceStatus?.classList.add("is-offline");
     liveStatus.textContent = "状態を確認できません";
   });
+
+const revealItems = document.querySelectorAll("[data-reveal]");
+
+if ("IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      }
+    },
+    { rootMargin: "0px 0px -8%", threshold: 0.08 },
+  );
+
+  for (const item of revealItems) revealObserver.observe(item);
+} else {
+  for (const item of revealItems) item.classList.add("is-visible");
+}
