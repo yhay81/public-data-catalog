@@ -6,8 +6,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "routes": [
     {
-      "pattern": "pdc.yhay81.com",
-      "custom_domain": true
+      "pattern": "pdc.yhay81.com/*",
+      "zone_name": "yhay81.com"
     }
   ],
   "workers_dev": true,
